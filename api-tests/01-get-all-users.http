@@ -1,0 +1,6 @@
+@baseUrl = http://localhost:8080
+
+### GET All User
+GET {{baseUrl}}/api/users
+Accept: application/json
+

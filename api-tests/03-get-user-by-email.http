@@ -1,0 +1,11 @@
+@baseUrl = http://localhost:8080
+
+### GET User by Email (200 - OK)
+GET {{baseUrl}}/api/users/email/john@example.com
+Accept: application/json
+
+
+### GET User by Email - (404 Not Found)
+
+GET {{baseUrl}}/api/users/email/notfound@example.com
+Accept: application/json

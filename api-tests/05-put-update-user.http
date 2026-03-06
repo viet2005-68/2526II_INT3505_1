@@ -1,0 +1,92 @@
+@baseUrl = http://localhost:8080
+@contentType = application/json
+
+### PUT Update User - Success (200 OK)
+# Cập nhật thông tin user id=1
+PUT {{baseUrl}}/api/users/1
+Content-Type: {{contentType}}
+
+{
+  "name": "John Doe Updated",
+  "email": "john.updated@example.com",
+  "phone": "0999999999"
+}
+
+
+### PUT Update User - Not Found (404 Not Found)
+# User với id = 999 không tồn tại
+PUT {{baseUrl}}/api/users/999
+Content-Type: {{contentType}}
+
+{
+  "name": "Non Existent User",
+  "email": "nonexistent@example.com",
+  "phone": "0123456789"
+}
+
+### PUT Update User - Duplicate Email (409 Conflict)
+
+PUT {{baseUrl}}/api/users/1
+Content-Type: {{contentType}}
+
+{
+  "name": "John Doe",
+  "email": "alice@example.com",
+  "phone": "0123456789"
+}
+
+
+
+### PUT Update User - Keep Same Email (200 OK)
+# Update user nhưng giữ nguyên email
+PUT {{baseUrl}}/api/users/1
+Content-Type: {{contentType}}
+
+{
+  "name": "John Doe Version 2",
+  "email": "john.updated@example.com",
+  "phone": "0111111111"
+}
+
+### PUT Update User - Change Only Name
+# PUT yêu cầu gửi all fields,
+PUT {{baseUrl}}/api/users/1
+Content-Type: {{contentType}}
+
+{
+  "name": "John Name Changed",
+  "email": "john.updated@example.com",
+  "phone": "0111111111"
+}
+
+### PUT Update User - Missing Required Field (500 Internal Server Error)
+# PUT cần tất cả fields có required, thiếu name  lỗi
+PUT {{baseUrl}}/api/users/1
+Content-Type: {{contentType}}
+
+{
+  "email": "john@example.com",
+  "phone": "0123456789"
+}
+
+
+### PUT Update User - Without Phone (200 OK)
+PUT {{baseUrl}}/api/users/1
+Content-Type: {{contentType}}
+
+{
+  "name": "John Without Phone",
+  "email": "john.updated@example.com"
+}
+
+
+### PUT Update User - Empty String Name
+PUT {{baseUrl}}/api/users/1
+Content-Type: {{contentType}}
+
+{
+  "name": "",
+  "email": "john.updated@example.com",
+  "phone": "0123456789"
+}
+

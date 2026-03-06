@@ -1,0 +1,271 @@
+# ==========================================
+# VALIDATION TESTS - 400 Bad Request
+# ==========================================
+# Test validation với các request không hợp lệ
+# ==========================================
+
+@baseUrl = http://localhost:8080
+@contentType = application/json
+
+### Test 1: Missing Email - 400 Bad Request
+POST {{baseUrl}}/api/users
+Content-Type: {{contentType}}
+
+{
+  "name": "No Email User",
+  "phone": "0123456789"
+}
+
+### Expected Response:
+# HTTP/1.1 400 Bad Request
+# {
+#   "status": 400,
+#   "error": "Bad Request",
+#   "message": "Validation failed: {email=Email is required}",
+#   "timestamp": "..."
+# }
+
+###
+
+### Test 2: Missing Name - 400 Bad Request
+POST {{baseUrl}}/api/users
+Content-Type: {{contentType}}
+
+{
+  "email": "test@example.com",
+  "phone": "0123456789"
+}
+
+### Expected Response:
+# HTTP/1.1 400 Bad Request
+# {
+#   "status": 400,
+#   "error": "Bad Request",
+#   "message": "Validation failed: {name=Name is required}",
+#   "timestamp": "..."
+# }
+
+###
+
+### Test 3: Missing Both Name and Email - 400 Bad Request
+POST {{baseUrl}}/api/users
+Content-Type: {{contentType}}
+
+{
+  "phone": "0123456789"
+}
+
+### Expected Response:
+# HTTP/1.1 400 Bad Request
+# Multiple validation errors
+
+###
+
+### Test 4: Empty Name - 400 Bad Request
+POST {{baseUrl}}/api/users
+Content-Type: {{contentType}}
+
+{
+  "name": "",
+  "email": "test@example.com",
+  "phone": "0123456789"
+}
+
+### Expected Response:
+# HTTP/1.1 400 Bad Request
+# @NotBlank catches empty string
+
+###
+
+### Test 5: Whitespace-Only Name - 400 Bad Request
+POST {{baseUrl}}/api/users
+Content-Type: {{contentType}}
+
+{
+  "name": "   ",
+  "email": "test@example.com",
+  "phone": "0123456789"
+}
+
+### Expected Response:
+# HTTP/1.1 400 Bad Request
+# @NotBlank catches whitespace
+
+###
+
+### Test 6: Name Too Long (> 100 chars) - 400 Bad Request
+POST {{baseUrl}}/api/users
+Content-Type: {{contentType}}
+
+{
+  "name": "12345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901",
+  "email": "test@example.com",
+  "phone": "0123456789"
+}
+
+### Expected Response:
+# HTTP/1.1 400 Bad Request
+# {
+#   "status": 400,
+#   "error": "Bad Request",
+#   "message": "Validation failed: {name=Name must be between 1 and 100 characters}",
+#   "timestamp": "..."
+# }
+
+###
+
+### Test 7: Phone Too Long (> 20 chars) - 400 Bad Request
+POST {{baseUrl}}/api/users
+Content-Type: {{contentType}}
+
+{
+  "name": "Test User",
+  "email": "test@example.com",
+  "phone": "012345678901234567890"
+}
+
+### Expected Response:
+# HTTP/1.1 400 Bad Request
+# {
+#   "status": 400,
+#   "error": "Bad Request",
+#   "message": "Validation failed: {phone=Phone must not exceed 20 characters}",
+#   "timestamp": "..."
+# }
+
+###
+
+### Test 8: Invalid Email Format - 400 Bad Request
+POST {{baseUrl}}/api/users
+Content-Type: {{contentType}}
+
+{
+  "name": "Test User",
+  "email": "not-an-email",
+  "phone": "0123456789"
+}
+
+### Expected Response:
+# HTTP/1.1 400 Bad Request
+# {
+#   "status": 400,
+#   "error": "Bad Request",
+#   "message": "Validation failed: {email=Email must be a valid email address}",
+#   "timestamp": "..."
+# }
+
+###
+
+### Test 9: Email Without @ - 400 Bad Request
+POST {{baseUrl}}/api/users
+Content-Type: {{contentType}}
+
+{
+  "name": "Test User",
+  "email": "emailexample.com",
+  "phone": "0123456789"
+}
+
+### Expected Response:
+# HTTP/1.1 400 Bad Request
+
+###
+
+### Test 10: Email Without Domain - 400 Bad Request
+POST {{baseUrl}}/api/users
+Content-Type: {{contentType}}
+
+{
+  "name": "Test User",
+  "email": "test@",
+  "phone": "0123456789"
+}
+
+### Expected Response:
+# HTTP/1.1 400 Bad Request
+
+###
+
+### Test 11: Multiple Validation Errors - 400 Bad Request
+POST {{baseUrl}}/api/users
+Content-Type: {{contentType}}
+
+{
+  "name": "",
+  "email": "invalid-email",
+  "phone": "012345678901234567890123456789"
+}
+
+### Expected Response:
+# HTTP/1.1 400 Bad Request
+# {
+#   "status": 400,
+#   "error": "Bad Request",
+#   "message": "Validation failed: {name=Name is required, email=Email must be a valid email address, phone=Phone must not exceed 20 characters}",
+#   "timestamp": "..."
+# }
+
+###
+
+### Test 12: All Fields Invalid - 400 Bad Request
+POST {{baseUrl}}/api/users
+Content-Type: {{contentType}}
+
+{
+  "name": null,
+  "email": null,
+  "phone": "012345678901234567890123456789"
+}
+
+### Expected Response:
+# HTTP/1.1 400 Bad Request
+# Multiple validation errors for all fields
+
+###
+
+### Test 13: PUT with Missing Name - 400 Bad Request
+# Validation cũng áp dụng cho PUT
+PUT {{baseUrl}}/api/users/1
+Content-Type: {{contentType}}
+
+{
+  "email": "updated@example.com",
+  "phone": "0123456789"
+}
+
+### Expected Response:
+# HTTP/1.1 400 Bad Request
+
+###
+
+### Test 14: PUT with Invalid Email - 400 Bad Request
+PUT {{baseUrl}}/api/users/1
+Content-Type: {{contentType}}
+
+{
+  "name": "Updated Name",
+  "email": "not-valid",
+  "phone": "0123456789"
+}
+
+### Expected Response:
+# HTTP/1.1 400 Bad Request
+
+###
+
+### Giải thích Validation Flow:
+
+# 1. Request gửi đến Controller
+# 2. @Valid annotation trigger validation
+# 3. Spring validate theo annotations trong UserRequest:
+#    - @NotBlank: Check not null, not empty, not whitespace
+#    - @Size: Check length
+#    - @Email: Check email format
+# 4. Nếu validation FAIL:
+#    → Throw MethodArgumentNotValidException
+#    → GlobalExceptionHandler catch
+#    → Trả về HTTP 400 Bad Request
+# 5. Nếu validation PASS:
+#    → Tiếp tục vào Service layer
+#    → Business logic validation (email duplicate → 409)
+#    → Save vào database

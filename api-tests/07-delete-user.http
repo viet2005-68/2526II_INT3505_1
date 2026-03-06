@@ -1,0 +1,9 @@
+@baseUrl = http://localhost:8080
+
+### DELETE User - Success (204 No Content)
+DELETE {{baseUrl}}/api/users/2
+
+
+
+### DELETE User - Not Found (404 Not Found)
+DELETE {{baseUrl}}/api/users/999

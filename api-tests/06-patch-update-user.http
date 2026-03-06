@@ -1,0 +1,39 @@
+@baseUrl = http://localhost:8080
+@contentType = application/json
+
+### PATCH Update User - Only Name (200 OK)
+# Chỉ update nam
+PATCH {{baseUrl}}/api/users/1
+Content-Type: {{contentType}}
+
+{
+  "name": "John Patched"
+}
+
+### PATCH Update User - Only Email (200 OK)
+# Chỉ update email
+PATCH {{baseUrl}}/api/users/1
+Content-Type: {{contentType}}
+
+{
+  "email": "john.patched@example.com"
+}
+
+
+### PATCH Update User - Duplicated (409 Not Found)
+PATCH {{baseUrl}}/api/users/1
+Content-Type: {{contentType}}
+
+{
+  "email": "alice@example.com"
+}
+
+### 404 User id = 99 not found
+
+PATCH {{baseUrl}}/api/users/99
+Content-Type: {{contentType}}
+
+{
+  "email": "john.all@example.com"
+}
+

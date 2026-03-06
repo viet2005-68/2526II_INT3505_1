@@ -1,0 +1,64 @@
+@baseUrl = http://localhost:8080
+@contentType = application/json
+
+### Create User
+POST {{baseUrl}}/api/users
+Content-Type: {{contentType}}
+
+{
+  "name": "John Doe",
+  "email": "john@example.com",
+  "phone": "0123456789"
+}
+
+
+### Create Second User
+POST {{baseUrl}}/api/users
+Content-Type: {{contentType}}
+
+{
+  "name": "Alice Smith",
+  "email": "alice@example.com",
+  "phone": "0987654321"
+}
+
+### 409
+# Email đã tồn tại trong database
+POST {{baseUrl}}/api/users
+Content-Type: {{contentType}}
+
+{
+  "name": "Jane Doe",
+  "email": "john@example.com",
+  "phone": "0111222333"
+}
+
+### Create User
+POST {{baseUrl}}/api/users
+Content-Type: {{contentType}}
+
+{
+  "name": "Bob Johnson",
+  "email": "bob@example.com"
+}
+
+### POST Create User Missing Name (500)
+POST {{baseUrl}}/api/users
+Content-Type: {{contentType}}
+
+{
+  "email": "noname@example.com",
+  "phone": "0123456789"
+}
+
+### POST Create User Missing Email
+
+POST {{baseUrl}}/api/users
+Content-Type: {{contentType}}
+
+{
+  "name": "No Email User",
+  "phone": "0123456789 012345678901234567890123456789"
+}
+
+

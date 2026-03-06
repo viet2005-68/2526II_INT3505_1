@@ -1,0 +1,18 @@
+@baseUrl = http://localhost:8080
+
+### GET User by ID - Success (200 OK)
+GET {{baseUrl}}/api/user/1
+Accept: application/json
+
+### GET User by ID - Not Found (404 Not Found)
+# User với id = 999 không tồn tại
+GET {{baseUrl}}/api/users/999
+Accept: application/json
+
+
+### GET User by ID - Invalid ID Format (400 Bad Request)
+# ID phải là số, không thể là chữ
+GET {{baseUrl}}/api/users/abc
+Accept: application/json
+
+
