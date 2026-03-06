@@ -35,6 +35,24 @@ def demo_stateless():
     print(f"→ Client KHÔNG gửi session/cookie, server vẫn xử lý được")
 
 
+def demo_cacheable():
+    """
+    Demo Cacheable: Response có Cache-Control header.
+    Request 1 và 2 - kiểm tra header Cache-Control.
+    """
+    print("=== DEMO CACHEABLE ===\n")
+    
+    r = requests.get(f"{BASE_URL}/books-cacheable")
+    data = r.json()
+    
+    print(f"Data: {data}")
+    print(f"\nHeaders từ server:")
+    print(f"  Cache-Control: {r.headers.get('Cache-Control', 'N/A')}")
+    print(f"  X-Cache-Info: {r.headers.get('X-Cache-Info', 'N/A')}")
+    print(f"\n→ Client/Browser có thể cache response 60 giây")
+    print(f"→ Request tiếp theo trong 60s có thể dùng cache, không cần gọi server")
+
+
 def get_books_no_session():
     """GET books - Stateless: Không cần login, session, cookie."""
     response = requests.get(f"{BASE_URL}/books")
@@ -46,6 +64,8 @@ if __name__ == "__main__":
     import sys
     if len(sys.argv) > 1 and sys.argv[1] == "stateless":
         demo_stateless()
+    elif len(sys.argv) > 1 and sys.argv[1] == "cacheable":
+        demo_cacheable()
     else:
         books = get_books()
         print(books)

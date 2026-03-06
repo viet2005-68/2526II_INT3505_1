@@ -3,9 +3,6 @@ import uuid
 
 app = Flask(__name__)
 
-# Stateless: KHÔNG lưu session/state giữa các request
-# Mỗi request độc lập, server không "nhớ" request trước
-
 books = [
     {"id": 1, "title": "Book 1"},
     {"id": 2, "title": "Book 2"}
@@ -16,13 +13,21 @@ def get_books():
     return jsonify(books)
 
 
+@app.route("/books-cacheable", methods=["GET"])
+def get_books_cacheable():
+    """
+    Demo Cacheable: Response có Cache-Control header.
+    Client/Browser có thể cache 60 giây, giảm request tới server.
+    """
+    response = jsonify(books)
+    response.headers["Cache-Control"] = "public, max-age=60"
+    response.headers["X-Cache-Info"] = "Cacheable for 60 seconds"
+    return response
+
+
 @app.route("/demo-stateless", methods=["GET"])
 def demo_stateless():
-    """
-    Demo Stateless: Mỗi request trả về request_id MỚI.
-    Server KHÔNG lưu state - không session, không cookie.
-    Request sau không "biết" gì về request trước.
-    """
+
     request_id = str(uuid.uuid4())[:8]
     return jsonify({
         "message": "Stateless: Mỗi request độc lập",
