@@ -1,7 +1,7 @@
 from flask import Flask, jsonify, request
 
 app = Flask(__name__)
-port = 3001
+port = 3002
 
 # Dữ liệu đã được chuẩn hóa key (id, name)
 
@@ -37,33 +37,28 @@ mock_orders = [
 
 # Consistent Success Response
 def create_api_success_response(data, page=None, limit=None, total=None):
+    if total is not None:
+        total_items = total
+    elif isinstance(data, (list, tuple)):
+        total_items = len(data)
+    elif data is None:
+        total_items = 0
+    else:
+        total_items = 1
+
     return {
         "status": "success",
         "data": data,
-        "pagination": {
-            "page": page,
-            "limit": limit,
-            "totalItems": total if total is not None else len(data)
+        "metadata": {
+            "pagination": {
+                "page": page,
+                "limit": limit,
+                "totalItems": total_items
+            }
         }
     }
 
-# CONSISTENT PAGINATION
-# - Luôn dùng cùng tham số: page, limit
-# - Luôn trả về pagination.totalItems, pagination.page, pagination.limit
-@app.route('/products', methods=['GET'])
-def get_products():
-    # Tham số phân trang thống nhất
-    page = int(request.args.get("page", 1))  
-    limit = int(request.args.get("limit", 10))
 
-    # Tính toán offset theo page & limit
-    start = (page - 1) * limit
-    end = start + limit
-
-    items = mock_products[start:end]
-    total_items = len(mock_products)
-
-    return jsonify(create_api_success_response(items, page, limit, total_items))
 
 # Consistent Error Response
 # Khi xảy ra lỗi, API cũng phải trả về format giống nhau.
@@ -276,27 +271,7 @@ def get_products():
 
 
 
-# PRINCIPLE 5: Resource by ID
-@app.route('/products/<int:product_id>', methods=['GET'])
-def get_product(product_id):
-
-    product = next((p for p in mock_products if p["id"] == product_id), None)
-
-    if not product:
-        return create_api_error_response("Product not found", 404)
-
-    return jsonify(create_api_success_response(product))
-
-
-
-# =================================================
-
-if __name__ == '__main__':
-    print(f"API demo running at http://localhost:{port}")
-    app.run(port=port)
-
-
-
+# PRINCIPLE 5:
 # Sử dụng method để định nghĩa hành động
 # thay vì đưa hành động vào URL
 
@@ -398,30 +373,6 @@ def delete_product(product_id):
 
     return jsonify(create_api_success_response({"id": product_id}))   
 
-# tẠO VÀO ĐÂY
-# SIMPLE BEST PRACTICE – CONSISTENT URL STRUCTURE
-# Users – resource chính
-@app.route("/users", methods=["GET"])
-def get_users():
-    # Lấy danh sách users
-    name = request.args.get("name")
-
-    users = mock_users
-    if name:
-        users = [u for u in users if name.lower() in u["name"].lower()]
-
-    return jsonify(create_api_success_response(users))
-
-@app.route("/users/<int:user_id>", methods=["GET"])
-def get_user(user_id):
-    # Lấy 1 user theo id
-    user = next((u for u in mock_users if u["id"] == user_id), None)
-
-    if not user:
-        return create_api_error_response("User not found", 404)
-
-    return jsonify(create_api_success_response(user))
-
 # Orders – resource khác
 @app.route("/orders", methods=["GET"])
 def get_orders():
@@ -462,3 +413,13 @@ def get_user_orders(user_id):
     user_orders = [o for o in mock_orders if o["userId"] == user_id]
 
     return jsonify(create_api_success_response(user_orders))
+
+
+# =================================================
+
+if __name__ == '__main__':
+    print(f"API demo running at http://localhost:{port}")
+    app.run(port=port)
+
+
+
