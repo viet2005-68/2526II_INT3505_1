@@ -1,4 +1,4 @@
-swagger: "2.0"
+openapi: 3.0.0
 info: 
   title: Book API
   version: 1.0.0
@@ -22,7 +22,57 @@ paths:
                 type: array
                 items:
                   $ref: "#/components/schemas/Book"
-    
+    post:
+      summary: Create a new book
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CreateBook"
+      responses:
+        '201':
+          description: Book created
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Book"
+        '400':
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+  /books/{book_id}:
+    get:
+      summary: Get a book
+      operationId: server.get_book
+      responses:
+        '200':
+          description: A book
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Book"
+        '404':
+          description: Book not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+   
 components:
   schemas:
     Book:
@@ -40,4 +90,31 @@ components:
         year:
           type: integer
           example: 2020
-        
+    CreateBook:
+      type: object
+      properties:
+        title:
+          type: string
+          example: "The Great Gatsby"
+        author:
+          type: string
+          example: "F. Scott Fitzgerald"
+        year:
+          type: integer
+          example: 2020
+      required:
+        - title
+        - author
+        - year
+    Error:
+      type: object
+      properties:
+        error:
+          type: string
+          example: "Internal server error"
+        message:
+          type: string
+          example: "An error occurred while creating the book"
+      required:
+        - error
+        - message
