@@ -53,9 +53,51 @@ paths:
     get:
       summary: Get a book
       operationId: server.get_book
+      parameters:
+        - name: book_id
+          in: path
+          required: true
+          schema:
+            type: integer
+            example: 1
       responses:
         '200':
           description: A book
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Book"
+        '404':
+          description: Book not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+    put:
+      summary: Update a book
+      operationId: server.update_book
+      parameters:
+        - name: book_id
+          in: path
+          required: true
+          schema:
+            type: integer
+            example: 1
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/UpdateBook"
+      responses:
+        '200':
+          description: Book updated
           content:
             application/json:
               schema:
@@ -91,6 +133,22 @@ components:
           type: integer
           example: 2020
     CreateBook:
+      type: object
+      properties:
+        title:
+          type: string
+          example: "The Great Gatsby"
+        author:
+          type: string
+          example: "F. Scott Fitzgerald"
+        year:
+          type: integer
+          example: 2020
+      required:
+        - title
+        - author
+        - year
+    UpdateBook:
       type: object
       properties:
         title:
