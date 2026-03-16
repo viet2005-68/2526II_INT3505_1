@@ -114,7 +114,35 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/Error"
-   
+    delete:
+      summary: Delete a book
+      operationId: server.delete_book
+      parameters:
+        - name: book_id
+          in: path
+          required: true
+          schema:
+            type: integer
+            example: 1
+      responses:
+        '200':
+          description: Book deleted
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Book"
+        '404':
+          description: Book not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
 components:
   schemas:
     Book:
