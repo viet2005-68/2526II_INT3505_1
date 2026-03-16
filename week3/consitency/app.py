@@ -28,7 +28,7 @@ mock_orders = [
 # Helper function này đảm bảo TẤT CẢ API trả về cùng một cấu trúc JSON.
 #
 # Consistency ở đây nghĩa là:
-# - mọi endpoint đều trả về field "status"
+# - mọi endpoint đều trả về field "statnfo?id=1us"
 # - dữ liệu luôn nằm trong "data"
 # - metadata luôn nằm trong "pagination"
 #
@@ -95,20 +95,11 @@ def create_api_error_response(message, status_code=400):
 def get_users():
     print("Request /users")
 
-    # PRINCIPLE 2: Filtering
-    # CONSISTENT FILTERING 
-    # Query parameters được dùng theo cách nhất quán.
-    # Ví dụ:
-    # /users?name=alice
     name = request.args.get("name")
 
     users = mock_users
     if name:
         users = [u for u in users if name.lower() in u["name"].lower()]
-    
-    # CONSISTENCY PRINCIPLE:
-    # API này trả dữ liệu users nhưng vẫn sử dụng cùng một cấu trúc response
-    # thông qua hàm create_api_success_response().
 
     return jsonify(create_api_success_response(users))
 

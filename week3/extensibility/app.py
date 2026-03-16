@@ -48,7 +48,15 @@ def get_library_items_v2():
         all_items.extend(books_db.values())
         all_items.extend(magazines_db.values())
          # Mở rộng với nhiều loại tài liệu khác nhau như dvd hay đĩa cd, băng cassette, ...,
-    return jsonify({"data": all_items}) 
+
+    # Ví dụ forward compatibility: thêm field mới mà client cũ vẫn bỏ qua được
+    decorated_items = []
+    for item in all_items:
+        decorated = dict(item)
+        decorated["thumbnailUrl"] = f"https://example.com/thumbnails/{decorated.get('title', 'item').replace(' ', '-').lower()}.jpg"
+        decorated_items.append(decorated)
+
+    return jsonify({"data": decorated_items}) 
 
 
 @app.route('/api/v2/library-items/<string:item_id>', methods=['GET'])

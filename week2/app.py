@@ -6,7 +6,7 @@ import jwt
 from datetime import datetime, timedelta, timezone
 
 app = Flask(__name__)
-app.config["SECRET_KEY"] = "your-secret-key-change-in-production"
+app.config["SECRET_KEY"] = "your-secret-key-change-in-demo-INT3505"
 app.config["JWT_EXPIRE_HOURS"] = 24
 app.config["PASSWORD_MIN_LENGTH"] = 6
 app.config["USERNAME_MIN_LENGTH"] = 3
