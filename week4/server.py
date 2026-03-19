@@ -8,7 +8,6 @@ import datetime
 app = Flask(__name__)
 port = 4010
 
-# Secret key để ký JWT – trong thực tế nên lưu ở biến môi trường
 JWT_SECRET = "super-secret-key-for-demo"
 JWT_ALGORITHM = "HS256"
 JWT_EXPIRE_MINUTES = 30
@@ -19,7 +18,6 @@ MOCK_USERS = [
 ]
 
 def generate_token(username):
-    """Tạo JWT token với thời hạn 30 phút."""
     payload = {
         "sub": username,
         "iat": datetime.datetime.utcnow(),
@@ -48,14 +46,6 @@ def require_token(f):
 app.config["SWAGGER"] = {
     "title": "Book API",
     "uiversion": 3,
-    "securityDefinitions": {
-        "BearerAuth": {
-            "type": "apiKey",
-            "in": "header",
-            "name": "Authorization",
-            "description": "Nhập token theo dạng: Bearer <token>",
-        }
-    },
 }
 swagger = Swagger(app, template_file="openapi.yaml")
 
@@ -95,8 +85,6 @@ def login():
 
 @app.route("/books", methods=["GET"])
 def get_books():
-    # Offset-based pagination
-    # Example: GET /books?offset=0&limit=10
     offset = request.args.get("offset", default=0, type=int)
     limit = request.args.get("limit", default=10, type=int)
 
@@ -106,6 +94,20 @@ def get_books():
         limit = 10
 
     paginated_books = books[offset: offset + limit]
+
+    # Cookie: debug=1 -> trả thêm thông tin debug trong response
+    debug = request.cookies.get("debug", "0")
+    if debug == "1":
+        return jsonify({
+            "data": paginated_books,
+            "debug": {
+                "offset": offset,
+                "limit": limit,
+                "returned": len(paginated_books),
+                "total": len(books),
+            }
+        })
+
     return jsonify(paginated_books)
 
 @app.route("/books", methods=["POST"])

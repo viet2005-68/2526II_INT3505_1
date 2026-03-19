@@ -8,10 +8,19 @@ servers:
   - url: http://localhost:4004
     description: Local development server
 
+
+tags:
+  - name: auth
+    description: Authentication endpoints
+  - name: books
+    description: Book endpoints
+
 paths:
   /auth/login:
     post:
-      summary: Đăng nhập và lấy Bearer token
+      tags:
+        - auth
+      summary: Login and get Bearer token
       requestBody:
         required: true
         content:
@@ -20,7 +29,7 @@ paths:
               $ref: "#/components/schemas/LoginPayload"
       responses:
         '200':
-          description: Đăng nhập thành công, trả về token
+          description: Login successful, return token
           content:
             application/json:
               schema:
@@ -32,29 +41,33 @@ paths:
 
   /books:
     get:
+      tags:
+        - books
       summary: Get all books
       operationId: server.get_books
       parameters:
-        # Query parameters – pagination
         - $ref: "#/components/parameters/limitParam"
         - $ref: "#/components/parameters/offsetParam"
-        # Cookie parameters – demo
         - $ref: "#/components/parameters/debugParam"
         - $ref: "#/components/parameters/themeParam"
       responses:
         '200':
-          description: A list of books
+          description: |
+            List of books. If cookie `debug=1` then response has `debug` block.
           content:
             application/json:
               schema:
-                type: array
-                items:
-                  $ref: "#/components/schemas/Book"
+                oneOf:
+                  - type: array
+                    items:
+                      $ref: "#/components/schemas/Book"
+                  - $ref: "#/components/schemas/BooksDebugResponse"
     post:
+      tags:
+        - books
       summary: Create a new book
       security:
         - BearerAuth: []
-      # Use $ref to directly call the Body Payload defined below, very concise!
       requestBody:
         $ref: "#/components/requestBodies/CreateBookPayload"
       responses:
@@ -76,6 +89,8 @@ paths:
       - $ref: "#/components/parameters/book_id"
     
     get:
+      tags:
+        - books
       summary: Get a book
       operationId: server.get_book
       responses:
@@ -91,6 +106,8 @@ paths:
           $ref: "#/components/responses/InternalServerError"
     
     put:
+      tags:
+        - books
       summary: Update a book
       security:
         - BearerAuth: []
@@ -111,7 +128,9 @@ paths:
         '500':
           $ref: "#/components/responses/InternalServerError"
     
-    delete:
+    delete: 
+      tags:
+        - books
       summary: Delete a book
       security:
         - BearerAuth: []
@@ -129,9 +148,6 @@ paths:
           $ref: "#/components/responses/NotFoundError"
         '500':
           $ref: "#/components/responses/InternalServerError"
-
-security:
-  - BearerAuth: []
 
 components:
   securitySchemes:
@@ -192,6 +208,29 @@ components:
         - author
         - year
         
+    BooksDebugResponse:
+      type: object
+      properties:
+        data:
+          type: array
+          items:
+            $ref: "#/components/schemas/Book"
+        debug:
+          type: object
+          properties:
+            offset:
+              type: integer
+              example: 0
+            limit:
+              type: integer
+              example: 10
+            returned:
+              type: integer
+              example: 2
+            total:
+              type: integer
+              example: 2
+
     LoginPayload:
       type: object
       properties:
@@ -292,7 +331,6 @@ components:
         type: integer
         example: 0
 
-    # COOKIE PARAMETERS – demo tham số truyền qua cookie
     debugParam:
       name: debug
       in: cookie
