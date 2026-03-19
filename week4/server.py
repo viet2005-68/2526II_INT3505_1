@@ -3,7 +3,7 @@ from flasgger import Swagger
 from flask_cors import CORS
 
 app = Flask(__name__) 
-port = 4004
+port = 4010
 
 
 app.config["SWAGGER"] = {
@@ -31,18 +31,41 @@ CORS(app)
 
 @app.route("/books", methods=["GET"])
 def get_books():
-    return jsonify(books)
+    # Offset-based pagination
+    # Example: GET /books?offset=0&limit=10
+    offset = request.args.get("offset", default=0, type=int)
+    limit = request.args.get("limit", default=10, type=int)
+
+    if offset < 0:
+        offset = 0
+    if limit <= 0:
+        limit = 10
+
+    paginated_books = books[offset: offset + limit]
+    return jsonify(paginated_books)
 
 @app.route("/books", methods=["POST"])
 def create_book():
     data = request.get_json()
+
+    if not data:
+        return jsonify({"error": "Request body must be JSON"}), 400
+
+    title = data.get("title")
+    author = data.get("author")
+    year = data.get("year")
+
+    if not title or not author or not year:
+        return jsonify({"error": "Title, author and year are required"}), 400
+    if not isinstance(year, int):
+        return jsonify({"error": "Year must be an integer"}), 400
+    if not isinstance(title, str):
+        return jsonify({"error": "Title must be a string"}), 400
+    if not isinstance(author, str):
+        return jsonify({"error": "Author must be a string"}), 400
+
     new_id = max((b["id"] for b in books), default=0) + 1
-    new_book = {
-        "id": new_id,
-        "title": data["title"],
-        "author": data["author"],
-        "year": data["year"]
-    }
+    new_book = {"id": new_id, "title": title, "author": author, "year": year}
     books.append(new_book)
     return jsonify(new_book), 201
 

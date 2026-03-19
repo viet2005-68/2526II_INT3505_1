@@ -13,9 +13,13 @@ paths:
     get:
       summary: Get all books
       operationId: server.get_books
+      parameters:
+        # Gọi tham số phân trang dùng chung
+        - $ref: "#/components/parameters/limitParam"
+        - $ref: "#/components/parameters/offsetParam"
       responses:
         '200':
-          description: A list of booksserver
+          description: A list of books
           content:
             application/json:
               schema:
@@ -24,12 +28,9 @@ paths:
                   $ref: "#/components/schemas/Book"
     post:
       summary: Create a new book
+      # Dùng $ref gọi thẳng Body Payload đã định nghĩa ở dưới, cực kỳ ngắn gọn!
       requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              $ref: "#/components/schemas/CreateBook"
+        $ref: "#/components/requestBodies/CreateBookPayload"
       responses:
         '201':
           description: Book created
@@ -38,28 +39,17 @@ paths:
               schema:
                 $ref: "#/components/schemas/Book"
         '400':
-          description: Bad request
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/Error"
+          $ref: "#/components/responses/BadRequestError" # Đã sửa đường dẫn
         '500':
-          description: Internal server error
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/Error"
+          $ref: "#/components/responses/InternalServerError" # Đã sửa đường dẫn
+
   /books/{book_id}:
+    parameters:
+      - $ref: "#/components/parameters/book_id" # Đã sửa đường dẫn
+    
     get:
       summary: Get a book
       operationId: server.get_book
-      parameters:
-        - name: book_id
-          in: path
-          required: true
-          schema:
-            type: integer
-            example: 1
       responses:
         '200':
           description: A book
@@ -68,33 +58,15 @@ paths:
               schema:
                 $ref: "#/components/schemas/Book"
         '404':
-          description: Book not found
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/Error"
+          $ref: "#/components/responses/NotFoundError"
         '500':
-          description: Internal server error
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/Error"
+          $ref: "#/components/responses/InternalServerError"
+    
     put:
       summary: Update a book
       operationId: server.update_book
-      parameters:
-        - name: book_id
-          in: path
-          required: true
-          schema:
-            type: integer
-            example: 1
       requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              $ref: "#/components/schemas/UpdateBook"
+        $ref: "#/components/requestBodies/UpdateBookPayload" # Dùng $ref cho gọn
       responses:
         '200':
           description: Book updated
@@ -103,27 +75,13 @@ paths:
               schema:
                 $ref: "#/components/schemas/Book"
         '404':
-          description: Book not found
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/Error"
+          $ref: "#/components/responses/NotFoundError"
         '500':
-          description: Internal server error
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/Error"
+          $ref: "#/components/responses/InternalServerError"
+    
     delete:
       summary: Delete a book
       operationId: server.delete_book
-      parameters:
-        - name: book_id
-          in: path
-          required: true
-          schema:
-            type: integer
-            example: 1
       responses:
         '200':
           description: Book deleted
@@ -132,17 +90,10 @@ paths:
               schema:
                 $ref: "#/components/schemas/Book"
         '404':
-          description: Book not found
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/Error"
+          $ref: "#/components/responses/NotFoundError"
         '500':
-          description: Internal server error
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/Error"
+          $ref: "#/components/responses/InternalServerError"
+
 components:
   schemas:
     Book:
@@ -161,8 +112,8 @@ components:
         year:
           type: integer
           example: 1969
-          minimum: 1900
-          maximum: 2026
+    
+    # Đã bổ sung lại CreateBook bị thiếu
     CreateBook:
       type: object
       properties:
@@ -179,6 +130,7 @@ components:
         - title
         - author
         - year
+        
     UpdateBook:
       type: object
       properties:
@@ -195,15 +147,78 @@ components:
         - title
         - author
         - year
+        
     Error:
       type: object
       properties:
-        error:
-          type: string
-          example: "Internal server error"
+        errorCode:
+          type: integer
+          example: 400
         message:
           type: string
-          example: "An error occurred while creating the book"
-      required:
-        - error
-        - message
+          example: "Error message details"
+
+  responses:
+    BadRequestError:
+      description: Bad request
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/Error"
+    InternalServerError:
+      description: Internal server error
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/Error"
+    NotFoundError:
+      description: Not found
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/Error"
+
+  requestBodies:
+    CreateBookPayload:
+      description: Payload để tạo sách mới
+      required: true
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/CreateBook"
+    UpdateBookPayload:
+      description: Payload để cập nhật sách
+      required: true
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/UpdateBook"
+
+  parameters:
+    book_id:
+      name: book_id
+      in: path
+      required: true
+      description: ID của sách
+      schema:
+        type: integer
+        example: 1
+    
+    # Tách pagination thành 2 biến riêng biệt chuẩn REST API
+    limitParam:
+      name: limit
+      in: query
+      required: false
+      description: Số lượng sách tối đa trả về
+      schema:
+        type: integer
+        example: 10
+        
+    offsetParam:
+      name: offset
+      in: query
+      required: false
+      description: Bỏ qua bao nhiêu sách đầu tiên (dùng để chuyển trang)
+      schema:
+        type: integer
+        example: 0
