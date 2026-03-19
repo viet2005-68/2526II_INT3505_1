@@ -35,9 +35,12 @@ paths:
       summary: Get all books
       operationId: server.get_books
       parameters:
-        # Use pagination parameters
+        # Query parameters – pagination
         - $ref: "#/components/parameters/limitParam"
         - $ref: "#/components/parameters/offsetParam"
+        # Cookie parameters – demo
+        - $ref: "#/components/parameters/debugParam"
+        - $ref: "#/components/parameters/themeParam"
       responses:
         '200':
           description: A list of books
@@ -288,3 +291,24 @@ components:
       schema:
         type: integer
         example: 0
+
+    # COOKIE PARAMETERS – demo tham số truyền qua cookie
+    debugParam:
+      name: debug
+      in: cookie
+      required: false
+      description: Enable debug mode
+      schema:
+        type: integer
+        enum: [0, 1]
+        default: 0
+
+    themeParam:
+      name: theme
+      in: cookie
+      required: false
+      description: UI theme preference
+      schema:
+        type: string
+        enum: [light, dark]
+        default: light
