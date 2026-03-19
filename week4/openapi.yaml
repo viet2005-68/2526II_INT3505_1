@@ -9,12 +9,33 @@ servers:
     description: Local development server
 
 paths:
+  /auth/login:
+    post:
+      summary: Đăng nhập và lấy Bearer token
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/LoginPayload"
+      responses:
+        '200':
+          description: Đăng nhập thành công, trả về token
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/LoginResponse"
+        '400':
+          $ref: "#/components/responses/BadRequestError"
+        '401':
+          $ref: "#/components/responses/UnauthorizedError"
+
   /books:
     get:
       summary: Get all books
       operationId: server.get_books
       parameters:
-        # Gọi tham số phân trang dùng chung
+        # Use pagination parameters
         - $ref: "#/components/parameters/limitParam"
         - $ref: "#/components/parameters/offsetParam"
       responses:
@@ -28,7 +49,9 @@ paths:
                   $ref: "#/components/schemas/Book"
     post:
       summary: Create a new book
-      # Dùng $ref gọi thẳng Body Payload đã định nghĩa ở dưới, cực kỳ ngắn gọn!
+      security:
+        - BearerAuth: []
+      # Use $ref to directly call the Body Payload defined below, very concise!
       requestBody:
         $ref: "#/components/requestBodies/CreateBookPayload"
       responses:
@@ -39,13 +62,15 @@ paths:
               schema:
                 $ref: "#/components/schemas/Book"
         '400':
-          $ref: "#/components/responses/BadRequestError" # Đã sửa đường dẫn
+          $ref: "#/components/responses/BadRequestError"
+        '401':
+          $ref: "#/components/responses/UnauthorizedError"
         '500':
-          $ref: "#/components/responses/InternalServerError" # Đã sửa đường dẫn
+          $ref: "#/components/responses/InternalServerError"
 
   /books/{book_id}:
     parameters:
-      - $ref: "#/components/parameters/book_id" # Đã sửa đường dẫn
+      - $ref: "#/components/parameters/book_id"
     
     get:
       summary: Get a book
@@ -64,9 +89,11 @@ paths:
     
     put:
       summary: Update a book
+      security:
+        - BearerAuth: []
       operationId: server.update_book
       requestBody:
-        $ref: "#/components/requestBodies/UpdateBookPayload" # Dùng $ref cho gọn
+        $ref: "#/components/requestBodies/UpdateBookPayload"
       responses:
         '200':
           description: Book updated
@@ -74,6 +101,8 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/Book"
+        '401':
+          $ref: "#/components/responses/UnauthorizedError"
         '404':
           $ref: "#/components/responses/NotFoundError"
         '500':
@@ -81,6 +110,8 @@ paths:
     
     delete:
       summary: Delete a book
+      security:
+        - BearerAuth: []
       operationId: server.delete_book
       responses:
         '200':
@@ -89,12 +120,23 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/Book"
+        '401':
+          $ref: "#/components/responses/UnauthorizedError"
         '404':
           $ref: "#/components/responses/NotFoundError"
         '500':
           $ref: "#/components/responses/InternalServerError"
 
+security:
+  - BearerAuth: []
+
 components:
+  securitySchemes:
+    BearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+
   schemas:
     Book:
       type: object
@@ -113,7 +155,6 @@ components:
           type: integer
           example: 1969
     
-    # Đã bổ sung lại CreateBook bị thiếu
     CreateBook:
       type: object
       properties:
@@ -148,6 +189,26 @@ components:
         - author
         - year
         
+    LoginPayload:
+      type: object
+      properties:
+        username:
+          type: string
+          example: "alice"
+        password:
+          type: string
+          example: "123456"
+      required:
+        - username
+        - password
+
+    LoginResponse:
+      type: object
+      properties:
+        token:
+          type: string
+          example: "demo-secret-token"
+
     Error:
       type: object
       properties:
@@ -159,6 +220,12 @@ components:
           example: "Error message details"
 
   responses:
+    UnauthorizedError:
+      description: Missing or invalid Bearer token
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/Error"
     BadRequestError:
       description: Bad request
       content:
@@ -180,14 +247,14 @@ components:
 
   requestBodies:
     CreateBookPayload:
-      description: Payload để tạo sách mới
+      description: Payload to create a new book
       required: true
       content:
         application/json:
           schema:
             $ref: "#/components/schemas/CreateBook"
     UpdateBookPayload:
-      description: Payload để cập nhật sách
+      description: Payload to update a book
       required: true
       content:
         application/json:
@@ -199,17 +266,16 @@ components:
       name: book_id
       in: path
       required: true
-      description: ID của sách
+      description: ID of the book
       schema:
         type: integer
         example: 1
     
-    # Tách pagination thành 2 biến riêng biệt chuẩn REST API
     limitParam:
       name: limit
       in: query
       required: false
-      description: Số lượng sách tối đa trả về
+      description: Maximum number of books to return
       schema:
         type: integer
         example: 10
@@ -218,7 +284,7 @@ components:
       name: offset
       in: query
       required: false
-      description: Bỏ qua bao nhiêu sách đầu tiên (dùng để chuyển trang)
+      description: Number of books to skip (used for pagination)
       schema:
         type: integer
         example: 0
