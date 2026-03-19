@@ -151,15 +151,18 @@ components:
         id:
           type: integer
           example: 1
+          readOnly: true
         title:
           type: string
-          example: "The Great Gatsby"
+          example: "Doraemon"
         author:
           type: string
-          example: "F. Scott Fitzgerald"
+          example: "Fujiko Fujio"
         year:
           type: integer
-          example: 2020
+          example: 1969
+          minimum: 1900
+          maximum: 2026
     CreateBook:
       type: object
       properties:
