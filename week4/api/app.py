@@ -1,12 +1,13 @@
-from flask import Flask, request, jsonify
+from flask import Flask, request, jsonify, send_from_directory
 from flasgger import Swagger
 from flask_cors import CORS
+from flask_swagger_ui import get_swaggerui_blueprint
 from functools import wraps
 import jwt
 import datetime
 
 app = Flask(__name__)
-port = 4010
+port = 4001
 
 JWT_SECRET = "super-secret-key-for-demo"
 JWT_ALGORITHM = "HS256"
@@ -49,6 +50,19 @@ app.config["SWAGGER"] = {
 }
 swagger = Swagger(app, template_file="openapi.yaml")
 
+# Serve openapi.yaml để Swagger UI local đọc
+@app.route("/openapi.yaml")
+def serve_openapi():
+    return send_from_directory(".", "openapi.yaml")
+
+# Swagger UI chạy cùng domain với server -> in:cookie hoạt động
+SWAGGER_UI_BLUEPRINT = get_swaggerui_blueprint(
+    "/docs",
+    "/openapi.yaml",
+    config={"app_name": "Book API"}
+)
+app.register_blueprint(SWAGGER_UI_BLUEPRINT, url_prefix="/docs")
+
 books = [
     {
         "id": 1,
@@ -65,6 +79,24 @@ books = [
 ]
 
 CORS(app)
+
+@app.route("/set-cookie")
+def set_cookie():
+    """
+    Helper endpoint để set cookie debug và theme trên trình duyệt.
+    Truy cập: http://localhost:4001/set-cookie?debug=1&theme=dark
+    Sau đó vào /docs để Swagger UI tự gửi cookie.
+    """
+    debug = request.args.get("debug", "0")
+    theme = request.args.get("theme", "light")
+    resp = jsonify({
+        "message": "Cookie set! Now go to /docs and try GET /books",
+        "cookies": {"debug": debug, "theme": theme}
+    })
+    resp.set_cookie("debug", debug)
+    resp.set_cookie("theme", theme)
+    return resp
+
 
 @app.route("/auth/login", methods=["POST"])
 def login():
@@ -95,7 +127,7 @@ def get_books():
 
     paginated_books = books[offset: offset + limit]
 
-    # Cookie: debug=1 -> trả thêm thông tin debug trong response
+    # Đọc debug từ cookie (gửi qua header Cookie: debug=1; theme=dark)
     debug = request.cookies.get("debug", "0")
     if debug == "1":
         return jsonify({
