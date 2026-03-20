@@ -5,6 +5,7 @@ from flask_swagger_ui import get_swaggerui_blueprint
 from functools import wraps
 import jwt
 import datetime
+import os
 
 app = Flask(__name__)
 port = 4001
@@ -12,6 +13,8 @@ port = 4001
 JWT_SECRET = "super-secret-key-for-demo"
 JWT_ALGORITHM = "HS256"
 JWT_EXPIRE_MINUTES = 30
+
+BASE_DIR = os.path.dirname(__file__)
 
 MOCK_USERS = [
     {"username": "alice", "password": "123456"},
@@ -48,14 +51,14 @@ app.config["SWAGGER"] = {
     "title": "Book API",
     "uiversion": 3,
 }
-swagger = Swagger(app, template_file="openapi.yaml")
+swagger = Swagger(app, template_file=os.path.join(BASE_DIR, "openapi.yaml"))
 
-# Serve openapi.yaml để Swagger UI local đọc
+# Serve openapi.yaml – hoạt động cả local lẫn Vercel
 @app.route("/openapi.yaml")
 def serve_openapi():
-    return send_from_directory(".", "openapi.yaml")
+    return send_from_directory(BASE_DIR, "openapi.yaml")
 
-# Swagger UI chạy cùng domain với server -> in:cookie hoạt động
+# Swagger UI cùng domain -> cookie hoạt động
 SWAGGER_UI_BLUEPRINT = get_swaggerui_blueprint(
     "/docs",
     "/openapi.yaml",

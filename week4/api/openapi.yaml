@@ -5,8 +5,8 @@ info:
   description: API for managing books
 
 servers:
-  - url: http://localhost:4001
-    description: Local development server
+  - url: /
+    description: Current server (local or Vercel)
 
 
 tags:
