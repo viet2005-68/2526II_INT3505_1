@@ -1,7 +1,5 @@
 # Book API – Week 4 Demo
 
-API demo minh họa các nguyên tắc thiết kế REST API: Authentication, Cookie params, Pagination, OpenAPI spec.
-
 ## Try it live
 
 👉 **[project-ibp8b-reijns0ha-viet2005-68s-projects.vercel.app/docs/](https://project-ibp8b-reijns0ha-viet2005-68s-projects.vercel.app/docs/)**
