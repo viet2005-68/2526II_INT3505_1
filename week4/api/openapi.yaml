@@ -1,0 +1,352 @@
+openapi: 3.0.0
+info: 
+  title: Book API
+  version: 1.0.0
+  description: API for managing books
+
+servers:
+  - url: http://localhost:4001
+    description: Local development server
+
+
+tags:
+  - name: auth
+    description: Authentication endpoints
+  - name: books
+    description: Book endpoints
+
+paths:
+  /auth/login:
+    post:
+      tags:
+        - auth
+      summary: Login and get Bearer token
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/LoginPayload"
+      responses:
+        '200':
+          description: Login successful, return token
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/LoginResponse"
+        '400':
+          $ref: "#/components/responses/BadRequestError"
+        '401':
+          $ref: "#/components/responses/UnauthorizedError"
+
+  /books:
+    get:
+      tags:
+        - books
+      summary: Get all books
+      operationId: server.get_books
+      parameters:
+        - $ref: "#/components/parameters/limitParam"
+        - $ref: "#/components/parameters/offsetParam"
+        - $ref: "#/components/parameters/debugParam"
+        - $ref: "#/components/parameters/themeParam"
+      responses:
+        '200':
+          description: |
+            List of books. If cookie `debug=1` then response has `debug` block.
+          content:
+            application/json:
+              schema:
+                oneOf:
+                  - type: array
+                    items:
+                      $ref: "#/components/schemas/Book"
+                  - $ref: "#/components/schemas/BooksDebugResponse"
+    post:
+      tags:
+        - books
+      summary: Create a new book
+      security:
+        - BearerAuth: []
+      requestBody:
+        $ref: "#/components/requestBodies/CreateBookPayload"
+      responses:
+        '201':
+          description: Book created
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Book"
+        '400':
+          $ref: "#/components/responses/BadRequestError"
+        '401':
+          $ref: "#/components/responses/UnauthorizedError"
+        '500':
+          $ref: "#/components/responses/InternalServerError"
+
+  /books/{book_id}:
+    parameters:
+      - $ref: "#/components/parameters/book_id"
+    
+    get:
+      tags:
+        - books
+      summary: Get a book
+      operationId: server.get_book
+      responses:
+        '200':
+          description: A book
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Book"
+        '404':
+          $ref: "#/components/responses/NotFoundError"
+        '500':
+          $ref: "#/components/responses/InternalServerError"
+    
+    put:
+      tags:
+        - books
+      summary: Update a book
+      security:
+        - BearerAuth: []
+      operationId: server.update_book
+      requestBody:
+        $ref: "#/components/requestBodies/UpdateBookPayload"
+      responses:
+        '200':
+          description: Book updated
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Book"
+        '401':
+          $ref: "#/components/responses/UnauthorizedError"
+        '404':
+          $ref: "#/components/responses/NotFoundError"
+        '500':
+          $ref: "#/components/responses/InternalServerError"
+    
+    delete: 
+      tags:
+        - books
+      summary: Delete a book
+      security:
+        - BearerAuth: []
+      operationId: server.delete_book
+      responses:
+        '200':
+          description: Book deleted
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Book"
+        '401':
+          $ref: "#/components/responses/UnauthorizedError"
+        '404':
+          $ref: "#/components/responses/NotFoundError"
+        '500':
+          $ref: "#/components/responses/InternalServerError"
+
+components:
+  securitySchemes:
+    BearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+
+  schemas:
+    Book:
+      type: object
+      properties:
+        id:
+          type: integer
+          example: 1
+          readOnly: true
+        title:
+          type: string
+          example: "Doraemon"
+        author:
+          type: string
+          example: "Fujiko Fujio"
+        year:
+          type: integer
+          example: 1969
+    
+    CreateBook:
+      type: object
+      properties:
+        title:
+          type: string
+          example: "The Great Gatsby"
+        author:
+          type: string
+          example: "F. Scott Fitzgerald"
+        year:
+          type: integer
+          example: 2020
+      required:
+        - title
+        - author
+        - year
+        
+    UpdateBook:
+      type: object
+      properties:
+        title:
+          type: string
+          example: "The Great Gatsby"
+        author:
+          type: string
+          example: "F. Scott Fitzgerald"
+        year:
+          type: integer
+          example: 2020
+      required:
+        - title
+        - author
+        - year
+        
+    BooksDebugResponse:
+      type: object
+      properties:
+        data:
+          type: array
+          items:
+            $ref: "#/components/schemas/Book"
+        debug:
+          type: object
+          properties:
+            offset:
+              type: integer
+              example: 0
+            limit:
+              type: integer
+              example: 10
+            returned:
+              type: integer
+              example: 2
+            total:
+              type: integer
+              example: 2
+
+    LoginPayload:
+      type: object
+      properties:
+        username:
+          type: string
+          example: "alice"
+        password:
+          type: string
+          example: "123456"
+      required:
+        - username
+        - password
+
+    LoginResponse:
+      type: object
+      properties:
+        token:
+          type: string
+          example: "demo-secret-token"
+
+    Error:
+      type: object
+      properties:
+        errorCode:
+          type: integer
+          example: 400
+        message:
+          type: string
+          example: "Error message details"
+
+  responses:
+    UnauthorizedError:
+      description: Missing or invalid Bearer token
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/Error"
+    BadRequestError:
+      description: Bad request
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/Error"
+    InternalServerError:
+      description: Internal server error
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/Error"
+    NotFoundError:
+      description: Not found
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/Error"
+
+  requestBodies:
+    CreateBookPayload:
+      description: Payload to create a new book
+      required: true
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/CreateBook"
+    UpdateBookPayload:
+      description: Payload to update a book
+      required: true
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/UpdateBook"
+
+  parameters:
+    book_id:
+      name: book_id
+      in: path
+      required: true
+      description: ID of the book
+      schema:
+        type: integer
+        example: 1
+    
+    limitParam:
+      name: limit
+      in: query
+      required: false
+      description: Maximum number of books to return
+      schema:
+        type: integer
+        example: 10
+        
+    offsetParam:
+      name: offset
+      in: query
+      required: false
+      description: Number of books to skip (used for pagination)
+      schema:
+        type: integer
+        example: 0
+
+    debugParam:
+      name: debug
+      in: cookie
+      required: false
+      description: Enable debug mode
+      schema:
+        type: integer
+        enum: [0, 1]
+        default: 0
+
+    themeParam:
+      name: theme
+      in: cookie
+      required: false
+      description: UI theme preference
+      schema:
+        type: string
+        enum: [light, dark]
+        default: light
