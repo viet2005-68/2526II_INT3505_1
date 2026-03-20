@@ -1,5 +1,10 @@
 {
-    "routes": [
-      { "src": "/(.*)", "dest": "/api/app.py" }
-    ]
+  "routes": [
+    { "src": "/(.*)", "dest": "/api/app.py" }
+  ],
+  "functions": {
+    "api/app.py": {
+      "includeFiles": "api/openapi.yaml"
+    }
   }
+}
