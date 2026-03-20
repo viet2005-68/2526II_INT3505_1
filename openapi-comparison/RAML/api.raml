@@ -1,0 +1,37 @@
+#%RAML 1.0
+title: Library API
+version: v1
+baseUri: http://localhost:4001
+
+/books:
+  get:
+    description: Get all books
+    responses:
+      200:
+        body:
+          application/json:
+            example: |
+              [
+                { "id": 1, "title": "Doraemon", "author": "Fujiko Fujio", "year": 1969 },
+                { "id": 2, "title": "The Great Gatsby", "author": "F. Scott Fitzgerald", "year": 1925 }
+              ]
+
+  /{id}:
+    uriParameters:
+      id:
+        description: ID của book
+        type: integer
+        example: 1
+    get:
+      description: Get book by ID
+      responses:
+        200:
+          body:
+            application/json:
+              example: |
+                { "id": 1, "title": "Doraemon", "author": "Fujiko Fujio", "year": 1969 }
+        404:
+          body:
+            application/json:
+              example: |
+                { "error": "Book not found" }

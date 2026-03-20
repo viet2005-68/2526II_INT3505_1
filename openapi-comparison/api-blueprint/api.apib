@@ -1,0 +1,103 @@
+FORMAT: 1A
+HOST: http://localhost:4001
+
+# Library API
+
+API quản lý sách – demo so sánh API Blueprint vs OpenAPI.
+
+## Books Collection [/books]
+
+### Get all books [GET]
+
++ Response 200 (application/json)
+
+        [
+          { "id": 1, "title": "Doraemon", "author": "Fujiko Fujio", "year": 1969 },
+          { "id": 2, "title": "The Great Gatsby", "author": "F. Scott Fitzgerald", "year": 1925 }
+        ]
+
+### Create a new book [POST]
+
++ Request (application/json)
+
+        {
+          "title": "New Book",
+          "author": "Author Name",
+          "year": 2024
+        }
+
++ Response 201 (application/json)
+
+        {
+          "id": 3,
+          "title": "New Book",
+          "author": "Author Name",
+          "year": 2024
+        }
+
++ Response 400 (application/json)
+
+        {
+          "error": "Title, author and year are required"
+        }
+
+## Book [/books/{id}]
+
++ Parameters
+    + id (integer, required) - ID của book
+
+### Get book by ID [GET]
+
++ Response 200 (application/json)
+
+        {
+          "id": 1,
+          "title": "Doraemon",
+          "author": "Fujiko Fujio",
+          "year": 1969
+        }
+
++ Response 404 (application/json)
+
+        {
+          "error": "Book not found"
+        }
+
+### Update a book [PUT]
+
++ Request (application/json)
+
+        {
+          "title": "Updated Title",
+          "author": "Updated Author",
+          "year": 2025
+        }
+
++ Response 200 (application/json)
+
+        {
+          "id": 1,
+          "title": "Updated Title",
+          "author": "Updated Author",
+          "year": 2025
+        }
+
++ Response 404 (application/json)
+
+        {
+          "error": "Book not found"
+        }
+
+### Delete a book [DELETE]
+
++ Response 200 (application/json)
+
+        {
+          "message": "Book deleted"
+        }
+
++ Response 404 (application/json)
+
+        {
+          "error": "Book not found"
+        }
