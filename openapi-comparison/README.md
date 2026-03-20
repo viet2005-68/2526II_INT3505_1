@@ -71,32 +71,36 @@ Output: thư mục `generated-client/` chứa toàn bộ Python client được 
 gồm models, API classes, configuration, README.
 
 ## 2. Chạy test
-
-Đảm bảo server đang chạy (từ `week4/`):
+Đảm bảo server đang chạy (từ `server/`):
 
 ```bash
-cd ../../week4
-python api/app.py
+cd server
+python app.py
 ```
 
 Sau đó chạy test:
 
 ```bash
-cd ../openapi-comparison/codegen
-python test_api.py
+cd ../openapi-comparison/generated_client/client
+python test_default_api.py
 ```
 
 Kết quả mẫu:
 
 ```
 === Library API Tests (generated from OpenAPI spec) ===
+test_books_get (__main__.TestDefaultApi.test_books_get)
+GET /books -> trả về list ...   [PASS] GET /books -> 2 books
+ok
+test_books_id_get_found (__main__.TestDefaultApi.test_books_id_get_found)
+GET /books/1 -> trả về book ...   [PASS] GET /books/1 -> title=Doraemon
+ok
+test_books_id_get_not_found (__main__.TestDefaultApi.test_books_id_get_not_found)
+GET /books/9999 -> 404 ...   [PASS] GET /books/9999 -> 404 Not Found
+ok
 
-  [PASS] GET /books -> 200, 2 books
-  [PASS] GET /books/1 -> 200, title=Book 1
-  [PASS] GET /books/9999 -> 404, error='Book not found'
-  [PASS] POST /books (missing field) -> 400, error='...'
-  [PASS] POST /books -> 201, id=3
-  [PASS] DELETE /books/3 -> 200
+----------------------------------------------------------------------
+Ran 3 tests in 0.006s
 
-6/6 tests passed.
+OK
 ```
