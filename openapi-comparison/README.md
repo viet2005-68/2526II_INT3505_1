@@ -19,7 +19,7 @@ openapi-comparison/
 ├── api-blueprint/    # API Blueprint (.apib)
 ├── RAML/             # RAML 1.0
 ├── TypeSpec/         # TypeSpec -> compile ra OpenAPI
-└── codegen/          # Demo sinh code & test từ OpenAPI
+└── generated-client/          # Demo sinh code & test từ OpenAPI
 ```
 
 ## So sánh chi tiết
