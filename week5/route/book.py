@@ -11,8 +11,13 @@ def list_books():
     
     page = request.args.get("page", default=1, type=int)
     per_page = request.args.get("per_page", default=10, type=int)
+    search = request.args.get("search", default="", type=str)
     
-    books = db.session.query(Book).options(db.joinedload(Book.author)).offset((page - 1) * per_page).limit(per_page).all()
+    if search:
+        books = db.session.query(Book).options(db.joinedload(Book.author)).filter(Book.title.ilike(f"%{search}%")).offset((page - 1) * per_page).limit(per_page).all()
+    else:
+        books = db.session.query(Book).options(db.joinedload(Book.author)).offset((page - 1) * per_page).limit(per_page).all()
+    
     data = []
     for book in books:
         data.append({
