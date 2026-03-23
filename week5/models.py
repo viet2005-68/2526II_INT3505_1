@@ -30,6 +30,7 @@ class Book(BaseModel):
     author_id = db.Column(db.Integer, db.ForeignKey('authors.id'), nullable=False)
     author = db.relationship('Author', back_populates='books')
     loans = db.relationship('Loan', back_populates='book', cascade='all, delete-orphan')
+    quantity = db.Column(db.Integer, nullable=False, default=1)
 
 
 class Loan(BaseModel):
