@@ -8,7 +8,11 @@ books_bp = Blueprint("books", __name__, url_prefix="/books")
 
 @books_bp.route("/", methods=["GET"])
 def list_books():
-    books = db.session.query(Book).options(db.joinedload(Book.author)).all()
+    
+    page = request.args.get("page", default=1, type=int)
+    per_page = request.args.get("per_page", default=10, type=int)
+    
+    books = db.session.query(Book).options(db.joinedload(Book.author)).offset((page - 1) * per_page).limit(per_page).all()
     data = []
     for book in books:
         data.append({
@@ -21,7 +25,7 @@ def list_books():
             },
             "created_at": book.created_at.isoformat() if book.created_at else None,
         })
-    return api_response(data=data, metadata={"resource": "books", "count": len(data)})
+    return api_response(data=data, metadata={"resource": "books", "count": len(data), "page": page, "per_page": per_page})
 
 @books_bp.route("/<int:book_id>", methods=["GET"])
 def get_book(book_id):
@@ -71,4 +75,29 @@ def delete_book(book_id):
         return api_error("Book not found", status_code=404)
     db.session.delete(book)
     db.session.commit()
-    return api_response(data=None, metadata={"resource": "book"}, status_code=204)
+    return api_response(data=None, metadata={"resource": "book"}, status_code=204)  
+
+@books_bp.route("/<int:book_id>", methods=["PUT"])
+def update_book(book_id):
+    book = db.session.get(Book, book_id)
+    if not book:
+        return api_error("Book not found", status_code=404)
+
+    data = request.get_json()
+    if "title" in data:
+        book.title = data["title"]
+    if "price" in data:
+        book.price = data["price"]
+    if "quantity" in data:
+        book.quantity = data["quantity"]
+    if "author_name" in data:
+        author_name = data["author_name"]
+        author = db.session.query(Author).filter_by(name=author_name).first()
+        if not author:
+            author = Author(name=author_name)
+            db.session.add(author)
+            db.session.flush()
+        book.author_id = author.id
+
+    db.session.commit()
+    return api_response(data=None, metadata={"resource": "book"}, status_code=200)
