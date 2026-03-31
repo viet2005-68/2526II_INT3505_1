@@ -129,18 +129,24 @@ def decode_refresh_token(token):
 
 @app.route("/refresh", methods=["POST"])
 def refresh():
-    token = request.headers.get("Authorization", "").replace("Bearer ", "")
-    data = decode_refresh_token(token)
-    if not data:
-        return jsonify({"error": "Invalid refresh token"}), 401
-    user = {
-        "id": data['sub'],
-        "username": data['usr'],
-        "role": "ADMIN"
-    }
+    data = request.get_json() or {}
+    rt = data.get('refresh_token')
+    if not rt:
+        return jsonify({"error": "refresh_token_required"}),400
+    payload = decode_refresh_token(rt)
+    if not payload:
+        return jsonify({"error": "invalid_or_expired_refresh"}), 401
+    username = payload.get('usr')
+    user = USERS.get(username)
+    if not user or not user['active']:
+        return jsonify({"error": "user_inactive"}), 401
     
     new_access = create_access_token(user)
-    return jsonify({"access": new_access})
+    return jsonify({
+        "access_token": new_access,
+        "token_type": "Bearer",
+        "expires_in": ACCESS_MIN * 60
+    }), 200
 
 @app.route("/logout", methods=["POST"])
 def logout():
@@ -185,8 +191,8 @@ def login():
         "access": access_token,
         "refresh": refresh_token,
         "token_type": "Bearer",
-        "exprires_in": ACCESS_MIN * 60
-    },200)
+        "expires_in": ACCESS_MIN * 60
+    }), 200
     
     
 @app.route('/me')
