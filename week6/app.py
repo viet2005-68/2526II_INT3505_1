@@ -115,6 +115,15 @@ def require_token(fn):
         return fn(*args, **kwargs)
     return wrapper
 
+def require_admin(fn):
+    @wraps(fn)
+    @require_token
+    def wrapper(*args, **kwargs):
+        if request.user['role'] != 'admin':
+            return jsonify({"error": "Admin privileges required"}), 403
+        return fn(*args, **kwargs)
+    return wrapper
+
 def decode_refresh_token(token):
     try:
         data = jwt.decode(token, app.config['JWT_REFRESH_SECRET'], algorithms=['HS256'])
@@ -249,6 +258,11 @@ def me():
         "role": u['role'],
         "name": u['name']
     })
+
+@app.route("/admin")
+@require_admin
+def admin():
+    return jsonify({"message": "you are admin"})
 
 if __name__ == "__main__":
     app.run(debug=True, port =8004)
