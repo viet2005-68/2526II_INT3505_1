@@ -1,7 +1,7 @@
 from functools import wraps
 import re
 
-from flask import Flask, jsonify, request
+from flask import Flask, jsonify, request, render_template_string, redirect
 import os
 from dotenv import load_dotenv
 from datetime import datetime, timezone, timedelta
@@ -15,7 +15,14 @@ app.config["JWT_REFRESH_SECRET"] = os.getenv("JWT_REFRESH_SECRET", "dev-refresh-
 ACCESS_MIN = int(os.getenv('ACCESS_MIN', '15'))
 REFRESH_DAYS = int(os.getenv('REFRESH_DAYS', '7'))
 
-
+OAUTH_CLIENTS = {
+    "sample_client": {
+        "client_secret": "topsecret",
+        "name": "Sample Client",
+        "redirects": ["http://localhost:5001/callback"],
+        "allowed_scopes": ["profile", "email"]
+    }
+}
 
 USERS = {
     "admin": {
@@ -37,6 +44,8 @@ USERS = {
         "active": True
     }
 }
+
+AUTH_CODES = {} 
 
 REFRESH_STORE = {}
 REVOKED_ACCESS = set()
@@ -298,6 +307,78 @@ def list_users():
 @require_scopes("delete:users")
 def delete_user():
     return jsonify({"message": "User deleted"})
+
+@app.route("/oauth/authorize", methods=["GET", "POST"])
+def authorize():
+    client_id = request.values.get("client_id")
+    redirect_uri = request.values.get("redirect_uri")
+    if not client_id or not redirect_uri:
+        return jsonify({"error": "client_id and redirect_uri are required"}), 400
+    if request.method == "GET":
+        html = f"""
+        <form method="post">
+            <input name="username" value="admin"/><br/>
+            <input name="password" type="password" value="admin123"/><br/>
+            <input type="hidden" name="client_id" value="{client_id}"/>
+            <input type="hidden" name="redirect_uri" value="{redirect}"/>
+            <button type="submit">Approve</button>
+        </form>
+        """
+        return render_template_string(html)
+    code = secrets.token_urlsafe(24)
+    username = request.form.get('username'); 
+    pw = request.form.get('password')
+    user = USERS.get(username)
+    if not user or not check_password_hash(user['password_hash'], pw):
+        return jsonify({"error": "Invalid username or password"}), 401
+    
+    AUTH_CODES[code] = {
+        "client_id": client_id,
+        "username": username,
+        "exp": _now() + timedelta(minutes=10)
+    }
+    return redirect(f"{redirect_uri}?code={code}")
+    
+@app.route("/oauth/token", methods=["POST"])
+def oauth_token():
+    data = request.get_json() or request.form
+    grant = data.get("grant_type")
+    if grant != "authorization_code":
+        return jsonify({"error": "unsupported_grant_type"}), 400
+    code = data.get("code")
+    cid = data.get("client_id")
+    secret = data.get("client_secret")
+    if not code or not cid or not secret:
+        return jsonify({"error": "code, client_id and client_secret are required"}), 400
+    meta = AUTH_CODES.get(code)
+    if not meta or meta['client_id'] != cid or meta['exp'] < _now():
+        return jsonify({"error": "invalid_or_expired_code"}), 400
+    user = USERS.get(meta['username'])
+    access = create_access_token(user)
+    del AUTH_CODES[code]
+    return jsonify({
+        "access_token": access,
+        "token_type": "Bearer",
+        "expires_in": ACCESS_MIN * 60   
+    }), 200 
+
+
+@app.route('/oauth/revoke', methods=['POST'])
+def oauth_revoke():
+    data = request.get_json() or request.form
+    cid = data.get('client_id')
+    secret = data.get('client_secret')
+    token = data.get('token')
+    client = OAUTH_CLIENTS.get(cid)
+    if not client or client['client_secret'] != secret:
+        return jsonify({"error":"invalid_client"}), 401
+    try:
+        decoded = jwt.decode(token, APP.config['JWT_ACCESS_SECRET'], algorithms=['HS256'])
+        if decoded.get('typ') == 'access':
+            REVOKED_ACCESS.add(token)
+    except Exception:
+        pass
+    return ("revoked", 200)
 
 if __name__ == "__main__":
     app.run(debug=True, port =8004)

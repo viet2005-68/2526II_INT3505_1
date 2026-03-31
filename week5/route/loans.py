@@ -40,7 +40,6 @@ def get_loans_by_user(user_id):
 # Loan a book to a user
 @loans_bp.route("/users/<int:user_id>/loans", methods=["POST"])
 def loan_book(user_id):
-    """Cho phép user mượn sách"""
     try:
         data = request.get_json()
         if not data:
@@ -50,11 +49,9 @@ def loan_book(user_id):
     
     book_id = data.get("book_id")
     
-    # Validation input
     if not book_id:
         return api_error("book_id is required", status_code=400)
     
-    # Kiểm tra user và book tồn tại
     user = db.session.get(User, user_id)
     book = db.session.get(Book, book_id)
 
@@ -63,11 +60,9 @@ def loan_book(user_id):
     if not book:
         return api_error("Book not found", status_code=404)
 
-    # Kiểm tra sách còn hàng
     if book.quantity < 1:
         return api_error("Book is not available", status_code=400)
 
-    # Kiểm tra user đã mượn sách này và chưa trả chưa
     existing_loan = db.session.query(Loan).filter_by(
         user_id=user_id, 
         book_id=book_id
@@ -76,7 +71,6 @@ def loan_book(user_id):
     if existing_loan:
         return api_error("User already has this book on loan", status_code=400)
 
-    # Tạo loan mới
     loan = Loan(user_id=user_id, book_id=book_id)
     book.quantity -= 1
 
@@ -108,27 +102,25 @@ def loan_book(user_id):
 # Return a book
 @loans_bp.route("/users/<int:user_id>/loans/<int:loan_id>/return", methods=["POST"])
 def return_book(user_id, loan_id):
-    """User trả lại sách"""
+
     try:
         data = request.get_json() or {}
     except Exception:
         return api_error("Invalid JSON format", status_code=400)
     
-    # Kiểm tra user tồn tại
+
     user = db.session.get(User, user_id)
     if not user:
         return api_error("User not found", status_code=404)
     
-    # Kiểm tra loan tồn tại
     loan = db.session.get(Loan, loan_id)
     if not loan:
         return api_error("Loan not found", status_code=404)
-    
-    # Kiểm tra loan có thuộc user không (SECURITY)
+   
     if loan.user_id != user_id:
         return api_error("Unauthorized: Loan does not belong to this user", status_code=403)
     
-    # Kiểm tra sách đã được trả hay chưa
+
     if loan.return_date:
         return api_error("Book has already been returned", status_code=400)
 
