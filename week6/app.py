@@ -49,10 +49,16 @@ def index():
 def create_access_token(user):
     role = user['role']
     now = _now()
+    scopes = [] 
+    if role == "admin": 
+        scopes = ["read:users", "write:users", "delete:users", "read:profile"] 
+    elif role == "user": 
+        scopes = ["read:profile"]
     payload = {
         'sub': user['id'],
         'usr': user['username'],
         'role': user['role'],
+        'scopes': scopes,
         'type': 'access',
         'iat': int(now.timestamp()),
         'exp': int((now + timedelta(minutes=ACCESS_MIN)).timestamp()),
@@ -111,7 +117,9 @@ def require_token(fn):
         user = USERS.get(username)
         if not user or not user['active']:
             return jsonify({"error": "User not found or inactive"}), 401
-        request.user = user
+        user_copy = user.copy()
+        user_copy['scopes'] = data.get('scopes', [])
+        request.user = user_copy
         return fn(*args, **kwargs)
     return wrapper
 
@@ -123,6 +131,18 @@ def require_admin(fn):
             return jsonify({"error": "Admin privileges required"}), 403
         return fn(*args, **kwargs)
     return wrapper
+
+def require_scopes(required_scopes):
+    def decorator(fn):
+        @wraps(fn)
+        @require_token
+        def wrapper(*args, **kwargs):
+            token_scopes = request.user.get('scopes', [])
+            if required_scopes not in token_scopes:
+                return jsonify({"error": "Insufficient scope"}), 403
+            return fn(*args, **kwargs)
+        return wrapper
+    return decorator
 
 def decode_refresh_token(token):
     try:
@@ -263,6 +283,21 @@ def me():
 @require_admin
 def admin():
     return jsonify({"message": "you are admin"})
+
+@app.route("/profile")
+@require_scopes("read:profile")
+def profile():
+    return jsonify({"message": "You can read profile"})
+
+@app.route("/users")
+@require_scopes("read:users")
+def list_users():
+    return jsonify({"users": list(USERS.keys())})
+
+@app.route("/users/delete", methods=["POST"])
+@require_scopes("delete:users")
+def delete_user():
+    return jsonify({"message": "User deleted"})
 
 if __name__ == "__main__":
     app.run(debug=True, port =8004)
