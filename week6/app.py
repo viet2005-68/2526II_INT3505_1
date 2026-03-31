@@ -1,9 +1,13 @@
+from functools import wraps
+import re
+
 from flask import Flask, jsonify, request
 import os
 from dotenv import load_dotenv
 from datetime import datetime, timezone, timedelta
 import jwt
 import secrets
+from werkzeug.security import generate_password_hash, check_password_hash
 
 app = Flask(__name__)
 app.config["JWT_ACCESS_SECRET"] = os.getenv("JWT_ACCESS_SECRET", "dev-access-secret-key-change-in-production")
@@ -11,7 +15,29 @@ app.config["JWT_REFRESH_SECRET"] = os.getenv("JWT_REFRESH_SECRET", "dev-refresh-
 ACCESS_MIN = int(os.getenv('ACCESS_MIN', '15'))
 REFRESH_DAYS = int(os.getenv('REFRESH_DAYS', '7'))
 
-USERS = {}
+
+
+USERS = {
+    "admin": {
+        "id": 1,
+        "username": "admin",
+        "password_hash": generate_password_hash("admin123"),
+        "role": "admin",
+        "email": "admin@example.com",
+        "name": "Administrator",
+        "active": True
+    },
+    "user1": {
+        "id": 2,
+        "username": "user1",
+        "password_hash": generate_password_hash("user123"),
+        "role": "user",
+        "email": "user1@example.com",
+        "name": "John Doe",
+        "active": True
+    }
+}
+
 REFRESH_STORE = {}
 REVOKED_ACCESS = set()
 def _now():
@@ -33,6 +59,16 @@ def create_access_token(user):
     }
     return jwt.encode(payload, app.config['JWT_ACCESS_SECRET'], algorithm='HS256')
 
+def _is_email_valid(email):
+    return re.match(r"[^@]+@[^@]+\.[^@]+", email) is not None
+
+def _validate_password(pw: str):
+    if len(pw) < 8:
+        return False, "Password must be >= 8 chars"
+    if not re.search(r'[A-Z]', pw): return False, "Requires uppercase"
+    if not re.search(r'[a-z]', pw): return False, "Requires lowercase"
+    if not re.search(r'\d', pw): return False, "Requires a number"
+    return True, ""
 
 def create_refresh_token(user):
     tid = secrets.token_hex(16)
@@ -64,6 +100,20 @@ def decode_access_token(token):
     except (jwt.ExpiredSignatureError, jwt.InvalidTokenError):
         return None
 
+def require_token(fn):
+    @wraps(fn)
+    def wrapper(*args, **kwargs):
+        token = request.headers.get("Authorization", "").replace("Bearer ", "")
+        data = decode_access_token(token)
+        if not data:
+            return jsonify({"error": "Invalid or expired token"}), 401
+        username = data.get('usr')
+        user = USERS.get(username)
+        if not user or not user['active']:
+            return jsonify({"error": "User not found or inactive"}), 401
+        request.user = user
+        return fn(*args, **kwargs)
+    return wrapper
 
 def decode_refresh_token(token):
     try:
@@ -116,5 +166,40 @@ def test():
         "store": REFRESH_STORE
     })
 
+@app.route("/login", methods=["POST"])
+def login():
+    data = request.get_json() or {}
+    username = data.get("username", "")
+    password = data.get("password", "")
+    if not username or not password:
+        return jsonify({"error": "Username and password are required"}), 400
+    user = USERS.get(username)
+    if not user or not check_password_hash(user['password_hash'], password):
+        return jsonify({"error": "Invalid username or password"}), 401
+    if not user['active']:
+        return jsonify({"error": "User account is inactive"}), 403
+    access_token = create_access_token(user)
+    refresh_token = create_refresh_token(user)
+    
+    return jsonify({
+        "access": access_token,
+        "refresh": refresh_token,
+        "token_type": "Bearer",
+        "exprires_in": ACCESS_MIN * 60
+    },200)
+    
+    
+@app.route('/me')
+@require_token
+def me():
+    u = request.user 
+    return jsonify({
+        "id": u['id'],
+        "username": u['username'],
+        "email": u['email'],
+        "role": u['role'],
+        "name": u['name']
+    })
+
 if __name__ == "__main__":
-    app.run(debug=True, port =8003)
+    app.run(debug=True, port =8004)
