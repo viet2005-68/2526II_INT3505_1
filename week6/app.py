@@ -148,21 +148,64 @@ def refresh():
         "expires_in": ACCESS_MIN * 60
     }), 200
 
+@app.route("/register", methods=["POST"])
+def register():
+    data = request.get_json() or {}
+    username = data.get("username", "")
+    email = data.get("email", "")
+    password = data.get("password", "")
+    name = data.get("name", "")
+
+    if not username or not email or not password or not name:
+        return jsonify({"error": "All fields are required"}), 400
+
+    if not _is_email_valid(email):
+        return jsonify({"error": "Invalid email format"}), 400
+    for u in USERS.values():
+        if u["email"] == email:
+            return jsonify({"error": "Email already exists"}), 400
+    if USERS.get(username):
+        return jsonify({"error": "Username already exists"}), 400
+
+    is_valid, error_msg = _validate_password(password)
+    if not is_valid:
+        return jsonify({"error": error_msg}), 400
+
+    hashed_password = generate_password_hash(password)
+    user = {
+        "id": len(USERS) + 1,
+        "username": username,
+        "email": email,
+        "password_hash": hashed_password,
+        "role": "user",
+        "active": True,
+        "name": name
+    }
+    USERS[username] = user
+    return jsonify({"message": "User registered successfully"}), 201
+
 @app.route("/logout", methods=["POST"])
+@require_token
 def logout():
     token = request.headers.get("Authorization", "").replace("Bearer ", "")
-    data = decode_access_token(token)
-    if not data:
-        return jsonify({"error": "Invalid access token"}), 401
     REVOKED_ACCESS.add(token)
+    body = request.get_json() or {}
+    refresh_token = body.get("refresh_token")
+    if refresh_token:
+        try:
+            decoded = jwt.decode(refresh_token, app.config['JWT_REFRESH_SECRET'], algorithms=['HS256'])
+            tid = decoded.get('tid')
+            if tid and tid in REFRESH_STORE:
+                del REFRESH_STORE[tid]
+        except (jwt.ExpiredSignatureError, jwt.InvalidTokenError):
+            pass
     return jsonify({"message": "Logged out successfully"})
-   
 @app.route("/test")
 def test():
     user = {
         "id": 1,
         "username": "admin",
-        "role": "ADMIN"
+        "role": "admin"
     }
     return jsonify({        
         "access": create_access_token(user),
