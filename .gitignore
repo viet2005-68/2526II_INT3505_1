@@ -33,3 +33,6 @@ build/
 
 **/__pycache__/
 .vscode/
+
+### SQLite (generated locally by homework-W6 app) ###
+homework-W6/*.db
