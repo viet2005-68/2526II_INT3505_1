@@ -1,9 +1,3 @@
-"""
-W6: OFFSET vs CURSOR pagination demo — books in SQLite.
-Run: python app.py
-OpenAPI: http://127.0.0.1:8080/openapi.yaml  |  Swagger UI: http://127.0.0.1:8080/docs
-"""
-
 import os
 import sqlite3
 import time
@@ -33,6 +27,9 @@ def serve_openapi():
 
 DB = "books.db"
 N = 1000000
+# Deep page used by compare-times (1M rows → next page is ~990001–990010)
+COMPARE_OFFSET = 990000
+COMPARE_LAST_ID = 990000
 
 
 def get_db():
@@ -118,15 +115,52 @@ def get_books():
     return jsonify({"error": "pagination must be offset or cursor"}), 400
 
 
+@app.route("/api/v1/books/compare-times", methods=["GET"])
+def compare_pagination_times():
+    """
+    Same page shape as a deep list: OFFSET 990000 vs cursor after last_id=990000.
+    Response: time_offset and time_cursor only (seconds, server-side).
+    """
+    limit = int(request.args.get("limit", 10))
+    conn = get_db()
+    cur = conn.cursor()
+
+    t0 = time.perf_counter()
+    cur.execute(
+        "SELECT * FROM books ORDER BY id LIMIT ? OFFSET ?",
+        (limit, COMPARE_OFFSET),
+    )
+    cur.fetchall()
+    time_offset = time.perf_counter() - t0
+
+    t0 = time.perf_counter()
+    cur.execute(
+        "SELECT * FROM books WHERE id > ? ORDER BY id LIMIT ?",
+        (COMPARE_LAST_ID, limit),
+    )
+    cur.fetchall()
+    time_cursor = time.perf_counter() - t0
+
+    conn.close()
+    return jsonify(
+        {
+            "limit": limit,
+            "offset": COMPARE_OFFSET,
+            "last_id": COMPARE_LAST_ID,
+            "time_offset": round(time_offset, 6),
+            "time_cursor": round(time_cursor, 6),
+        }
+    )
+
+
 @app.route("/")
 def home():
     return jsonify(
         {
             "message": "Book API — OFFSET vs CURSOR",
-            "openapi_spec": "/openapi.yaml",
-            "swagger_ui": "/docs/",
             "offset_example": "/api/v1/books?limit=10&offset=90000&pagination=offset",
             "cursor_example": "/api/v1/books?limit=10&last_id=90000&pagination=cursor",
+            "compare_times": "/api/v1/books/compare-times",
         }
     )
 

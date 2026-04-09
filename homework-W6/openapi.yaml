@@ -32,6 +32,34 @@ paths:
                 message: "Book API — OFFSET vs CURSOR"
                 offset_example: "/api/v1/books?limit=10&offset=90000&pagination=offset"
                 cursor_example: "/api/v1/books?limit=10&last_id=90000&pagination=cursor"
+                compare_times: "/api/v1/books/compare-times"
+
+  /api/v1/books/compare-times:
+    get:
+      summary: Compare deep-pagination timings (offset 990000 vs cursor after last_id 990000)
+      operationId: comparePaginationTimes
+      tags: [Books]
+      parameters:
+        - name: limit
+          in: query
+          description: Page size for both queries
+          schema:
+            type: integer
+            minimum: 1
+            default: 10
+      responses:
+        "200":
+          description: Elapsed seconds for offset vs cursor (same logical page)
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/PaginationTimingResponse"
+              example:
+                limit: 10
+                offset: 990000
+                last_id: 990000
+                time_offset: 0.035
+                time_cursor: 0.0002
 
   /api/v1/books:
     get:
@@ -113,7 +141,7 @@ components:
   schemas:
     HomeResponse:
       type: object
-      required: [message, offset_example, cursor_example]
+      required: [message, offset_example, cursor_example, compare_times]
       properties:
         message:
           type: string
@@ -123,6 +151,30 @@ components:
         cursor_example:
           type: string
           description: Relative path example for cursor pagination
+        compare_times:
+          type: string
+          description: Relative path to offset vs cursor timing comparison
+
+    PaginationTimingResponse:
+      type: object
+      required: [limit, offset, last_id, time_offset, time_cursor]
+      properties:
+        limit:
+          type: integer
+        offset:
+          type: integer
+          description: Fixed OFFSET used for the offset query (990000)
+        last_id:
+          type: integer
+          description: Fixed cursor lower bound (id > last_id), 990000
+        time_offset:
+          type: number
+          format: double
+          description: Seconds for ORDER BY id LIMIT ? OFFSET ?
+        time_cursor:
+          type: number
+          format: double
+          description: Seconds for WHERE id > ? ORDER BY id LIMIT ?
 
     Book:
       type: object
