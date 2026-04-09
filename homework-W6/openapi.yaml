@@ -3,11 +3,17 @@ info:
   title: Homework W6 — Book API (OFFSET vs CURSOR)
   description: |
     Flask API for paginated books stored in SQLite. Two modes: `pagination=offset` and `pagination=cursor`.
+
+    Interactive docs (same origin as the API, avoids CORS): `/docs`
+
+    In Swagger UI, the server URL must include a scheme (`http://` or `https://`). Do not use `localhost:8080` alone.
   version: "1.0.0"
 
 servers:
-  - url: http://127.0.0.1:8080
+  - url: "http://127.0.0.1:8080"
     description: Default when running `python app.py`
+  - url: "http://localhost:8080"
+    description: Alternate host for local runs
 
 paths:
   /:

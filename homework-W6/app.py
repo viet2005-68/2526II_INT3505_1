@@ -1,14 +1,35 @@
 """
 W6: OFFSET vs CURSOR pagination demo — books in SQLite.
 Run: python app.py
+OpenAPI: http://127.0.0.1:8080/openapi.yaml  |  Swagger UI: http://127.0.0.1:8080/docs
 """
 
+import os
 import sqlite3
 import time
 
-from flask import Flask, jsonify, request
+from flask import Flask, jsonify, request, send_from_directory
+from flask_cors import CORS
+from flask_swagger_ui import get_swaggerui_blueprint
 
 app = Flask(__name__)
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+
+CORS(app)
+
+app.register_blueprint(
+    get_swaggerui_blueprint(
+        "/docs",
+        "/openapi.yaml",
+        config={"app_name": "Homework W6 — Books API"},
+    ),
+    url_prefix="/docs",
+)
+
+
+@app.route("/openapi.yaml")
+def serve_openapi():
+    return send_from_directory(BASE_DIR, "openapi.yaml")
 
 DB = "books.db"
 N = 1000000
@@ -102,6 +123,8 @@ def home():
     return jsonify(
         {
             "message": "Book API — OFFSET vs CURSOR",
+            "openapi_spec": "/openapi.yaml",
+            "swagger_ui": "/docs/",
             "offset_example": "/api/v1/books?limit=10&offset=90000&pagination=offset",
             "cursor_example": "/api/v1/books?limit=10&last_id=90000&pagination=cursor",
         }
