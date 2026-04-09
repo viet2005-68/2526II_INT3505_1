@@ -1,6 +1,6 @@
 """
-W6: so sánh phân trang OFFSET vs CURSOR — 100_000 sách trong SQLite.
-Chạy: python app.py
+W6: OFFSET vs CURSOR pagination demo — books in SQLite.
+Run: python app.py
 """
 
 import sqlite3
@@ -94,7 +94,7 @@ def get_books():
         )
 
     conn.close()
-    return jsonify({"error": "pagination phải là offset hoặc cursor"}), 400
+    return jsonify({"error": "pagination must be offset or cursor"}), 400
 
 
 @app.route("/")

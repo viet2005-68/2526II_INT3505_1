@@ -1,0 +1,189 @@
+openapi: 3.0.3
+info:
+  title: Homework W6 — Book API (OFFSET vs CURSOR)
+  description: |
+    Flask API for paginated books stored in SQLite. Two modes: `pagination=offset` and `pagination=cursor`.
+  version: "1.0.0"
+
+servers:
+  - url: http://127.0.0.1:8080
+    description: Default when running `python app.py`
+
+paths:
+  /:
+    get:
+      summary: API info and example URLs
+      operationId: getHome
+      tags: [Meta]
+      responses:
+        "200":
+          description: JSON with a message and two example query paths
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/HomeResponse"
+              example:
+                message: "Book API — OFFSET vs CURSOR"
+                offset_example: "/api/v1/books?limit=10&offset=90000&pagination=offset"
+                cursor_example: "/api/v1/books?limit=10&last_id=90000&pagination=cursor"
+
+  /api/v1/books:
+    get:
+      summary: List books (offset or cursor pagination)
+      operationId: listBooks
+      tags: [Books]
+      parameters:
+        - name: pagination
+          in: query
+          description: Pagination strategy
+          schema:
+            type: string
+            enum: [offset, cursor]
+            default: offset
+        - name: limit
+          in: query
+          description: Page size (max rows per response)
+          schema:
+            type: integer
+            minimum: 1
+            default: 10
+        - name: offset
+          in: query
+          description: Number of rows to skip from the start (only for `pagination=offset`)
+          schema:
+            type: integer
+            minimum: 0
+            default: 0
+        - name: last_id
+          in: query
+          description: Return rows with `id` greater than this value (only for `pagination=cursor`)
+          schema:
+            type: integer
+            minimum: 0
+      responses:
+        "200":
+          description: Book page and server-side elapsed time in seconds
+          content:
+            application/json:
+              schema:
+                oneOf:
+                  - $ref: "#/components/schemas/BooksOffsetResponse"
+                  - $ref: "#/components/schemas/BooksCursorResponse"
+              examples:
+                offset:
+                  summary: Offset response
+                  value:
+                    type: offset
+                    limit: 10
+                    offset: 90000
+                    time: 0.042
+                    data:
+                      - id: 90001
+                        title: Test Book
+                        author: Test Author
+                        year: 2006
+                cursor:
+                  summary: Cursor response
+                  value:
+                    type: cursor
+                    limit: 10
+                    next_cursor: 90010
+                    time: 0.001
+                    data:
+                      - id: 90001
+                        title: Test Book
+                        author: Test Author
+                        year: 2006
+        "400":
+          description: Invalid `pagination` query value
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+              example:
+                error: pagination must be offset or cursor
+
+components:
+  schemas:
+    HomeResponse:
+      type: object
+      required: [message, offset_example, cursor_example]
+      properties:
+        message:
+          type: string
+        offset_example:
+          type: string
+          description: Relative path example for offset pagination
+        cursor_example:
+          type: string
+          description: Relative path example for cursor pagination
+
+    Book:
+      type: object
+      required: [id, title, author, year]
+      properties:
+        id:
+          type: integer
+        title:
+          type: string
+        author:
+          type: string
+        year:
+          type: integer
+
+    BooksOffsetResponse:
+      type: object
+      required: [type, limit, offset, time, data]
+      properties:
+        type:
+          type: string
+          enum: [offset]
+        limit:
+          type: integer
+        offset:
+          type: integer
+        time:
+          type: number
+          format: double
+          description: Elapsed time in seconds (measured on the server)
+        data:
+          type: array
+          items:
+            $ref: "#/components/schemas/Book"
+
+    BooksCursorResponse:
+      type: object
+      required: [type, limit, time, data]
+      properties:
+        type:
+          type: string
+          enum: [cursor]
+        limit:
+          type: integer
+        next_cursor:
+          type: integer
+          nullable: true
+          description: |
+            `id` of the last row in this page; use as `last_id` for the next page.
+            Null when the result set is empty.
+        time:
+          type: number
+          format: double
+          description: Elapsed time in seconds (measured on the server)
+        data:
+          type: array
+          items:
+            $ref: "#/components/schemas/Book"
+
+    ErrorResponse:
+      type: object
+      required: [error]
+      properties:
+        error:
+          type: string
+
+tags:
+  - name: Meta
+    description: General metadata
+  - name: Books
+    description: Books and pagination
