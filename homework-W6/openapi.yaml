@@ -60,6 +60,7 @@ paths:
                 last_id: 990000
                 time_offset: 0.035
                 time_cursor: 0.0002
+                ratio_offset_over_cursor: 175.0
 
   /api/v1/books:
     get:
@@ -157,7 +158,8 @@ components:
 
     PaginationTimingResponse:
       type: object
-      required: [limit, offset, last_id, time_offset, time_cursor]
+      required:
+        [limit, offset, last_id, time_offset, time_cursor, ratio_offset_over_cursor]
       properties:
         limit:
           type: integer
@@ -166,7 +168,7 @@ components:
           description: Fixed OFFSET used for the offset query (990000)
         last_id:
           type: integer
-          description: Fixed cursor lower bound (id > last_id), 990000
+          description: Must equal offset so both queries return the same id window (990001…)
         time_offset:
           type: number
           format: double
@@ -175,6 +177,13 @@ components:
           type: number
           format: double
           description: Seconds for WHERE id > ? ORDER BY id LIMIT ?
+        ratio_offset_over_cursor:
+          type: number
+          format: double
+          nullable: true
+          description: |
+            `time_offset / time_cursor` — how many times slower offset was (same page only).
+            Null if `time_cursor` is zero. Single-sample timing; run many times for stable benchmarks.
 
     Book:
       type: object

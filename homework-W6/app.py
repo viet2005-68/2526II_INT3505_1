@@ -27,9 +27,9 @@ def serve_openapi():
 
 DB = "books.db"
 N = 1000000
-# Deep page used by compare-times (1M rows → next page is ~990001–990010)
+
 COMPARE_OFFSET = 990000
-COMPARE_LAST_ID = 990000
+COMPARE_LAST_ID = COMPARE_OFFSET
 
 
 def get_db():
@@ -117,10 +117,6 @@ def get_books():
 
 @app.route("/api/v1/books/compare-times", methods=["GET"])
 def compare_pagination_times():
-    """
-    Same page shape as a deep list: OFFSET 990000 vs cursor after last_id=990000.
-    Response: time_offset and time_cursor only (seconds, server-side).
-    """
     limit = int(request.args.get("limit", 10))
     conn = get_db()
     cur = conn.cursor()
@@ -147,8 +143,9 @@ def compare_pagination_times():
             "limit": limit,
             "offset": COMPARE_OFFSET,
             "last_id": COMPARE_LAST_ID,
-            "time_offset": round(time_offset, 6),
-            "time_cursor": round(time_cursor, 6),
+            "time_offset": time_offset,
+            "time_cursor": time_cursor,
+            "ratio_offset_cursor": time_offset / time_cursor,
         }
     )
 

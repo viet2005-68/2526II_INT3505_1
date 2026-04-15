@@ -1,0 +1,327 @@
+openapi: 3.0.0
+info:
+  description: API quản lý sách – demo so sánh API Blueprint vs OpenAPI.
+  title: Library API
+  version: ""
+servers:
+- url: http://localhost:4001/
+paths:
+  /books:
+    get:
+      description: ""
+      operationId: get_all_books
+      responses:
+        "200":
+          content:
+            application/json:
+              examples:
+                response:
+                  value:
+                  - author: Fujiko Fujio
+                    id: 1
+                    title: Doraemon
+                    year: 1969
+                  - author: F. Scott Fitzgerald
+                    id: 2
+                    title: The Great Gatsby
+                    year: 1925
+              schema:
+                example:
+                - author: Fujiko Fujio
+                  id: 1
+                  title: Doraemon
+                  year: 1969
+                - author: F. Scott Fitzgerald
+                  id: 2
+                  title: The Great Gatsby
+                  year: 1925
+                items:
+                  $ref: "#/components/schemas/Get_all_books_200_response_inner"
+                type: array
+          description: OK
+      summary: Get all books
+      tags: []
+      x-openapi-router-controller: openapi_server.controllers.default_controller
+    post:
+      description: ""
+      operationId: create_a_new_book
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/Create_a_new_book_request"
+      responses:
+        "201":
+          content:
+            application/json:
+              examples:
+                response:
+                  value:
+                    author: Author Name
+                    id: 3
+                    title: New Book
+                    year: 2024
+              schema:
+                $ref: "#/components/schemas/Create_a_new_book_201_response"
+          description: Created
+        "400":
+          content:
+            application/json:
+              examples:
+                response:
+                  value:
+                    error: "Title, author and year are required"
+              schema:
+                $ref: "#/components/schemas/Create_a_new_book_400_response"
+          description: Bad Request
+      summary: Create a new book
+      tags: []
+      x-openapi-router-controller: openapi_server.controllers.default_controller
+  /books/{id}:
+    delete:
+      description: ""
+      operationId: delete_a_book
+      parameters:
+      - description: ID của book
+        explode: false
+        in: path
+        name: id
+        required: true
+        schema:
+          type: integer
+        style: simple
+      responses:
+        "200":
+          content:
+            application/json:
+              examples:
+                response:
+                  value:
+                    message: Book deleted
+              schema:
+                $ref: "#/components/schemas/Delete_a_book_200_response"
+          description: OK
+        "404":
+          content:
+            application/json:
+              examples:
+                response:
+                  value:
+                    error: Book not found
+              schema:
+                $ref: "#/components/schemas/Get_book_by_ID_404_response"
+          description: Not Found
+      summary: Delete a book
+      tags: []
+      x-openapi-router-controller: openapi_server.controllers.default_controller
+    get:
+      description: ""
+      operationId: get_book_by_id
+      parameters:
+      - description: ID của book
+        explode: false
+        in: path
+        name: id
+        required: true
+        schema:
+          type: integer
+        style: simple
+      responses:
+        "200":
+          content:
+            application/json:
+              examples:
+                response:
+                  value:
+                    author: Fujiko Fujio
+                    id: 1
+                    title: Doraemon
+                    year: 1969
+              schema:
+                $ref: "#/components/schemas/Get_book_by_ID_200_response"
+          description: OK
+        "404":
+          content:
+            application/json:
+              examples:
+                response:
+                  value:
+                    error: Book not found
+              schema:
+                $ref: "#/components/schemas/Get_book_by_ID_404_response"
+          description: Not Found
+      summary: Get book by ID
+      tags: []
+      x-openapi-router-controller: openapi_server.controllers.default_controller
+    put:
+      description: ""
+      operationId: update_a_book
+      parameters:
+      - description: ID của book
+        explode: false
+        in: path
+        name: id
+        required: true
+        schema:
+          type: integer
+        style: simple
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/Update_a_book_request"
+      responses:
+        "200":
+          content:
+            application/json:
+              examples:
+                response:
+                  value:
+                    author: Updated Author
+                    id: 1
+                    title: Updated Title
+                    year: 2025
+              schema:
+                $ref: "#/components/schemas/Update_a_book_200_response"
+          description: OK
+        "404":
+          content:
+            application/json:
+              examples:
+                response:
+                  value:
+                    error: Book not found
+              schema:
+                $ref: "#/components/schemas/Get_book_by_ID_404_response"
+          description: Not Found
+      summary: Update a book
+      tags: []
+      x-openapi-router-controller: openapi_server.controllers.default_controller
+components:
+  schemas:
+    Book: {}
+    Books_Collection: {}
+    Get_all_books_200_response_inner:
+      properties:
+        author:
+          title: author
+          type: string
+        id:
+          title: id
+          type: number
+        title:
+          title: title
+          type: string
+        year:
+          title: year
+          type: number
+      required:
+      - author
+      - id
+      - title
+      - year
+      title: Get_all_books_200_response_inner
+      type: object
+    Create_a_new_book_request:
+      example:
+        author: Author Name
+        title: New Book
+        year: 2024
+      properties:
+        author:
+          type: string
+        title:
+          type: string
+        year:
+          type: number
+      title: Create_a_new_book_request
+      type: object
+    Create_a_new_book_201_response:
+      example:
+        author: Author Name
+        id: 3
+        title: New Book
+        year: 2024
+      properties:
+        author:
+          type: string
+        id:
+          type: number
+        title:
+          type: string
+        year:
+          type: number
+      title: Create_a_new_book_201_response
+      type: object
+    Create_a_new_book_400_response:
+      example:
+        error: "Title, author and year are required"
+      properties:
+        error:
+          type: string
+      title: Create_a_new_book_400_response
+      type: object
+    Get_book_by_ID_200_response:
+      example:
+        author: Fujiko Fujio
+        id: 1
+        title: Doraemon
+        year: 1969
+      properties:
+        author:
+          type: string
+        id:
+          type: number
+        title:
+          type: string
+        year:
+          type: number
+      title: Get_book_by_ID_200_response
+      type: object
+    Get_book_by_ID_404_response:
+      example:
+        error: Book not found
+      properties:
+        error:
+          type: string
+      title: Get_book_by_ID_404_response
+      type: object
+    Update_a_book_request:
+      example:
+        author: Updated Author
+        title: Updated Title
+        year: 2025
+      properties:
+        author:
+          type: string
+        title:
+          type: string
+        year:
+          type: number
+      title: Update_a_book_request
+      type: object
+    Update_a_book_200_response:
+      example:
+        author: Updated Author
+        id: 1
+        title: Updated Title
+        year: 2025
+      properties:
+        author:
+          type: string
+        id:
+          type: number
+        title:
+          type: string
+        year:
+          type: number
+      title: Update_a_book_200_response
+      type: object
+    Delete_a_book_200_response:
+      example:
+        message: Book deleted
+      properties:
+        message:
+          type: string
+      title: Delete_a_book_200_response
+      type: object

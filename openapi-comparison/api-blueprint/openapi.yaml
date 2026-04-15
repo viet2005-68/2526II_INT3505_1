@@ -1,0 +1,468 @@
+{
+  "openapi": "3.0.0",
+  "info": {
+    "description": "API quản lý sách – demo so sánh API Blueprint vs OpenAPI.",
+    "title": "Library API",
+    "version": ""
+  },
+  "servers": [
+    {
+      "url": "http://localhost:4001/"
+    }
+  ],
+  "paths": {
+    "/books": {
+      "get": {
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "examples": {
+                  "response": {
+                    "value": [
+                      {
+                        "author": "Fujiko Fujio",
+                        "id": 1,
+                        "title": "Doraemon",
+                        "year": 1969
+                      },
+                      {
+                        "author": "F. Scott Fitzgerald",
+                        "id": 2,
+                        "title": "The Great Gatsby",
+                        "year": 1925
+                      }
+                    ]
+                  }
+                },
+                "schema": {
+                  "example": [
+                    {
+                      "author": "Fujiko Fujio",
+                      "id": 1,
+                      "title": "Doraemon",
+                      "year": 1969
+                    },
+                    {
+                      "author": "F. Scott Fitzgerald",
+                      "id": 2,
+                      "title": "The Great Gatsby",
+                      "year": 1925
+                    }
+                  ],
+                  "items": {
+                    "properties": {
+                      "author": {
+                        "type": "string"
+                      },
+                      "id": {
+                        "type": "number"
+                      },
+                      "title": {
+                        "type": "string"
+                      },
+                      "year": {
+                        "type": "number"
+                      }
+                    },
+                    "required": [
+                      "id",
+                      "title",
+                      "author",
+                      "year"
+                    ],
+                    "type": "object"
+                  },
+                  "type": "array"
+                }
+              }
+            },
+            "description": "OK",
+            "headers": {}
+          }
+        },
+        "tags": [],
+        "description": "",
+        "operationId": "Get all books",
+        "summary": "Get all books"
+      },
+      "post": {
+        "responses": {
+          "201": {
+            "content": {
+              "application/json": {
+                "examples": {
+                  "response": {
+                    "value": {
+                      "author": "Author Name",
+                      "id": 3,
+                      "title": "New Book",
+                      "year": 2024
+                    }
+                  }
+                },
+                "schema": {
+                  "example": {
+                    "author": "Author Name",
+                    "id": 3,
+                    "title": "New Book",
+                    "year": 2024
+                  },
+                  "properties": {
+                    "author": {
+                      "type": "string"
+                    },
+                    "id": {
+                      "type": "number"
+                    },
+                    "title": {
+                      "type": "string"
+                    },
+                    "year": {
+                      "type": "number"
+                    }
+                  },
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Created",
+            "headers": {}
+          },
+          "400": {
+            "content": {
+              "application/json": {
+                "examples": {
+                  "response": {
+                    "value": {
+                      "error": "Title, author and year are required"
+                    }
+                  }
+                },
+                "schema": {
+                  "example": {
+                    "error": "Title, author and year are required"
+                  },
+                  "properties": {
+                    "error": {
+                      "type": "string"
+                    }
+                  },
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Bad Request",
+            "headers": {}
+          }
+        },
+        "tags": [],
+        "description": "",
+        "operationId": "Create a new book",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "example": {
+                  "author": "Author Name",
+                  "title": "New Book",
+                  "year": 2024
+                },
+                "properties": {
+                  "author": {
+                    "type": "string"
+                  },
+                  "title": {
+                    "type": "string"
+                  },
+                  "year": {
+                    "type": "number"
+                  }
+                },
+                "type": "object"
+              }
+            }
+          }
+        },
+        "summary": "Create a new book"
+      }
+    },
+    "/books/{id}": {
+      "delete": {
+        "parameters": [
+          {
+            "description": "ID của book",
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "examples": {
+                  "response": {
+                    "value": {
+                      "message": "Book deleted"
+                    }
+                  }
+                },
+                "schema": {
+                  "example": {
+                    "message": "Book deleted"
+                  },
+                  "properties": {
+                    "message": {
+                      "type": "string"
+                    }
+                  },
+                  "type": "object"
+                }
+              }
+            },
+            "description": "OK",
+            "headers": {}
+          },
+          "404": {
+            "content": {
+              "application/json": {
+                "examples": {
+                  "response": {
+                    "value": {
+                      "error": "Book not found"
+                    }
+                  }
+                },
+                "schema": {
+                  "example": {
+                    "error": "Book not found"
+                  },
+                  "properties": {
+                    "error": {
+                      "type": "string"
+                    }
+                  },
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Not Found",
+            "headers": {}
+          }
+        },
+        "tags": [],
+        "description": "",
+        "operationId": "Delete a book",
+        "summary": "Delete a book"
+      },
+      "get": {
+        "parameters": [
+          {
+            "description": "ID của book",
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "examples": {
+                  "response": {
+                    "value": {
+                      "author": "Fujiko Fujio",
+                      "id": 1,
+                      "title": "Doraemon",
+                      "year": 1969
+                    }
+                  }
+                },
+                "schema": {
+                  "example": {
+                    "author": "Fujiko Fujio",
+                    "id": 1,
+                    "title": "Doraemon",
+                    "year": 1969
+                  },
+                  "properties": {
+                    "author": {
+                      "type": "string"
+                    },
+                    "id": {
+                      "type": "number"
+                    },
+                    "title": {
+                      "type": "string"
+                    },
+                    "year": {
+                      "type": "number"
+                    }
+                  },
+                  "type": "object"
+                }
+              }
+            },
+            "description": "OK",
+            "headers": {}
+          },
+          "404": {
+            "content": {
+              "application/json": {
+                "examples": {
+                  "response": {
+                    "value": {
+                      "error": "Book not found"
+                    }
+                  }
+                },
+                "schema": {
+                  "example": {
+                    "error": "Book not found"
+                  },
+                  "properties": {
+                    "error": {
+                      "type": "string"
+                    }
+                  },
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Not Found",
+            "headers": {}
+          }
+        },
+        "tags": [],
+        "description": "",
+        "operationId": "Get book by ID",
+        "summary": "Get book by ID"
+      },
+      "put": {
+        "parameters": [
+          {
+            "description": "ID của book",
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "examples": {
+                  "response": {
+                    "value": {
+                      "author": "Updated Author",
+                      "id": 1,
+                      "title": "Updated Title",
+                      "year": 2025
+                    }
+                  }
+                },
+                "schema": {
+                  "example": {
+                    "author": "Updated Author",
+                    "id": 1,
+                    "title": "Updated Title",
+                    "year": 2025
+                  },
+                  "properties": {
+                    "author": {
+                      "type": "string"
+                    },
+                    "id": {
+                      "type": "number"
+                    },
+                    "title": {
+                      "type": "string"
+                    },
+                    "year": {
+                      "type": "number"
+                    }
+                  },
+                  "type": "object"
+                }
+              }
+            },
+            "description": "OK",
+            "headers": {}
+          },
+          "404": {
+            "content": {
+              "application/json": {
+                "examples": {
+                  "response": {
+                    "value": {
+                      "error": "Book not found"
+                    }
+                  }
+                },
+                "schema": {
+                  "example": {
+                    "error": "Book not found"
+                  },
+                  "properties": {
+                    "error": {
+                      "type": "string"
+                    }
+                  },
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Not Found",
+            "headers": {}
+          }
+        },
+        "tags": [],
+        "description": "",
+        "operationId": "Update a book",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "example": {
+                  "author": "Updated Author",
+                  "title": "Updated Title",
+                  "year": 2025
+                },
+                "properties": {
+                  "author": {
+                    "type": "string"
+                  },
+                  "title": {
+                    "type": "string"
+                  },
+                  "year": {
+                    "type": "number"
+                  }
+                },
+                "type": "object"
+              }
+            }
+          }
+        },
+        "summary": "Update a book"
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "Book": {},
+      "Books_Collection": {}
+    }
+  },
+  "tags": []
+}
