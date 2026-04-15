@@ -3,12 +3,6 @@ from flask import jsonify
 
 
 def api_response(data=None, metadata=None, status_code=200):
-    """
-    API response chuẩn luôn có metadata.
-
-    - data: dữ liệu chính (object hoặc list)
-    - metadata: thông tin bổ sung (timestamp, pagination, ...)
-    """
     now = datetime.now(timezone.utc).isoformat()
     base_meta = {
         "timestamp": now,
@@ -23,7 +17,6 @@ def api_response(data=None, metadata=None, status_code=200):
 
 
 def api_error(message: str, status_code=400, metadata=None):
-    """Response khi lỗi, vẫn có metadata."""
     now = datetime.now(timezone.utc).isoformat()
     base_meta = {
         "timestamp": now,

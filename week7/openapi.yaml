@@ -5,8 +5,12 @@ info:
   description: API for managing library
 
 servers:
-  - url: http://localhost:8000
-    description: Local development server
+  - url: /
+    description: Current host (Swagger Try it out)
+  - url: http://127.0.0.1:8080
+    description: Local IPv4
+  - url: http://localhost:8080
+    description: Local hostname
 
 tags:
   - name: Auth

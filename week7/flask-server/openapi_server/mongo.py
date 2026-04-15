@@ -1,4 +1,4 @@
-"""MongoDB: kết nối đơn giản + optional mongomock cho test (USE_MONGOMOCK=1)."""
+"""MongoDB connection helpers (simple singleton; optional mongomock for tests)."""
 import os
 from typing import Optional
 

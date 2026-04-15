@@ -49,6 +49,7 @@ AUTH_CODES = {}
 
 REFRESH_STORE = {}
 REVOKED_ACCESS = set()
+
 def _now():
     return datetime.now(timezone.utc)
 @app.route("/")
