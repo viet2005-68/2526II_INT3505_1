@@ -4,8 +4,12 @@ info:
   title: Library Management API
   version: 1.0.0
 servers:
-- description: Local development server
-  url: http://localhost:8080
+- url: /
+  description: Current host (Swagger Try it out; avoids wrong port)
+- url: http://127.0.0.1:8080
+  description: Local IPv4
+- url: http://localhost:8080
+  description: Local hostname
 security:
 - BearerAuth: []
 tags:

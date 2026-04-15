@@ -18,6 +18,7 @@ REQUIRES = [
     "pymongo>=4.6.0",
     "PyJWT>=2.8.0",
     "mongomock>=4.1.2",
+    "flask-cors>=4.0.0",
 ]
 
 setup(
