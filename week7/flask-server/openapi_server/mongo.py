@@ -1,4 +1,4 @@
-"""MongoDB connection helpers (simple singleton; optional mongomock for tests)."""
+"""MongoDB: kết nối đơn giản + optional mongomock cho test (USE_MONGOMOCK=1)."""
 import os
 from typing import Optional
 
@@ -15,7 +15,6 @@ _db: Optional[Database] = None
 
 
 def reset_connection() -> None:
-    """Close and clear cached client (used by tests)."""
     global _client, _db
     if _client is not None:
         try:
@@ -60,7 +59,6 @@ def counters_coll() -> Collection:
 
 
 def init_indexes() -> None:
-    """Idempotent index creation."""
     try:
         users_coll().create_index("username", unique=True)
     except PyMongoError:

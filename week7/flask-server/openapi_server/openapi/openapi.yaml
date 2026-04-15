@@ -1,0 +1,597 @@
+openapi: 3.0.3
+info:
+  description: API for managing library
+  title: Library Management API
+  version: 1.0.0
+servers:
+- description: Local development server
+  url: http://localhost:8080
+security:
+- BearerAuth: []
+tags:
+- description: Authentication endpoints
+  name: Auth
+- description: Book endpoints
+  name: Books
+paths:
+  /api/auth/login:
+    post:
+      operationId: api_auth_login_post
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/LoginPayload"
+        required: true
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/LoginResponse"
+          description: "Login successful, return token"
+        "400":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+          description: Bad request
+        "401":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+          description: Missing or invalid Bearer token
+      security: []
+      summary: Login and get Bearer token
+      tags:
+      - Auth
+      x-openapi-router-controller: openapi_server.controllers.auth_controller
+  /api/auth/register:
+    post:
+      operationId: api_auth_register_post
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/RegisterPayload"
+        required: true
+      responses:
+        "201":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/MessageResponse"
+          description: User registered successfully
+        "400":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+          description: Bad request
+      security: []
+      summary: Register a new user
+      tags:
+      - Auth
+      x-openapi-router-controller: openapi_server.controllers.auth_controller
+  /api/books:
+    get:
+      operationId: api_books_get
+      parameters:
+      - description: Page number
+        explode: true
+        in: query
+        name: page
+        required: false
+        schema:
+          default: 1
+          minimum: 1
+          type: integer
+        style: form
+      - description: Number of books per page
+        explode: true
+        in: query
+        name: limit
+        required: false
+        schema:
+          default: 10
+          minimum: 1
+          type: integer
+        style: form
+      - description: Search by title or author
+        explode: true
+        in: query
+        name: search
+        required: false
+        schema:
+          default: ""
+          type: string
+        style: form
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/PaginatedBooksResponse"
+          description: List of books
+        "400":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+          description: Bad request
+        "401":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+          description: Missing or invalid Bearer token
+        "500":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+          description: Internal server error
+      summary: Get all books with pagination and search
+      tags:
+      - Books
+      x-openapi-router-controller: openapi_server.controllers.books_controller
+    post:
+      operationId: api_books_post
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CreateBookPayload"
+        required: true
+      responses:
+        "201":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Book"
+          description: Book created successfully
+        "400":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+          description: Bad request
+        "401":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+          description: Missing or invalid Bearer token
+        "500":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+          description: Internal server error
+      summary: Create a new book
+      tags:
+      - Books
+      x-openapi-router-controller: openapi_server.controllers.books_controller
+  /api/books/{book_id}:
+    delete:
+      operationId: api_books_book_id_delete
+      parameters:
+      - description: ID of the book
+        explode: false
+        in: path
+        name: book_id
+        required: true
+        schema:
+          minimum: 1
+          type: integer
+        style: simple
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Book"
+          description: Book deleted successfully
+        "400":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+          description: Bad request
+        "401":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+          description: Missing or invalid Bearer token
+        "404":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+          description: Resource not found
+        "500":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+          description: Internal server error
+      summary: Delete a book
+      tags:
+      - Books
+      x-openapi-router-controller: openapi_server.controllers.books_controller
+    get:
+      operationId: api_books_book_id_get
+      parameters:
+      - description: ID of the book
+        explode: false
+        in: path
+        name: book_id
+        required: true
+        schema:
+          minimum: 1
+          type: integer
+        style: simple
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Book"
+          description: Book found
+        "400":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+          description: Bad request
+        "401":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+          description: Missing or invalid Bearer token
+        "404":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+          description: Resource not found
+        "500":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+          description: Internal server error
+      summary: Get a book by ID
+      tags:
+      - Books
+      x-openapi-router-controller: openapi_server.controllers.books_controller
+    put:
+      operationId: api_books_book_id_put
+      parameters:
+      - description: ID of the book
+        explode: false
+        in: path
+        name: book_id
+        required: true
+        schema:
+          minimum: 1
+          type: integer
+        style: simple
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/UpdateBookPayload"
+        required: true
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Book"
+          description: Book updated successfully
+        "400":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+          description: Bad request
+        "401":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+          description: Missing or invalid Bearer token
+        "404":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+          description: Resource not found
+        "500":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+          description: Internal server error
+      summary: Update a book
+      tags:
+      - Books
+      x-openapi-router-controller: openapi_server.controllers.books_controller
+components:
+  parameters:
+    BookId:
+      description: ID of the book
+      explode: false
+      in: path
+      name: book_id
+      required: true
+      schema:
+        minimum: 1
+        type: integer
+      style: simple
+    Page:
+      description: Page number
+      explode: true
+      in: query
+      name: page
+      required: false
+      schema:
+        default: 1
+        minimum: 1
+        type: integer
+      style: form
+    Limit:
+      description: Number of books per page
+      explode: true
+      in: query
+      name: limit
+      required: false
+      schema:
+        default: 10
+        minimum: 1
+        type: integer
+      style: form
+    Search:
+      description: Search by title or author
+      explode: true
+      in: query
+      name: search
+      required: false
+      schema:
+        default: ""
+        type: string
+      style: form
+  responses:
+    UnauthorizedError:
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/Error"
+      description: Missing or invalid Bearer token
+    BadRequestError:
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/Error"
+      description: Bad request
+    InternalServerError:
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/Error"
+      description: Internal server error
+    NotFoundError:
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/Error"
+      description: Resource not found
+  schemas:
+    Error:
+      example:
+        error: Error message
+      properties:
+        error:
+          example: Error message
+          title: error
+          type: string
+      required:
+      - error
+      title: Error
+      type: object
+    MessageResponse:
+      example:
+        message: User registered successfully
+      properties:
+        message:
+          example: User registered successfully
+          title: message
+          type: string
+      required:
+      - message
+      title: MessageResponse
+      type: object
+    RegisterPayload:
+      example:
+        password: Str0ngPass
+        username: alice
+      properties:
+        username:
+          example: alice
+          title: username
+          type: string
+        password:
+          example: Str0ngPass
+          title: password
+          type: string
+      required:
+      - password
+      - username
+      title: RegisterPayload
+      type: object
+    LoginPayload:
+      example:
+        password: Str0ngPass
+        username: alice
+      properties:
+        username:
+          example: alice
+          title: username
+          type: string
+        password:
+          example: Str0ngPass
+          title: password
+          type: string
+      required:
+      - password
+      - username
+      title: LoginPayload
+      type: object
+    LoginResponse:
+      example:
+        access_token: access_token
+        token_type: Bearer
+      properties:
+        access_token:
+          description: JWT access token
+          title: access_token
+          type: string
+        token_type:
+          example: Bearer
+          title: token_type
+          type: string
+      required:
+      - access_token
+      - token_type
+      title: LoginResponse
+      type: object
+    BookFields:
+      properties:
+        title:
+          example: The Great Gatsby
+          title: title
+          type: string
+        author:
+          example: F. Scott Fitzgerald
+          title: author
+          type: string
+        year:
+          example: 1925
+          title: year
+          type: integer
+      title: BookFields
+      type: object
+    Book:
+      allOf:
+      - properties:
+          id:
+            example: 1
+            type: integer
+        required:
+        - id
+        type: object
+      - $ref: "#/components/schemas/BookFields"
+      - required:
+        - author
+        - title
+        - year
+        type: object
+      example:
+        year: 1925
+        author: F. Scott Fitzgerald
+        id: 1
+        title: The Great Gatsby
+      title: Book
+    CreateBookPayload:
+      allOf:
+      - $ref: "#/components/schemas/BookFields"
+      - required:
+        - author
+        - title
+        - year
+        type: object
+      example:
+        year: 1925
+        author: F. Scott Fitzgerald
+        title: The Great Gatsby
+      title: CreateBookPayload
+    UpdateBookPayload:
+      allOf:
+      - $ref: "#/components/schemas/BookFields"
+      - minProperties: 1
+        type: object
+      description: All fields optional; include at least one field to update.
+      example:
+        year: 1925
+        author: F. Scott Fitzgerald
+        title: The Great Gatsby
+      title: UpdateBookPayload
+    PaginationMetadata:
+      example:
+        total: 100
+        limit: 10
+        page: 1
+        total_pages: 10
+      properties:
+        page:
+          example: 1
+          title: page
+          type: integer
+        limit:
+          example: 10
+          title: limit
+          type: integer
+        total:
+          example: 100
+          title: total
+          type: integer
+        total_pages:
+          example: 10
+          title: total_pages
+          type: integer
+      required:
+      - limit
+      - page
+      - total
+      - total_pages
+      title: PaginationMetadata
+      type: object
+    PaginatedBooksResponse:
+      example:
+        metadata:
+          total: 100
+          limit: 10
+          page: 1
+          total_pages: 10
+        data:
+        - year: 1925
+          author: F. Scott Fitzgerald
+          id: 1
+          title: The Great Gatsby
+        - year: 1925
+          author: F. Scott Fitzgerald
+          id: 1
+          title: The Great Gatsby
+      properties:
+        data:
+          items:
+            $ref: "#/components/schemas/Book"
+          title: data
+          type: array
+        metadata:
+          $ref: "#/components/schemas/PaginationMetadata"
+      required:
+      - data
+      - metadata
+      title: PaginatedBooksResponse
+      type: object
+  securitySchemes:
+    BearerAuth:
+      bearerFormat: JWT
+      scheme: bearer
+      type: http
+      x-bearerInfoFunc: openapi_server.controllers.security_controller.info_from_BearerAuth
