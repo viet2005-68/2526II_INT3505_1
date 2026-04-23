@@ -1,0 +1,215 @@
+{
+"info": {
+"_postman_id": "046744f7-fb30-4c6a-be6d-dbebc071aabb",
+"name": "API Testing",
+"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+},
+"item": [
+{
+"name": "List Books",
+"event": [
+{
+"listen": "test",
+"script": {
+"exec": [
+"pm.test(\"Status code is 200\", function () {",
+"    pm.response.to.have.status(200);",
+"});",
+"",
+"pm.test(\"Books list returned\", function () {",
+"    const res = pm.response.json();",
+"    pm.expect(res).to.be.an('object');",
+"});"
+],
+"type": "text/javascript"
+}
+}
+],
+"request": {
+"method": "GET",
+"header": [],
+"url": {
+"raw": "{{base_url}}/books?page=1&per_page=10",
+"host": ["{{base_url}}"],
+"path": ["books"],
+"query": [
+{"key": "page", "value": "1"},
+{"key": "per_page", "value": "10"}
+]
+}
+}
+},
+{
+"name": "Get Book by ID",
+"event": [
+{
+"listen": "test",
+"script": {
+"exec": [
+"pm.test(\"Status code is 200\", function () {",
+"    pm.response.to.have.status(200);",
+"});"
+],
+"type": "text/javascript"
+}
+}
+],
+"request": {
+"method": "GET",
+"header": [],
+"url": {
+"raw": "{{base_url}}/books/1",
+"host": ["{{base_url}}"],
+"path": ["books", "1"]
+}
+}
+},
+{
+"name": "List Users",
+"event": [
+{
+"listen": "test",
+"script": {
+"exec": [
+"pm.test(\"Status code is 200\", function () {",
+"    pm.response.to.have.status(200);",
+"});"
+],
+"type": "text/javascript"
+}
+}
+],
+"request": {
+"method": "GET",
+"header": [],
+"url": {
+"raw": "{{base_url}}/users?page=1&per_page=10",
+"host": ["{{base_url}}"],
+"path": ["users"],
+"query": [
+{"key": "page", "value": "1"},
+{"key": "per_page", "value": "10"}
+]
+}
+}
+},
+{
+"name": "Get User by ID",
+"event": [
+{
+"listen": "test",
+"script": {
+"exec": [
+"pm.test(\"Status code is 200\", function () {",
+"    pm.response.to.have.status(200);",
+"});"
+],
+"type": "text/javascript"
+}
+}
+],
+"request": {
+"method": "GET",
+"header": [],
+"url": {
+"raw": "{{base_url}}/users/1",
+"host": ["{{base_url}}"],
+"path": ["users", "1"]
+}
+}
+},
+{
+"name": "Create User",
+"event": [
+{
+"listen": "test",
+"script": {
+"exec": [
+"pm.test(\"Status code is 200 or 201\", function () {",
+"    pm.expect(pm.response.code).to.be.oneOf([200, 201]);",
+"});"
+],
+"type": "text/javascript"
+}
+}
+],
+"request": {
+"method": "POST",
+"header": [
+{"key": "Content-Type", "value": "application/json"}
+],
+"body": {
+"mode": "raw",
+"raw": "{\"username\": \"testuser\", \"email\": \"test@example.com\", \"password\": \"password123\"}"
+},
+"url": {
+"raw": "{{base_url}}/users/",
+"host": ["{{base_url}}"],
+"path": ["users", ""]
+}
+}
+},
+{
+"name": "Get User Loans",
+"event": [
+{
+"listen": "test",
+"script": {
+"exec": [
+"pm.test(\"Status code is 200\", function () {",
+"    pm.response.to.have.status(200);",
+"});"
+],
+"type": "text/javascript"
+}
+}
+],
+"request": {
+"method": "GET",
+"header": [],
+"url": {
+"raw": "{{base_url}}/users/1/loans",
+"host": ["{{base_url}}"],
+"path": ["users", "1", "loans"]
+}
+}
+},
+{
+"name": "Loan a Book",
+"event": [
+{
+"listen": "test",
+"script": {
+"exec": [
+"pm.test(\"Status code is 200 or 201\", function () {",
+"    pm.expect(pm.response.code).to.be.oneOf([200, 201]);",
+"});"
+],
+"type": "text/javascript"
+}
+}
+],
+"request": {
+"method": "POST",
+"header": [
+{"key": "Content-Type", "value": "application/json"}
+],
+"body": {
+"mode": "raw",
+"raw": "{\"book_id\": 1}"
+},
+"url": {
+"raw": "{{base_url}}/users/1/loans",
+"host": ["{{base_url}}"],
+"path": ["users", "1", "loans"]
+}
+}
+}
+],
+"variable": [
+{
+"key": "base_url",
+"value": "http://127.0.0.1:8003"
+}
+]
+}
