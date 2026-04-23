@@ -27,6 +27,7 @@ class Book(BaseModel):
     title = db.Column(db.String(100), nullable=False)
     price = db.Column(db.Float, nullable=False)
     author_id = db.Column(db.Integer, db.ForeignKey('authors.id'), nullable=False)
+    quantity = db.Column(db.Integer, default=1)
     author = db.relationship('Author', back_populates='books')
     loans = db.relationship('Loan', back_populates='book', cascade='all, delete-orphan')
 

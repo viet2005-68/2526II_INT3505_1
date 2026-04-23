@@ -1,0 +1,667 @@
+{
+	"info": {
+		"_postman_id": "complete-library-api-tests",
+		"name": "Library API - Complete Tests",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "46155064"
+	},
+	"item": [
+		{
+			"name": "Users",
+			"item": [
+				{
+					"name": "List Users",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									"pm.test(\"Response has correct structure\", function () {",
+									"    const res = pm.response.json();",
+									"    pm.expect(res).to.have.property(\"success\", true);",
+									"    pm.expect(res).to.have.property(\"data\");",
+									"    pm.expect(res.data).to.be.an('array');",
+									"});",
+									"",
+									"pm.test(\"Metadata contains pagination info\", function () {",
+									"    const res = pm.response.json();",
+									"    pm.expect(res.metadata).to.have.property(\"page\");",
+									"    pm.expect(res.metadata).to.have.property(\"per_page\");",
+									"    pm.expect(res.metadata).to.have.property(\"count\");",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/users?page=1&per_page=10",
+							"host": ["{{base_url}}"],
+							"path": ["users"],
+							"query": [
+								{"key": "page", "value": "1"},
+								{"key": "per_page", "value": "10"}
+							]
+						}
+					}
+				},
+				{
+					"name": "Create User",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 201\", function () {",
+									"    pm.response.to.have.status(201);",
+									"});",
+									"",
+									"pm.test(\"User created with ID\", function () {",
+									"    const res = pm.response.json();",
+									"    pm.expect(res.data).to.have.property(\"id\");",
+									"    pm.environment.set(\"user_id\", res.data.id);",
+									"});",
+									"",
+									"pm.test(\"Response indicates success\", function () {",
+									"    const res = pm.response.json();",
+									"    pm.expect(res.success).to.equal(true);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{"key": "Content-Type", "value": "application/json"}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\"username\": \"testuser{{$randomInt}}\", \"email\": \"test{{$randomInt}}@example.com\", \"password\": \"password123\"}"
+						},
+						"url": {
+							"raw": "{{base_url}}/users/",
+							"host": ["{{base_url}}"],
+							"path": ["users", ""]
+						}
+					}
+				},
+				{
+					"name": "Get User by ID",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									"pm.test(\"User data contains required fields\", function () {",
+									"    const res = pm.response.json();",
+									"    pm.expect(res.data).to.have.property(\"id\");",
+									"    pm.expect(res.data).to.have.property(\"username\");",
+									"    pm.expect(res.data).to.have.property(\"email\");",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/users/{{user_id}}",
+							"host": ["{{base_url}}"],
+							"path": ["users", "{{user_id}}"]
+						}
+					}
+				},
+				{
+					"name": "Get User (Not Found)",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 404\", function () {",
+									"    pm.response.to.have.status(404);",
+									"});",
+									"",
+									"pm.test(\"Error message returned\", function () {",
+									"    const res = pm.response.json();",
+									"    pm.expect(res.success).to.equal(false);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/users/99999",
+							"host": ["{{base_url}}"],
+							"path": ["users", "99999"]
+						}
+					}
+				}
+			]
+		},
+		{
+			"name": "Books",
+			"item": [
+				{
+					"name": "List Books",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									"pm.test(\"Books array returned\", function () {",
+									"    const res = pm.response.json();",
+									"    pm.expect(res.data).to.be.an('array');",
+									"});",
+									"",
+									"pm.test(\"Each book has required fields\", function () {",
+									"    const res = pm.response.json();",
+									"    if (res.data.length > 0) {",
+									"        const book = res.data[0];",
+									"        pm.expect(book).to.have.property(\"id\");",
+									"        pm.expect(book).to.have.property(\"title\");",
+									"        pm.expect(book).to.have.property(\"price\");",
+									"        pm.expect(book).to.have.property(\"author\");",
+									"        pm.environment.set(\"book_id\", book.id);",
+									"    }",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/books?page=1&per_page=10",
+							"host": ["{{base_url}}"],
+							"path": ["books"],
+							"query": [
+								{"key": "page", "value": "1"},
+								{"key": "per_page", "value": "10"}
+							]
+						}
+					}
+				},
+				{
+					"name": "List Books with Search",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									"pm.test(\"Search works and returns results\", function () {",
+									"    const res = pm.response.json();",
+									"    pm.expect(res.data).to.be.an('array');",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/books?search=test&page=1&per_page=10",
+							"host": ["{{base_url}}"],
+							"path": ["books"],
+							"query": [
+								{"key": "search", "value": "test"},
+								{"key": "page", "value": "1"},
+								{"key": "per_page", "value": "10"}
+							]
+						}
+					}
+				},
+				{
+					"name": "List Books with Cursor Pagination",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									"pm.test(\"Cursor pagination metadata present\", function () {",
+									"    const res = pm.response.json();",
+									"    pm.expect(res.metadata).to.have.property(\"pagination\");",
+									"    pm.expect(res.metadata.pagination).to.have.property(\"type\", \"cursor_base64url\");",
+									"    pm.expect(res.metadata.pagination).to.have.property(\"has_more\");",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/books/cursor?limit=10",
+							"host": ["{{base_url}}"],
+							"path": ["books", "cursor"],
+							"query": [
+								{"key": "limit", "value": "10"}
+							]
+						}
+					}
+				},
+				{
+					"name": "Get Book by ID",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									"pm.test(\"Book data has required fields\", function () {",
+									"    const res = pm.response.json();",
+									"    pm.expect(res.data).to.have.property(\"id\");",
+									"    pm.expect(res.data).to.have.property(\"title\");",
+									"    pm.expect(res.data).to.have.property(\"price\");",
+									"    pm.expect(res.data).to.have.property(\"author_id\");",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/books/{{book_id}}",
+							"host": ["{{base_url}}"],
+							"path": ["books", "{{book_id}}"]
+						}
+					}
+				},
+				{
+					"name": "Get Book (Not Found)",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 404\", function () {",
+									"    pm.response.to.have.status(404);",
+									"});",
+									"",
+									"pm.test(\"Error message returned\", function () {",
+									"    const res = pm.response.json();",
+									"    pm.expect(res.success).to.equal(false);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/books/99999",
+							"host": ["{{base_url}}"],
+							"path": ["books", "99999"]
+						}
+					}
+				}
+			]
+		},
+		{
+			"name": "Loans",
+			"item": [
+				{
+					"name": "Get User Loans",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									"pm.test(\"Loans array returned\", function () {",
+									"    const res = pm.response.json();",
+									"    pm.expect(res.data).to.be.an('array');",
+									"});",
+									"",
+									"pm.test(\"Loan structure is correct\", function () {",
+									"    const res = pm.response.json();",
+									"    if (res.data.length > 0) {",
+									"        const loan = res.data[0];",
+									"        pm.expect(loan).to.have.property(\"id\");",
+									"        pm.expect(loan).to.have.property(\"user_id\");",
+									"        pm.expect(loan).to.have.property(\"book\");",
+									"        pm.expect(loan).to.have.property(\"status\");",
+									"        pm.expect(loan.book).to.have.property(\"id\");",
+									"        pm.expect(loan.book).to.have.property(\"title\");",
+									"    }",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/users/{{user_id}}/loans",
+							"host": ["{{base_url}}"],
+							"path": ["users", "{{user_id}}", "loans"]
+						}
+					}
+				},
+				{
+					"name": "Get Loans - User Not Found",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 404\", function () {",
+									"    pm.response.to.have.status(404);",
+									"});",
+									"",
+									"pm.test(\"Error message for missing user\", function () {",
+									"    const res = pm.response.json();",
+									"    pm.expect(res.success).to.equal(false);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/users/99999/loans",
+							"host": ["{{base_url}}"],
+							"path": ["users", "99999", "loans"]
+						}
+					}
+				},
+				{
+					"name": "Loan a Book",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 201\", function () {",
+									"    pm.response.to.have.status(201);",
+									"});",
+									"",
+									"pm.test(\"Loan created with correct structure\", function () {",
+									"    const res = pm.response.json();",
+									"    pm.expect(res.data).to.have.property(\"id\");",
+									"    pm.expect(res.data).to.have.property(\"user_id\");",
+									"    pm.expect(res.data).to.have.property(\"book\");",
+									"    pm.expect(res.data).to.have.property(\"status\", \"active\");",
+									"    pm.environment.set(\"loan_id\", res.data.id);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{"key": "Content-Type", "value": "application/json"}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\"book_id\": {{book_id}}}"
+						},
+						"url": {
+							"raw": "{{base_url}}/users/{{user_id}}/loans",
+							"host": ["{{base_url}}"],
+							"path": ["users", "{{user_id}}", "loans"]
+						}
+					}
+				},
+				{
+					"name": "Loan Book - User Not Found",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 404\", function () {",
+									"    pm.response.to.have.status(404);",
+									"});",
+									"",
+									"pm.test(\"Error for non-existent user\", function () {",
+									"    const res = pm.response.json();",
+									"    pm.expect(res.success).to.equal(false);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{"key": "Content-Type", "value": "application/json"}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\"book_id\": {{book_id}}}"
+						},
+						"url": {
+							"raw": "{{base_url}}/users/99999/loans",
+							"host": ["{{base_url}}"],
+							"path": ["users", "99999", "loans"]
+						}
+					}
+				},
+				{
+					"name": "Loan Book - Book Not Found",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 404\", function () {",
+									"    pm.response.to.have.status(404);",
+									"});",
+									"",
+									"pm.test(\"Error for non-existent book\", function () {",
+									"    const res = pm.response.json();",
+									"    pm.expect(res.success).to.equal(false);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{"key": "Content-Type", "value": "application/json"}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\"book_id\": 99999}"
+						},
+						"url": {
+							"raw": "{{base_url}}/users/{{user_id}}/loans",
+							"host": ["{{base_url}}"],
+							"path": ["users", "{{user_id}}", "loans"]
+						}
+					}
+				},
+				{
+					"name": "Loan Book - Missing book_id",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 400\", function () {",
+									"    pm.response.to.have.status(400);",
+									"});",
+									"",
+									"pm.test(\"Error for missing book_id\", function () {",
+									"    const res = pm.response.json();",
+									"    pm.expect(res.success).to.equal(false);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{"key": "Content-Type", "value": "application/json"}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{}"
+						},
+						"url": {
+							"raw": "{{base_url}}/users/{{user_id}}/loans",
+							"host": ["{{base_url}}"],
+							"path": ["users", "{{user_id}}", "loans"]
+						}
+					}
+				}
+			]
+		},
+		{
+			"name": "Error Cases",
+			"item": [
+				{
+					"name": "Create User - Missing Fields",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 400\", function () {",
+									"    pm.response.to.have.status(400);",
+									"});",
+									"",
+									"pm.test(\"Error message for missing fields\", function () {",
+									"    const res = pm.response.json();",
+									"    pm.expect(res.success).to.equal(false);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{"key": "Content-Type", "value": "application/json"}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\"username\": \"testuser\"}"
+						},
+						"url": {
+							"raw": "{{base_url}}/users/",
+							"host": ["{{base_url}}"],
+							"path": ["users", ""]
+						}
+					}
+				},
+				{
+					"name": "Create User - Duplicate Username",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 400\", function () {",
+									"    pm.response.to.have.status(400);",
+									"});",
+									"",
+									"pm.test(\"Error message for duplicate username\", function () {",
+									"    const res = pm.response.json();",
+									"    pm.expect(res.success).to.equal(false);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{"key": "Content-Type", "value": "application/json"}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\"username\": \"duplicate\", \"email\": \"diff@example.com\", \"password\": \"pass123\"}"
+						},
+						"url": {
+							"raw": "{{base_url}}/users/",
+							"host": ["{{base_url}}"],
+							"path": ["users", ""]
+						}
+					}
+				}
+			]
+		}
+	],
+	"variable": [
+		{
+			"key": "base_url",
+			"value": "http://127.0.0.1:8003"
+		},
+		{
+			"key": "user_id",
+			"value": ""
+		},
+		{
+			"key": "book_id",
+			"value": ""
+		},
+		{
+			"key": "loan_id",
+			"value": ""
+		}
+	]
+}
