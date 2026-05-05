@@ -1,12 +1,13 @@
 from flask import Flask, jsonify
 from db import init_db
-
+from router import v1
 
 app = Flask(__name__)
 
 app.config["MONGO_URI"] = "mongodb://localhost:27017/payment_db"
 
 init_db(app)
+app.register_blueprint(v1.v1_bp, url_prefix='/api/v1/payments')
 
 @app.route('/')
 def index():
