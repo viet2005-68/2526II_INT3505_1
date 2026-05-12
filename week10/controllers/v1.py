@@ -1,57 +1,99 @@
 from flask import request, jsonify
-
-payments_v1 = []
+from bson import ObjectId
+from db import mongo, serialize_doc
 
 
 def create_payment():
     data = request.get_json()
 
     payment = {
-        "id": len(payments_v1) + 1,
         "cardNumber": data["cardNumber"],
         "amount": data["amount"]
     }
 
-    payments_v1.append(payment)
+    result = mongo.db.payments_v1.insert_one(payment)
 
-    return jsonify(payment), 201
+    return jsonify({
+        "message": "Created",
+        "id": str(result.inserted_id)
+    }), 201
 
 
 def get_payments():
-    return jsonify(payments_v1)
+    payments = mongo.db.payments_v1.find()
+
+    return jsonify([
+        serialize_doc(p)
+        for p in payments
+    ])
 
 
 def get_payment(id):
-    for payment in payments_v1:
-        if payment["id"] == id:
-            return jsonify(payment)
+    try:
+        payment = mongo.db.payments_v1.find_one({
+            "_id": ObjectId(id)
+        })
 
-    return jsonify({
-        "error": "Payment not found"
-    }), 404
+    except:
+        return jsonify({
+            "error": "Invalid ID"
+        }), 400
+
+    if not payment:
+        return jsonify({
+            "error": "Payment not found"
+        }), 404
+
+    return jsonify(
+        serialize_doc(payment)
+    )
 
 
 def update_payment(id):
     data = request.get_json()
 
-    for payment in payments_v1:
-        if payment["id"] == id:
-            payment["amount"] = data["amount"]
+    try:
+        result = mongo.db.payments_v1.update_one(
+            {
+                "_id": ObjectId(id)
+            },
+            {
+                "$set": {
+                    "amount": data["amount"]
+                }
+            }
+        )
 
-            return jsonify(payment)
+    except:
+        return jsonify({
+            "error": "Invalid ID"
+        }), 400
+
+    if not result.matched_count:
+        return jsonify({
+            "error": "Payment not found"
+        }), 404
 
     return jsonify({
-        "error": "Payment not found"
-    }), 404
+        "message": "Updated"
+    })
 
 
 def delete_payment(id):
-    global payments_v1
+    try:
+        result = mongo.db.payments_v1.delete_one({
+            "_id": ObjectId(id)
+        })
 
-    payments_v1 = [
-        p for p in payments_v1
-        if p["id"] != id
-    ]
+    except:
+        return jsonify({
+            "error": "Invalid ID"
+        }), 400
+
+    if not result.deleted_count:
+        return jsonify({
+            "error": "Payment not found"
+        }), 404
 
     return jsonify({
         "message": "Deleted"
