@@ -2,12 +2,15 @@ from flask import Flask, jsonify, request
 from routes.payments import bp as payments_bp
 from db import init_db
 from utils.logger import logger
+from utils.limiter import limiter
 
 app = Flask(__name__)
 
 app.config["MONGO_URI"] = "mongodb://localhost:27017/payment_db"
 
 init_db(app)
+
+limiter.init_app(app)
 
 app.register_blueprint(
     payments_bp,
@@ -47,6 +50,14 @@ def handle_exception(e):
     return jsonify({
         "error": "Internal Server Error"
     }), 500
+
+
+@app.errorhandler(429)
+def ratelimit_handler(e):
+    return jsonify({
+        "error": "Rate limit exceeded",
+        "message": str(e.description)
+    }), 429
 
 
 @app.route("/")

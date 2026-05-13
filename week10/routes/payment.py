@@ -1,5 +1,7 @@
 from flask import Blueprint, request, jsonify
 from controllers import v1, v2
+from utils.limiter import limiter
+
 
 bp = Blueprint("payments", __name__)
 
@@ -14,6 +16,7 @@ def get_api_version():
 
 
 @bp.route("/", methods=["POST"])
+@limiter.limit("10 per minute")
 def create_dispatch():
     version = get_api_version()
 
@@ -29,6 +32,7 @@ def create_dispatch():
 
 
 @bp.route("/", methods=["GET"])
+@limiter.limit("30 per minute")
 def list_dispatch():
     version = get_api_version()
 
@@ -44,6 +48,7 @@ def list_dispatch():
 
 
 @bp.route("/<int:id>", methods=["GET"])
+@limiter.limit("30 per minute")
 def get_dispatch(id):
     version = get_api_version()
 
@@ -74,6 +79,7 @@ def update_dispatch(id):
 
 
 @bp.route("/<int:id>", methods=["DELETE"])
+@limiter.limit("5 per minute")
 def delete_dispatch(id):
     version = get_api_version()
 
