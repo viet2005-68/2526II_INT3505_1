@@ -3,6 +3,7 @@ from routes.payments import bp as payments_bp
 from db import init_db
 from utils.logger import logger
 from utils.limiter import limiter
+from prometheus_flask_exporter import PrometheusMetrics
 
 app = Flask(__name__)
 
@@ -11,6 +12,14 @@ app.config["MONGO_URI"] = "mongodb://localhost:27017/payment_db"
 init_db(app)
 
 limiter.init_app(app)
+
+metrics = PrometheusMetrics(app)
+
+metrics.info(
+    "app_info",
+    "Payment API Monitoring",
+    version="1.0.0"
+)
 
 app.register_blueprint(
     payments_bp,
