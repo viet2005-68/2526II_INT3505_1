@@ -1,7 +1,7 @@
 from flask import request, jsonify
 from bson import ObjectId
 from db import mongo, serialize_doc
-
+from utils.logger import logger
 
 def create_payment():
     data = request.get_json()
@@ -14,9 +14,17 @@ def create_payment():
         },
         "status": "processing"
     }
+    logger.info({
+        "event": "payment_v2_create_request",
+        "body": data
+    })
 
     result = mongo.db.payments_v2.insert_one(payment)
 
+    logger.info({
+        "event": "payment_v2_created",
+        "payment_id": str(result.inserted_id)
+    })
     return jsonify({
         "message": "Created",
         "id": str(result.inserted_id)

@@ -1,6 +1,7 @@
-from flask import Flask, jsonify
+from flask import Flask, jsonify, request
 from routes.payments import bp as payments_bp
 from db import init_db
+from utils.logger import logger
 
 app = Flask(__name__)
 
@@ -12,6 +13,41 @@ app.register_blueprint(
     payments_bp,
     url_prefix="/api/payments"
 )
+
+@app.before_request
+def log_request():
+    logger.info({
+        "event": "incoming_request",
+        "method": request.method,
+        "path": request.path,
+        "args": request.args.to_dict(),
+        "body": request.get_json(silent=True)
+    })
+
+
+@app.after_request
+def log_response(response):
+    logger.info({
+        "event": "response_sent",
+        "status": response.status_code,
+        "path": request.path
+    })
+
+    return response
+
+
+@app.errorhandler(Exception)
+def handle_exception(e):
+    logger.error({
+        "event": "internal_error",
+        "error": str(e),
+        "path": request.path
+    })
+
+    return jsonify({
+        "error": "Internal Server Error"
+    }), 500
+
 
 @app.route("/")
 def home():
