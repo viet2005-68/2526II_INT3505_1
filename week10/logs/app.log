@@ -1,0 +1,300 @@
+[2026-05-15 01:25:19,641] [INFO] {'event': 'manual_logger_test'}
+[2026-05-15 01:37:36,481] [INFO] {'event': 'incoming_request', 'method': 'GET', 'path': '/', 'args': {}, 'body': None}
+[2026-05-15 01:37:36,482] [INFO] {'event': 'response_sent', 'status': 200, 'path': '/'}
+[2026-05-15 01:37:43,644] [INFO] {'event': 'incoming_request', 'method': 'POST', 'path': '/api/payments', 'args': {}, 'body': {'method': 'momo', 'amount': {'value': 50000, 'currency': 'VND'}}}
+[2026-05-15 01:37:43,645] [INFO] {'event': 'response_sent', 'status': 308, 'path': '/api/payments'}
+[2026-05-15 01:37:43,650] [INFO] {'event': 'incoming_request', 'method': 'POST', 'path': '/api/payments/', 'args': {}, 'body': {'method': 'momo', 'amount': {'value': 50000, 'currency': 'VND'}}}
+[2026-05-15 01:37:43,651] [INFO] {'event': 'POST_create_dispatch', 'version': '2', 'status': 'processing'}
+[2026-05-15 01:37:43,651] [INFO] {'event': 'payment_v2_create_request', 'body': {'method': 'momo', 'amount': {'value': 50000, 'currency': 'VND'}}, 'status': 'received'}
+[2026-05-15 01:37:43,659] [INFO] {'event': 'payment_v2_created', 'payment_id': '6a061677790f65795851bbe0', 'status': 'success'}
+[2026-05-15 01:37:43,659] [INFO] {'event': 'POST_create_dispatch', 'version': '2', 'status': 'completed', 'breaker_state': 'closed'}
+[2026-05-15 01:37:43,659] [INFO] {'event': 'response_sent', 'status': 201, 'path': '/api/payments/'}
+[2026-05-15 01:37:47,248] [INFO] {'event': 'incoming_request', 'method': 'POST', 'path': '/api/payments', 'args': {}, 'body': {'method': 'momo', 'amount': {'value': 50000, 'currency': 'VND'}}}
+[2026-05-15 01:37:47,249] [INFO] {'event': 'response_sent', 'status': 308, 'path': '/api/payments'}
+[2026-05-15 01:37:47,253] [INFO] {'event': 'incoming_request', 'method': 'POST', 'path': '/api/payments/', 'args': {}, 'body': {'method': 'momo', 'amount': {'value': 50000, 'currency': 'VND'}}}
+[2026-05-15 01:37:47,254] [INFO] {'event': 'POST_create_dispatch', 'version': '2', 'status': 'processing'}
+[2026-05-15 01:37:47,254] [INFO] {'event': 'payment_v2_create_request', 'body': {'method': 'momo', 'amount': {'value': 50000, 'currency': 'VND'}}, 'status': 'received'}
+[2026-05-15 01:37:47,256] [INFO] {'event': 'payment_v2_created', 'payment_id': '6a06167b790f65795851bbe1', 'status': 'success'}
+[2026-05-15 01:37:47,256] [INFO] {'event': 'POST_create_dispatch', 'version': '2', 'status': 'completed', 'breaker_state': 'closed'}
+[2026-05-15 01:37:47,256] [INFO] {'event': 'response_sent', 'status': 201, 'path': '/api/payments/'}
+[2026-05-15 01:38:09,160] [INFO] {'event': 'response_sent', 'status': 403, 'path': '/api/payments'}
+[2026-05-15 01:38:11,136] [INFO] {'event': 'response_sent', 'status': 403, 'path': '/api/payments'}
+[2026-05-15 01:38:12,399] [INFO] {'event': 'response_sent', 'status': 403, 'path': '/api/payments'}
+[2026-05-15 01:38:18,951] [INFO] {'event': 'incoming_request', 'method': 'GET', 'path': '/api/status', 'args': {}, 'body': None}
+[2026-05-15 01:38:18,952] [INFO] {'event': 'response_sent', 'status': 200, 'path': '/api/status'}
+[2026-05-15 01:38:29,036] [INFO] {'event': 'incoming_request', 'method': 'GET', 'path': '/api/data', 'args': {}, 'body': None}
+[2026-05-15 01:38:29,037] [INFO] {'event': 'response_sent', 'status': 200, 'path': '/api/data'}
+[2026-05-15 01:38:32,675] [INFO] {'event': 'incoming_request', 'method': 'GET', 'path': '/api/data', 'args': {}, 'body': None}
+[2026-05-15 01:38:32,676] [INFO] {'event': 'response_sent', 'status': 200, 'path': '/api/data'}
+[2026-05-15 01:38:33,863] [INFO] {'event': 'incoming_request', 'method': 'GET', 'path': '/api/data', 'args': {}, 'body': None}
+[2026-05-15 01:38:33,964] [INFO] {'event': 'response_sent', 'status': 500, 'path': '/api/data'}
+[2026-05-15 01:38:35,295] [INFO] {'event': 'incoming_request', 'method': 'GET', 'path': '/api/data', 'args': {}, 'body': None}
+[2026-05-15 01:38:35,296] [INFO] {'event': 'response_sent', 'status': 200, 'path': '/api/data'}
+[2026-05-15 01:39:09,712] [INFO] {'event': 'incoming_request', 'method': 'GET', 'path': '/api/status', 'args': {}, 'body': None}
+[2026-05-15 01:39:09,713] [INFO] {'event': 'response_sent', 'status': 200, 'path': '/api/status'}
+[2026-05-15 01:39:12,849] [INFO] {'event': 'incoming_request', 'method': 'GET', 'path': '/api/status', 'args': {}, 'body': None}
+[2026-05-15 01:39:12,849] [INFO] {'event': 'response_sent', 'status': 200, 'path': '/api/status'}
+[2026-05-15 01:40:33,154] [INFO] {'event': 'incoming_request', 'method': 'POST', 'path': '/api/payments', 'args': {}, 'body': {'method': 'momo', 'amount': {'value': 50000, 'currency': 'VND'}}}
+[2026-05-15 01:40:33,155] [INFO] {'event': 'response_sent', 'status': 308, 'path': '/api/payments'}
+[2026-05-15 01:40:33,159] [INFO] {'event': 'incoming_request', 'method': 'POST', 'path': '/api/payments/', 'args': {}, 'body': {'method': 'momo', 'amount': {'value': 50000, 'currency': 'VND'}}}
+[2026-05-15 01:40:33,160] [INFO] {'event': 'POST_create_dispatch', 'version': '2', 'status': 'processing'}
+[2026-05-15 01:40:33,161] [INFO] {'event': 'payment_v2_create_request', 'body': {'method': 'momo', 'amount': {'value': 50000, 'currency': 'VND'}}, 'status': 'received'}
+[2026-05-15 01:40:33,177] [INFO] {'event': 'payment_v2_created', 'payment_id': '6a06172139a2464bdb0f03ce', 'status': 'success'}
+[2026-05-15 01:40:33,177] [INFO] {'event': 'POST_create_dispatch', 'version': '2', 'status': 'completed', 'breaker_state': 'closed'}
+[2026-05-15 01:40:33,177] [INFO] {'event': 'response_sent', 'status': 201, 'path': '/api/payments/'}
+[2026-05-15 01:40:34,253] [INFO] {'event': 'incoming_request', 'method': 'POST', 'path': '/api/payments', 'args': {}, 'body': {'method': 'momo', 'amount': {'value': 50000, 'currency': 'VND'}}}
+[2026-05-15 01:40:34,254] [INFO] {'event': 'response_sent', 'status': 308, 'path': '/api/payments'}
+[2026-05-15 01:40:34,257] [INFO] {'event': 'incoming_request', 'method': 'POST', 'path': '/api/payments/', 'args': {}, 'body': {'method': 'momo', 'amount': {'value': 50000, 'currency': 'VND'}}}
+[2026-05-15 01:40:34,258] [INFO] {'event': 'POST_create_dispatch', 'version': '2', 'status': 'processing'}
+[2026-05-15 01:40:34,258] [INFO] {'event': 'payment_v2_create_request', 'body': {'method': 'momo', 'amount': {'value': 50000, 'currency': 'VND'}}, 'status': 'received'}
+[2026-05-15 01:40:34,259] [INFO] {'event': 'payment_v2_created', 'payment_id': '6a06172239a2464bdb0f03cf', 'status': 'success'}
+[2026-05-15 01:40:34,260] [INFO] {'event': 'POST_create_dispatch', 'version': '2', 'status': 'completed', 'breaker_state': 'closed'}
+[2026-05-15 01:40:34,260] [INFO] {'event': 'response_sent', 'status': 201, 'path': '/api/payments/'}
+[2026-05-15 01:40:35,368] [INFO] {'event': 'incoming_request', 'method': 'POST', 'path': '/api/payments', 'args': {}, 'body': {'method': 'momo', 'amount': {'value': 50000, 'currency': 'VND'}}}
+[2026-05-15 01:40:35,368] [INFO] {'event': 'response_sent', 'status': 308, 'path': '/api/payments'}
+[2026-05-15 01:40:35,373] [INFO] {'event': 'incoming_request', 'method': 'POST', 'path': '/api/payments/', 'args': {}, 'body': {'method': 'momo', 'amount': {'value': 50000, 'currency': 'VND'}}}
+[2026-05-15 01:40:35,374] [INFO] {'event': 'POST_create_dispatch', 'version': '2', 'status': 'processing'}
+[2026-05-15 01:40:35,375] [INFO] {'event': 'payment_v2_create_request', 'body': {'method': 'momo', 'amount': {'value': 50000, 'currency': 'VND'}}, 'status': 'received'}
+[2026-05-15 01:40:35,377] [INFO] {'event': 'payment_v2_created', 'payment_id': '6a06172339a2464bdb0f03d0', 'status': 'success'}
+[2026-05-15 01:40:35,377] [INFO] {'event': 'POST_create_dispatch', 'version': '2', 'status': 'completed', 'breaker_state': 'closed'}
+[2026-05-15 01:40:35,377] [INFO] {'event': 'response_sent', 'status': 201, 'path': '/api/payments/'}
+[2026-05-15 01:40:36,200] [INFO] {'event': 'incoming_request', 'method': 'POST', 'path': '/api/payments', 'args': {}, 'body': {'method': 'momo', 'amount': {'value': 50000, 'currency': 'VND'}}}
+[2026-05-15 01:40:36,200] [INFO] {'event': 'response_sent', 'status': 308, 'path': '/api/payments'}
+[2026-05-15 01:40:36,204] [INFO] {'event': 'incoming_request', 'method': 'POST', 'path': '/api/payments/', 'args': {}, 'body': {'method': 'momo', 'amount': {'value': 50000, 'currency': 'VND'}}}
+[2026-05-15 01:40:36,205] [INFO] {'event': 'POST_create_dispatch', 'version': '2', 'status': 'processing'}
+[2026-05-15 01:40:36,205] [INFO] {'event': 'payment_v2_create_request', 'body': {'method': 'momo', 'amount': {'value': 50000, 'currency': 'VND'}}, 'status': 'received'}
+[2026-05-15 01:40:36,206] [INFO] {'event': 'payment_v2_created', 'payment_id': '6a06172439a2464bdb0f03d1', 'status': 'success'}
+[2026-05-15 01:40:36,206] [INFO] {'event': 'POST_create_dispatch', 'version': '2', 'status': 'completed', 'breaker_state': 'closed'}
+[2026-05-15 01:40:36,207] [INFO] {'event': 'response_sent', 'status': 201, 'path': '/api/payments/'}
+[2026-05-15 01:40:37,018] [INFO] {'event': 'incoming_request', 'method': 'POST', 'path': '/api/payments', 'args': {}, 'body': {'method': 'momo', 'amount': {'value': 50000, 'currency': 'VND'}}}
+[2026-05-15 01:40:37,019] [INFO] {'event': 'response_sent', 'status': 308, 'path': '/api/payments'}
+[2026-05-15 01:40:37,024] [INFO] {'event': 'incoming_request', 'method': 'POST', 'path': '/api/payments/', 'args': {}, 'body': {'method': 'momo', 'amount': {'value': 50000, 'currency': 'VND'}}}
+[2026-05-15 01:40:37,025] [INFO] {'event': 'POST_create_dispatch', 'version': '2', 'status': 'processing'}
+[2026-05-15 01:40:37,025] [INFO] {'event': 'payment_v2_create_request', 'body': {'method': 'momo', 'amount': {'value': 50000, 'currency': 'VND'}}, 'status': 'received'}
+[2026-05-15 01:40:37,026] [INFO] {'event': 'payment_v2_created', 'payment_id': '6a06172539a2464bdb0f03d2', 'status': 'success'}
+[2026-05-15 01:40:37,026] [INFO] {'event': 'POST_create_dispatch', 'version': '2', 'status': 'completed', 'breaker_state': 'closed'}
+[2026-05-15 01:40:37,026] [INFO] {'event': 'response_sent', 'status': 201, 'path': '/api/payments/'}
+[2026-05-15 01:40:38,148] [INFO] {'event': 'incoming_request', 'method': 'POST', 'path': '/api/payments', 'args': {}, 'body': {'method': 'momo', 'amount': {'value': 50000, 'currency': 'VND'}}}
+[2026-05-15 01:40:38,149] [INFO] {'event': 'response_sent', 'status': 308, 'path': '/api/payments'}
+[2026-05-15 01:40:38,153] [INFO] {'event': 'incoming_request', 'method': 'POST', 'path': '/api/payments/', 'args': {}, 'body': {'method': 'momo', 'amount': {'value': 50000, 'currency': 'VND'}}}
+[2026-05-15 01:40:38,154] [INFO] {'event': 'POST_create_dispatch', 'version': '2', 'status': 'processing'}
+[2026-05-15 01:40:38,154] [INFO] {'event': 'payment_v2_create_request', 'body': {'method': 'momo', 'amount': {'value': 50000, 'currency': 'VND'}}, 'status': 'received'}
+[2026-05-15 01:40:38,156] [INFO] {'event': 'payment_v2_created', 'payment_id': '6a06172639a2464bdb0f03d3', 'status': 'success'}
+[2026-05-15 01:40:38,156] [INFO] {'event': 'POST_create_dispatch', 'version': '2', 'status': 'completed', 'breaker_state': 'closed'}
+[2026-05-15 01:40:38,156] [INFO] {'event': 'response_sent', 'status': 201, 'path': '/api/payments/'}
+[2026-05-15 01:40:39,331] [INFO] {'event': 'incoming_request', 'method': 'POST', 'path': '/api/payments', 'args': {}, 'body': {'method': 'momo', 'amount': {'value': 50000, 'currency': 'VND'}}}
+[2026-05-15 01:40:39,332] [INFO] {'event': 'response_sent', 'status': 308, 'path': '/api/payments'}
+[2026-05-15 01:40:39,338] [INFO] {'event': 'incoming_request', 'method': 'POST', 'path': '/api/payments/', 'args': {}, 'body': {'method': 'momo', 'amount': {'value': 50000, 'currency': 'VND'}}}
+[2026-05-15 01:40:39,339] [INFO] {'event': 'POST_create_dispatch', 'version': '2', 'status': 'processing'}
+[2026-05-15 01:40:39,339] [INFO] {'event': 'payment_v2_create_request', 'body': {'method': 'momo', 'amount': {'value': 50000, 'currency': 'VND'}}, 'status': 'received'}
+[2026-05-15 01:40:39,340] [INFO] {'event': 'payment_v2_created', 'payment_id': '6a06172739a2464bdb0f03d4', 'status': 'success'}
+[2026-05-15 01:40:39,341] [INFO] {'event': 'POST_create_dispatch', 'version': '2', 'status': 'completed', 'breaker_state': 'closed'}
+[2026-05-15 01:40:39,341] [INFO] {'event': 'response_sent', 'status': 201, 'path': '/api/payments/'}
+[2026-05-15 01:40:40,304] [INFO] {'event': 'incoming_request', 'method': 'POST', 'path': '/api/payments', 'args': {}, 'body': {'method': 'momo', 'amount': {'value': 50000, 'currency': 'VND'}}}
+[2026-05-15 01:40:40,304] [INFO] {'event': 'response_sent', 'status': 308, 'path': '/api/payments'}
+[2026-05-15 01:40:40,309] [INFO] {'event': 'incoming_request', 'method': 'POST', 'path': '/api/payments/', 'args': {}, 'body': {'method': 'momo', 'amount': {'value': 50000, 'currency': 'VND'}}}
+[2026-05-15 01:40:40,310] [INFO] {'event': 'POST_create_dispatch', 'version': '2', 'status': 'processing'}
+[2026-05-15 01:40:40,310] [INFO] {'event': 'payment_v2_create_request', 'body': {'method': 'momo', 'amount': {'value': 50000, 'currency': 'VND'}}, 'status': 'received'}
+[2026-05-15 01:40:40,312] [INFO] {'event': 'payment_v2_created', 'payment_id': '6a06172839a2464bdb0f03d5', 'status': 'success'}
+[2026-05-15 01:40:40,312] [INFO] {'event': 'POST_create_dispatch', 'version': '2', 'status': 'completed', 'breaker_state': 'closed'}
+[2026-05-15 01:40:40,312] [INFO] {'event': 'response_sent', 'status': 201, 'path': '/api/payments/'}
+[2026-05-15 01:40:41,211] [INFO] {'event': 'incoming_request', 'method': 'POST', 'path': '/api/payments', 'args': {}, 'body': {'method': 'momo', 'amount': {'value': 50000, 'currency': 'VND'}}}
+[2026-05-15 01:40:41,212] [INFO] {'event': 'response_sent', 'status': 308, 'path': '/api/payments'}
+[2026-05-15 01:40:41,217] [INFO] {'event': 'incoming_request', 'method': 'POST', 'path': '/api/payments/', 'args': {}, 'body': {'method': 'momo', 'amount': {'value': 50000, 'currency': 'VND'}}}
+[2026-05-15 01:40:41,218] [INFO] {'event': 'POST_create_dispatch', 'version': '2', 'status': 'processing'}
+[2026-05-15 01:40:41,218] [INFO] {'event': 'payment_v2_create_request', 'body': {'method': 'momo', 'amount': {'value': 50000, 'currency': 'VND'}}, 'status': 'received'}
+[2026-05-15 01:40:41,220] [INFO] {'event': 'payment_v2_created', 'payment_id': '6a06172939a2464bdb0f03d6', 'status': 'success'}
+[2026-05-15 01:40:41,220] [INFO] {'event': 'POST_create_dispatch', 'version': '2', 'status': 'completed', 'breaker_state': 'closed'}
+[2026-05-15 01:40:41,221] [INFO] {'event': 'response_sent', 'status': 201, 'path': '/api/payments/'}
+[2026-05-15 01:40:42,145] [INFO] {'event': 'incoming_request', 'method': 'POST', 'path': '/api/payments', 'args': {}, 'body': {'method': 'momo', 'amount': {'value': 50000, 'currency': 'VND'}}}
+[2026-05-15 01:40:42,146] [INFO] {'event': 'response_sent', 'status': 308, 'path': '/api/payments'}
+[2026-05-15 01:40:42,150] [INFO] {'event': 'incoming_request', 'method': 'POST', 'path': '/api/payments/', 'args': {}, 'body': {'method': 'momo', 'amount': {'value': 50000, 'currency': 'VND'}}}
+[2026-05-15 01:40:42,151] [INFO] {'event': 'POST_create_dispatch', 'version': '2', 'status': 'processing'}
+[2026-05-15 01:40:42,151] [INFO] {'event': 'payment_v2_create_request', 'body': {'method': 'momo', 'amount': {'value': 50000, 'currency': 'VND'}}, 'status': 'received'}
+[2026-05-15 01:40:42,153] [INFO] {'event': 'payment_v2_created', 'payment_id': '6a06172a39a2464bdb0f03d7', 'status': 'success'}
+[2026-05-15 01:40:42,153] [INFO] {'event': 'POST_create_dispatch', 'version': '2', 'status': 'completed', 'breaker_state': 'closed'}
+[2026-05-15 01:40:42,153] [INFO] {'event': 'response_sent', 'status': 201, 'path': '/api/payments/'}
+[2026-05-15 01:40:43,170] [INFO] {'event': 'incoming_request', 'method': 'POST', 'path': '/api/payments', 'args': {}, 'body': {'method': 'momo', 'amount': {'value': 50000, 'currency': 'VND'}}}
+[2026-05-15 01:40:43,171] [INFO] {'event': 'response_sent', 'status': 308, 'path': '/api/payments'}
+[2026-05-15 01:40:43,177] [INFO] {'event': 'incoming_request', 'method': 'POST', 'path': '/api/payments/', 'args': {}, 'body': {'method': 'momo', 'amount': {'value': 50000, 'currency': 'VND'}}}
+[2026-05-15 01:40:43,179] [INFO] {'event': 'response_sent', 'status': 429, 'path': '/api/payments/'}
+[2026-05-15 01:40:44,910] [INFO] {'event': 'incoming_request', 'method': 'POST', 'path': '/api/payments', 'args': {}, 'body': {'method': 'momo', 'amount': {'value': 50000, 'currency': 'VND'}}}
+[2026-05-15 01:40:44,911] [INFO] {'event': 'response_sent', 'status': 308, 'path': '/api/payments'}
+[2026-05-15 01:40:44,915] [INFO] {'event': 'incoming_request', 'method': 'POST', 'path': '/api/payments/', 'args': {}, 'body': {'method': 'momo', 'amount': {'value': 50000, 'currency': 'VND'}}}
+[2026-05-15 01:40:44,916] [INFO] {'event': 'response_sent', 'status': 429, 'path': '/api/payments/'}
+[2026-05-15 01:40:45,864] [INFO] {'event': 'incoming_request', 'method': 'POST', 'path': '/api/payments', 'args': {}, 'body': {'method': 'momo', 'amount': {'value': 50000, 'currency': 'VND'}}}
+[2026-05-15 01:40:45,864] [INFO] {'event': 'response_sent', 'status': 308, 'path': '/api/payments'}
+[2026-05-15 01:40:45,868] [INFO] {'event': 'incoming_request', 'method': 'POST', 'path': '/api/payments/', 'args': {}, 'body': {'method': 'momo', 'amount': {'value': 50000, 'currency': 'VND'}}}
+[2026-05-15 01:40:45,869] [INFO] {'event': 'response_sent', 'status': 429, 'path': '/api/payments/'}
+[2026-05-15 01:46:30,040] [INFO] {'event': 'incoming_request', 'method': 'POST', 'path': '/api/payments', 'args': {}, 'body': {'method': 'momo', 'amount': {'value': 50000, 'currency': 'VND'}}}
+[2026-05-15 01:46:30,041] [INFO] {'event': 'response_sent', 'status': 308, 'path': '/api/payments'}
+[2026-05-15 01:46:30,046] [INFO] {'event': 'incoming_request', 'method': 'POST', 'path': '/api/payments/', 'args': {}, 'body': {'method': 'momo', 'amount': {'value': 50000, 'currency': 'VND'}}}
+[2026-05-15 01:46:30,047] [INFO] {'event': 'POST_create_dispatch', 'version': '2', 'status': 'processing', 'breaker_state': 'closed'}
+[2026-05-15 01:46:30,047] [INFO] {'event': 'payment_v2_create_request', 'body': {'method': 'momo', 'amount': {'value': 50000, 'currency': 'VND'}}, 'status': 'received'}
+[2026-05-15 01:46:30,063] [INFO] {'event': 'payment_v2_created', 'payment_id': '6a061886e81875306ffeabca', 'status': 'success'}
+[2026-05-15 01:46:30,064] [INFO] {'event': 'POST_create_dispatch', 'version': '2', 'status': 'completed', 'breaker_state': 'closed'}
+[2026-05-15 01:46:30,064] [INFO] {'event': 'response_sent', 'status': 201, 'path': '/api/payments/'}
+[2026-05-15 01:46:31,424] [INFO] {'event': 'incoming_request', 'method': 'POST', 'path': '/api/payments', 'args': {}, 'body': {'method': 'momo', 'amount': {'value': 50000, 'currency': 'VND'}}}
+[2026-05-15 01:46:31,424] [INFO] {'event': 'response_sent', 'status': 308, 'path': '/api/payments'}
+[2026-05-15 01:46:31,429] [INFO] {'event': 'incoming_request', 'method': 'POST', 'path': '/api/payments/', 'args': {}, 'body': {'method': 'momo', 'amount': {'value': 50000, 'currency': 'VND'}}}
+[2026-05-15 01:46:31,430] [INFO] {'event': 'POST_create_dispatch', 'version': '2', 'status': 'processing', 'breaker_state': 'closed'}
+[2026-05-15 01:46:31,430] [INFO] {'event': 'payment_v2_create_request', 'body': {'method': 'momo', 'amount': {'value': 50000, 'currency': 'VND'}}, 'status': 'received'}
+[2026-05-15 01:46:31,432] [INFO] {'event': 'payment_v2_created', 'payment_id': '6a061887e81875306ffeabcb', 'status': 'success'}
+[2026-05-15 01:46:31,433] [INFO] {'event': 'POST_create_dispatch', 'version': '2', 'status': 'completed', 'breaker_state': 'closed'}
+[2026-05-15 01:46:31,433] [INFO] {'event': 'response_sent', 'status': 201, 'path': '/api/payments/'}
+[2026-05-15 01:46:41,169] [INFO] {'event': 'incoming_request', 'method': 'POST', 'path': '/api/payments', 'args': {}, 'body': {'method': 'momo', 'amount': {'value': 50000, 'currency': 'VND'}}}
+[2026-05-15 01:46:41,170] [INFO] {'event': 'response_sent', 'status': 308, 'path': '/api/payments'}
+[2026-05-15 01:46:41,174] [INFO] {'event': 'incoming_request', 'method': 'POST', 'path': '/api/payments/', 'args': {}, 'body': {'method': 'momo', 'amount': {'value': 50000, 'currency': 'VND'}}}
+[2026-05-15 01:46:41,175] [INFO] {'event': 'POST_create_dispatch', 'version': '2', 'status': 'processing', 'breaker_state': 'closed'}
+[2026-05-15 01:46:41,175] [INFO] {'event': 'payment_v2_create_request', 'body': {'method': 'momo', 'amount': {'value': 50000, 'currency': 'VND'}}, 'status': 'received'}
+[2026-05-15 01:46:41,176] [INFO] {'event': 'payment_v2_created', 'payment_id': '6a061891e81875306ffeabcc', 'status': 'success'}
+[2026-05-15 01:46:41,177] [INFO] {'event': 'POST_create_dispatch', 'version': '2', 'status': 'completed', 'breaker_state': 'closed'}
+[2026-05-15 01:46:41,177] [INFO] {'event': 'response_sent', 'status': 201, 'path': '/api/payments/'}
+[2026-05-15 01:46:42,090] [INFO] {'event': 'incoming_request', 'method': 'POST', 'path': '/api/payments', 'args': {}, 'body': {'method': 'momo', 'amount': {'value': 50000, 'currency': 'VND'}}}
+[2026-05-15 01:46:42,091] [INFO] {'event': 'response_sent', 'status': 308, 'path': '/api/payments'}
+[2026-05-15 01:46:42,096] [INFO] {'event': 'incoming_request', 'method': 'POST', 'path': '/api/payments/', 'args': {}, 'body': {'method': 'momo', 'amount': {'value': 50000, 'currency': 'VND'}}}
+[2026-05-15 01:46:42,097] [INFO] {'event': 'POST_create_dispatch', 'version': '2', 'status': 'processing', 'breaker_state': 'closed'}
+[2026-05-15 01:46:42,097] [INFO] {'event': 'payment_v2_create_request', 'body': {'method': 'momo', 'amount': {'value': 50000, 'currency': 'VND'}}, 'status': 'received'}
+[2026-05-15 01:46:42,099] [INFO] {'event': 'payment_v2_created', 'payment_id': '6a061892e81875306ffeabcd', 'status': 'success'}
+[2026-05-15 01:46:42,099] [INFO] {'event': 'POST_create_dispatch', 'version': '2', 'status': 'completed', 'breaker_state': 'closed'}
+[2026-05-15 01:46:42,099] [INFO] {'event': 'response_sent', 'status': 201, 'path': '/api/payments/'}
+[2026-05-15 01:46:42,989] [INFO] {'event': 'incoming_request', 'method': 'POST', 'path': '/api/payments', 'args': {}, 'body': {'method': 'momo', 'amount': {'value': 50000, 'currency': 'VND'}}}
+[2026-05-15 01:46:42,989] [INFO] {'event': 'response_sent', 'status': 308, 'path': '/api/payments'}
+[2026-05-15 01:46:42,994] [INFO] {'event': 'incoming_request', 'method': 'POST', 'path': '/api/payments/', 'args': {}, 'body': {'method': 'momo', 'amount': {'value': 50000, 'currency': 'VND'}}}
+[2026-05-15 01:46:42,995] [INFO] {'event': 'POST_create_dispatch', 'version': '2', 'status': 'processing', 'breaker_state': 'closed'}
+[2026-05-15 01:46:42,995] [INFO] {'event': 'payment_v2_create_request', 'body': {'method': 'momo', 'amount': {'value': 50000, 'currency': 'VND'}}, 'status': 'received'}
+[2026-05-15 01:46:42,997] [INFO] {'event': 'payment_v2_created', 'payment_id': '6a061892e81875306ffeabce', 'status': 'success'}
+[2026-05-15 01:46:42,998] [INFO] {'event': 'POST_create_dispatch', 'version': '2', 'status': 'completed', 'breaker_state': 'closed'}
+[2026-05-15 01:46:42,998] [INFO] {'event': 'response_sent', 'status': 201, 'path': '/api/payments/'}
+[2026-05-15 01:46:43,882] [INFO] {'event': 'incoming_request', 'method': 'POST', 'path': '/api/payments', 'args': {}, 'body': {'method': 'momo', 'amount': {'value': 50000, 'currency': 'VND'}}}
+[2026-05-15 01:46:43,883] [INFO] {'event': 'response_sent', 'status': 308, 'path': '/api/payments'}
+[2026-05-15 01:46:43,888] [INFO] {'event': 'incoming_request', 'method': 'POST', 'path': '/api/payments/', 'args': {}, 'body': {'method': 'momo', 'amount': {'value': 50000, 'currency': 'VND'}}}
+[2026-05-15 01:46:43,889] [INFO] {'event': 'POST_create_dispatch', 'version': '2', 'status': 'processing', 'breaker_state': 'closed'}
+[2026-05-15 01:46:43,889] [INFO] {'event': 'payment_v2_create_request', 'body': {'method': 'momo', 'amount': {'value': 50000, 'currency': 'VND'}}, 'status': 'received'}
+[2026-05-15 01:46:43,891] [INFO] {'event': 'payment_v2_created', 'payment_id': '6a061893e81875306ffeabcf', 'status': 'success'}
+[2026-05-15 01:46:43,891] [INFO] {'event': 'POST_create_dispatch', 'version': '2', 'status': 'completed', 'breaker_state': 'closed'}
+[2026-05-15 01:46:43,891] [INFO] {'event': 'response_sent', 'status': 201, 'path': '/api/payments/'}
+[2026-05-15 01:46:44,855] [INFO] {'event': 'incoming_request', 'method': 'POST', 'path': '/api/payments', 'args': {}, 'body': {'method': 'momo', 'amount': {'value': 50000, 'currency': 'VND'}}}
+[2026-05-15 01:46:44,856] [INFO] {'event': 'response_sent', 'status': 308, 'path': '/api/payments'}
+[2026-05-15 01:46:44,859] [INFO] {'event': 'incoming_request', 'method': 'POST', 'path': '/api/payments/', 'args': {}, 'body': {'method': 'momo', 'amount': {'value': 50000, 'currency': 'VND'}}}
+[2026-05-15 01:46:44,860] [INFO] {'event': 'POST_create_dispatch', 'version': '2', 'status': 'processing', 'breaker_state': 'closed'}
+[2026-05-15 01:46:44,860] [INFO] {'event': 'payment_v2_create_request', 'body': {'method': 'momo', 'amount': {'value': 50000, 'currency': 'VND'}}, 'status': 'received'}
+[2026-05-15 01:46:44,862] [INFO] {'event': 'payment_v2_created', 'payment_id': '6a061894e81875306ffeabd0', 'status': 'success'}
+[2026-05-15 01:46:44,862] [INFO] {'event': 'POST_create_dispatch', 'version': '2', 'status': 'completed', 'breaker_state': 'closed'}
+[2026-05-15 01:46:44,862] [INFO] {'event': 'response_sent', 'status': 201, 'path': '/api/payments/'}
+[2026-05-15 01:46:45,759] [INFO] {'event': 'incoming_request', 'method': 'POST', 'path': '/api/payments', 'args': {}, 'body': {'method': 'momo', 'amount': {'value': 50000, 'currency': 'VND'}}}
+[2026-05-15 01:46:45,759] [INFO] {'event': 'response_sent', 'status': 308, 'path': '/api/payments'}
+[2026-05-15 01:46:45,764] [INFO] {'event': 'incoming_request', 'method': 'POST', 'path': '/api/payments/', 'args': {}, 'body': {'method': 'momo', 'amount': {'value': 50000, 'currency': 'VND'}}}
+[2026-05-15 01:46:45,765] [INFO] {'event': 'POST_create_dispatch', 'version': '2', 'status': 'processing', 'breaker_state': 'closed'}
+[2026-05-15 01:46:45,765] [INFO] {'event': 'payment_v2_create_request', 'body': {'method': 'momo', 'amount': {'value': 50000, 'currency': 'VND'}}, 'status': 'received'}
+[2026-05-15 01:46:45,767] [INFO] {'event': 'payment_v2_created', 'payment_id': '6a061895e81875306ffeabd1', 'status': 'success'}
+[2026-05-15 01:46:45,767] [INFO] {'event': 'POST_create_dispatch', 'version': '2', 'status': 'completed', 'breaker_state': 'closed'}
+[2026-05-15 01:46:45,767] [INFO] {'event': 'response_sent', 'status': 201, 'path': '/api/payments/'}
+[2026-05-15 01:46:46,617] [INFO] {'event': 'incoming_request', 'method': 'POST', 'path': '/api/payments', 'args': {}, 'body': {'method': 'momo', 'amount': {'value': 50000, 'currency': 'VND'}}}
+[2026-05-15 01:46:46,618] [INFO] {'event': 'response_sent', 'status': 308, 'path': '/api/payments'}
+[2026-05-15 01:46:46,622] [INFO] {'event': 'incoming_request', 'method': 'POST', 'path': '/api/payments/', 'args': {}, 'body': {'method': 'momo', 'amount': {'value': 50000, 'currency': 'VND'}}}
+[2026-05-15 01:46:46,623] [INFO] {'event': 'POST_create_dispatch', 'version': '2', 'status': 'processing', 'breaker_state': 'closed'}
+[2026-05-15 01:46:46,623] [INFO] {'event': 'payment_v2_create_request', 'body': {'method': 'momo', 'amount': {'value': 50000, 'currency': 'VND'}}, 'status': 'received'}
+[2026-05-15 01:46:46,624] [INFO] {'event': 'payment_v2_created', 'payment_id': '6a061896e81875306ffeabd2', 'status': 'success'}
+[2026-05-15 01:46:46,624] [INFO] {'event': 'POST_create_dispatch', 'version': '2', 'status': 'completed', 'breaker_state': 'closed'}
+[2026-05-15 01:46:46,625] [INFO] {'event': 'response_sent', 'status': 201, 'path': '/api/payments/'}
+[2026-05-15 01:46:47,465] [INFO] {'event': 'incoming_request', 'method': 'POST', 'path': '/api/payments', 'args': {}, 'body': {'method': 'momo', 'amount': {'value': 50000, 'currency': 'VND'}}}
+[2026-05-15 01:46:47,466] [INFO] {'event': 'response_sent', 'status': 308, 'path': '/api/payments'}
+[2026-05-15 01:46:47,471] [INFO] {'event': 'incoming_request', 'method': 'POST', 'path': '/api/payments/', 'args': {}, 'body': {'method': 'momo', 'amount': {'value': 50000, 'currency': 'VND'}}}
+[2026-05-15 01:46:47,471] [INFO] {'event': 'POST_create_dispatch', 'version': '2', 'status': 'processing', 'breaker_state': 'closed'}
+[2026-05-15 01:46:47,472] [INFO] {'event': 'payment_v2_create_request', 'body': {'method': 'momo', 'amount': {'value': 50000, 'currency': 'VND'}}, 'status': 'received'}
+[2026-05-15 01:46:47,473] [INFO] {'event': 'payment_v2_created', 'payment_id': '6a061897e81875306ffeabd3', 'status': 'success'}
+[2026-05-15 01:46:47,473] [INFO] {'event': 'POST_create_dispatch', 'version': '2', 'status': 'completed', 'breaker_state': 'closed'}
+[2026-05-15 01:46:47,473] [INFO] {'event': 'response_sent', 'status': 201, 'path': '/api/payments/'}
+[2026-05-15 01:46:48,415] [INFO] {'event': 'incoming_request', 'method': 'POST', 'path': '/api/payments', 'args': {}, 'body': {'method': 'momo', 'amount': {'value': 50000, 'currency': 'VND'}}}
+[2026-05-15 01:46:48,416] [INFO] {'event': 'response_sent', 'status': 308, 'path': '/api/payments'}
+[2026-05-15 01:46:48,421] [INFO] {'event': 'incoming_request', 'method': 'POST', 'path': '/api/payments/', 'args': {}, 'body': {'method': 'momo', 'amount': {'value': 50000, 'currency': 'VND'}}}
+[2026-05-15 01:46:48,422] [WARNING] {'event': 'rate_limit_exceeded', 'error_type': 'RateLimitError', 'path': '/api/payments/', 'method': 'POST', 'message': '10 per 1 minute', 'status': 429}
+[2026-05-15 01:46:48,422] [INFO] {'event': 'response_sent', 'status': 429, 'path': '/api/payments/'}
+[2026-05-15 01:46:49,201] [INFO] {'event': 'incoming_request', 'method': 'POST', 'path': '/api/payments', 'args': {}, 'body': {'method': 'momo', 'amount': {'value': 50000, 'currency': 'VND'}}}
+[2026-05-15 01:46:49,202] [INFO] {'event': 'response_sent', 'status': 308, 'path': '/api/payments'}
+[2026-05-15 01:46:49,208] [INFO] {'event': 'incoming_request', 'method': 'POST', 'path': '/api/payments/', 'args': {}, 'body': {'method': 'momo', 'amount': {'value': 50000, 'currency': 'VND'}}}
+[2026-05-15 01:46:49,209] [WARNING] {'event': 'rate_limit_exceeded', 'error_type': 'RateLimitError', 'path': '/api/payments/', 'method': 'POST', 'message': '10 per 1 minute', 'status': 429}
+[2026-05-15 01:46:49,209] [INFO] {'event': 'response_sent', 'status': 429, 'path': '/api/payments/'}
+[2026-05-15 01:46:50,045] [INFO] {'event': 'incoming_request', 'method': 'POST', 'path': '/api/payments', 'args': {}, 'body': {'method': 'momo', 'amount': {'value': 50000, 'currency': 'VND'}}}
+[2026-05-15 01:46:50,045] [INFO] {'event': 'response_sent', 'status': 308, 'path': '/api/payments'}
+[2026-05-15 01:46:50,049] [INFO] {'event': 'incoming_request', 'method': 'POST', 'path': '/api/payments/', 'args': {}, 'body': {'method': 'momo', 'amount': {'value': 50000, 'currency': 'VND'}}}
+[2026-05-15 01:46:50,050] [WARNING] {'event': 'rate_limit_exceeded', 'error_type': 'RateLimitError', 'path': '/api/payments/', 'method': 'POST', 'message': '10 per 1 minute', 'status': 429}
+[2026-05-15 01:46:50,051] [INFO] {'event': 'response_sent', 'status': 429, 'path': '/api/payments/'}
+[2026-05-15 01:47:46,147] [INFO] {'event': 'incoming_request', 'method': 'GET', 'path': '/', 'args': {}, 'body': None}
+[2026-05-15 01:47:46,148] [INFO] {'event': 'response_sent', 'status': 200, 'path': '/'}
+[2026-05-15 01:48:11,748] [INFO] {'event': 'incoming_request', 'method': 'GET', 'path': '/', 'args': {}, 'body': None}
+[2026-05-15 01:48:11,748] [INFO] {'event': 'response_sent', 'status': 200, 'path': '/'}
+[2026-05-15 01:48:11,765] [INFO] {'event': 'incoming_request', 'method': 'GET', 'path': '/metrics', 'args': {}, 'body': None}
+[2026-05-15 01:48:11,768] [ERROR] {'event': 'internal_error', 'error_type': 'NotFound', 'error': '404 Not Found: The requested URL was not found on the server. If you entered the URL manually please check your spelling and try again.', 'path': '/metrics', 'method': 'GET', 'traceback': 'Traceback (most recent call last):\n  File "/home/vbear/miniconda3/lib/python3.13/site-packages/flask/app.py", line 917, in full_dispatch_request\n    rv = self.dispatch_request()\n  File "/home/vbear/miniconda3/lib/python3.13/site-packages/flask/app.py", line 891, in dispatch_request\n    self.raise_routing_exception(req)\n    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^\n  File "/home/vbear/miniconda3/lib/python3.13/site-packages/flask/app.py", line 500, in raise_routing_exception\n    raise request.routing_exception  # type: ignore[misc]\n    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File "/home/vbear/miniconda3/lib/python3.13/site-packages/flask/ctx.py", line 362, in match_request\n    result = self.url_adapter.match(return_rule=True)  # type: ignore\n  File "/home/vbear/miniconda3/lib/python3.13/site-packages/werkzeug/routing/map.py", line 629, in match\n    raise NotFound() from None\nwerkzeug.exceptions.NotFound: 404 Not Found: The requested URL was not found on the server. If you entered the URL manually please check your spelling and try again.\n', 'body': None, 'args': {}}
+[2026-05-15 01:48:11,768] [INFO] {'event': 'response_sent', 'status': 500, 'path': '/metrics'}
+[2026-05-15 01:48:27,293] [INFO] {'event': 'incoming_request', 'method': 'GET', 'path': '/metrics', 'args': {}, 'body': None}
+[2026-05-15 01:48:27,294] [ERROR] {'event': 'internal_error', 'error_type': 'NotFound', 'error': '404 Not Found: The requested URL was not found on the server. If you entered the URL manually please check your spelling and try again.', 'path': '/metrics', 'method': 'GET', 'traceback': 'Traceback (most recent call last):\n  File "/home/vbear/miniconda3/lib/python3.13/site-packages/flask/app.py", line 917, in full_dispatch_request\n    rv = self.dispatch_request()\n  File "/home/vbear/miniconda3/lib/python3.13/site-packages/flask/app.py", line 891, in dispatch_request\n    self.raise_routing_exception(req)\n    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^\n  File "/home/vbear/miniconda3/lib/python3.13/site-packages/flask/app.py", line 500, in raise_routing_exception\n    raise request.routing_exception  # type: ignore[misc]\n    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File "/home/vbear/miniconda3/lib/python3.13/site-packages/flask/ctx.py", line 362, in match_request\n    result = self.url_adapter.match(return_rule=True)  # type: ignore\n  File "/home/vbear/miniconda3/lib/python3.13/site-packages/werkzeug/routing/map.py", line 629, in match\n    raise NotFound() from None\nwerkzeug.exceptions.NotFound: 404 Not Found: The requested URL was not found on the server. If you entered the URL manually please check your spelling and try again.\n', 'body': None, 'args': {}}
+[2026-05-15 01:48:27,295] [INFO] {'event': 'response_sent', 'status': 500, 'path': '/metrics'}
+[2026-05-15 01:48:29,722] [INFO] {'event': 'incoming_request', 'method': 'GET', 'path': '/metric', 'args': {}, 'body': None}
+[2026-05-15 01:48:29,724] [ERROR] {'event': 'internal_error', 'error_type': 'NotFound', 'error': '404 Not Found: The requested URL was not found on the server. If you entered the URL manually please check your spelling and try again.', 'path': '/metric', 'method': 'GET', 'traceback': 'Traceback (most recent call last):\n  File "/home/vbear/miniconda3/lib/python3.13/site-packages/flask/app.py", line 917, in full_dispatch_request\n    rv = self.dispatch_request()\n  File "/home/vbear/miniconda3/lib/python3.13/site-packages/flask/app.py", line 891, in dispatch_request\n    self.raise_routing_exception(req)\n    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^\n  File "/home/vbear/miniconda3/lib/python3.13/site-packages/flask/app.py", line 500, in raise_routing_exception\n    raise request.routing_exception  # type: ignore[misc]\n    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File "/home/vbear/miniconda3/lib/python3.13/site-packages/flask/ctx.py", line 362, in match_request\n    result = self.url_adapter.match(return_rule=True)  # type: ignore\n  File "/home/vbear/miniconda3/lib/python3.13/site-packages/werkzeug/routing/map.py", line 629, in match\n    raise NotFound() from None\nwerkzeug.exceptions.NotFound: 404 Not Found: The requested URL was not found on the server. If you entered the URL manually please check your spelling and try again.\n', 'body': None, 'args': {}}
+[2026-05-15 01:48:29,724] [INFO] {'event': 'response_sent', 'status': 500, 'path': '/metric'}
+[2026-05-15 01:49:04,313] [INFO] {'event': 'incoming_request', 'method': 'GET', 'path': '/', 'args': {}, 'body': None}
+[2026-05-15 01:49:04,314] [INFO] {'event': 'response_sent', 'status': 200, 'path': '/'}
+[2026-05-15 01:49:04,338] [INFO] {'event': 'incoming_request', 'method': 'POST', 'path': '/api/payments/', 'args': {}, 'body': {'method': 'momo', 'amount': {'value': 50000, 'currency': 'VND'}}}
+[2026-05-15 01:49:04,339] [INFO] {'event': 'POST_create_dispatch', 'version': '2', 'status': 'processing', 'breaker_state': 'closed'}
+[2026-05-15 01:49:04,340] [INFO] {'event': 'payment_v2_create_request', 'body': {'method': 'momo', 'amount': {'value': 50000, 'currency': 'VND'}}, 'status': 'received'}
+[2026-05-15 01:49:04,347] [INFO] {'event': 'payment_v2_created', 'payment_id': '6a06192099ba9963ab07bbce', 'status': 'success'}
+[2026-05-15 01:49:04,348] [INFO] {'event': 'POST_create_dispatch', 'version': '2', 'status': 'completed', 'breaker_state': 'closed'}
+[2026-05-15 01:49:04,348] [INFO] {'event': 'response_sent', 'status': 201, 'path': '/api/payments/'}
+[2026-05-15 01:49:04,368] [INFO] {'event': 'incoming_request', 'method': 'GET', 'path': '/metrics', 'args': {}, 'body': None}
+[2026-05-15 01:49:04,368] [INFO] {'event': 'metrics_requested', 'status': 'serving_metrics'}
+[2026-05-15 01:49:04,371] [ERROR] {'event': 'internal_error', 'error_type': 'AttributeError', 'error': "'PrometheusMetrics' object has no attribute 'generate_latest'", 'path': '/metrics', 'method': 'GET', 'traceback': 'Traceback (most recent call last):\n  File "/home/vbear/miniconda3/lib/python3.13/site-packages/flask/app.py", line 917, in full_dispatch_request\n    rv = self.dispatch_request()\n  File "/home/vbear/miniconda3/lib/python3.13/site-packages/flask/app.py", line 902, in dispatch_request\n    return self.ensure_sync(self.view_functions[rule.endpoint])(**view_args)  # type: ignore[no-any-return]\n           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^\n  File "/home/vbear/2526II_INT3505_1/week10/app.py", line 218, in metrics_endpoint\n    return metrics.generate_latest()\n           ^^^^^^^^^^^^^^^^^^^^^^^\nAttributeError: \'PrometheusMetrics\' object has no attribute \'generate_latest\'\n', 'body': None, 'args': {}}
+[2026-05-15 01:49:04,371] [INFO] {'event': 'response_sent', 'status': 500, 'path': '/metrics'}
+[2026-05-15 01:49:05,677] [INFO] {'event': 'incoming_request', 'method': 'GET', 'path': '/metrics', 'args': {}, 'body': None}
+[2026-05-15 01:49:05,677] [INFO] {'event': 'metrics_requested', 'status': 'serving_metrics'}
+[2026-05-15 01:49:05,678] [ERROR] {'event': 'internal_error', 'error_type': 'AttributeError', 'error': "'PrometheusMetrics' object has no attribute 'generate_latest'", 'path': '/metrics', 'method': 'GET', 'traceback': 'Traceback (most recent call last):\n  File "/home/vbear/miniconda3/lib/python3.13/site-packages/flask/app.py", line 917, in full_dispatch_request\n    rv = self.dispatch_request()\n  File "/home/vbear/miniconda3/lib/python3.13/site-packages/flask/app.py", line 902, in dispatch_request\n    return self.ensure_sync(self.view_functions[rule.endpoint])(**view_args)  # type: ignore[no-any-return]\n           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^\n  File "/home/vbear/2526II_INT3505_1/week10/app.py", line 218, in metrics_endpoint\n    return metrics.generate_latest()\n           ^^^^^^^^^^^^^^^^^^^^^^^\nAttributeError: \'PrometheusMetrics\' object has no attribute \'generate_latest\'\n', 'body': None, 'args': {}}
+[2026-05-15 01:49:05,679] [INFO] {'event': 'response_sent', 'status': 500, 'path': '/metrics'}
+[2026-05-15 01:49:41,843] [INFO] {'event': 'incoming_request', 'method': 'GET', 'path': '/', 'args': {}, 'body': None}
+[2026-05-15 01:49:41,844] [INFO] {'event': 'response_sent', 'status': 200, 'path': '/'}
+[2026-05-15 01:49:41,859] [INFO] {'event': 'incoming_request', 'method': 'POST', 'path': '/api/payments/', 'args': {}, 'body': {'method': 'momo', 'amount': {'value': 50000}}}
+[2026-05-15 01:49:41,860] [INFO] {'event': 'POST_create_dispatch', 'version': '2', 'status': 'processing', 'breaker_state': 'closed'}
+[2026-05-15 01:49:41,860] [INFO] {'event': 'payment_v2_create_request', 'body': {'method': 'momo', 'amount': {'value': 50000}}, 'status': 'received'}
+[2026-05-15 01:49:41,877] [INFO] {'event': 'payment_v2_created', 'payment_id': '6a0619455382b0512974247f', 'status': 'success'}
+[2026-05-15 01:49:41,877] [INFO] {'event': 'POST_create_dispatch', 'version': '2', 'status': 'completed', 'breaker_state': 'closed'}
+[2026-05-15 01:49:41,878] [INFO] {'event': 'response_sent', 'status': 201, 'path': '/api/payments/'}
+[2026-05-15 01:49:41,896] [INFO] {'event': 'incoming_request', 'method': 'GET', 'path': '/metrics', 'args': {}, 'body': None}
+[2026-05-15 01:49:41,897] [INFO] {'event': 'metrics_requested', 'status': 'serving_metrics'}
+[2026-05-15 01:49:41,899] [INFO] {'event': 'response_sent', 'status': 200, 'path': '/metrics'}
+[2026-05-15 01:49:52,654] [INFO] {'event': 'incoming_request', 'method': 'GET', 'path': '/metrics', 'args': {}, 'body': None}
+[2026-05-15 01:49:52,655] [INFO] {'event': 'metrics_requested', 'status': 'serving_metrics'}
+[2026-05-15 01:49:52,657] [INFO] {'event': 'response_sent', 'status': 200, 'path': '/metrics'}
+[2026-05-15 01:49:52,674] [INFO] {'event': 'incoming_request', 'method': 'GET', 'path': '/metrics', 'args': {}, 'body': None}
+[2026-05-15 01:49:52,674] [INFO] {'event': 'metrics_requested', 'status': 'serving_metrics'}
+[2026-05-15 01:49:52,676] [INFO] {'event': 'response_sent', 'status': 200, 'path': '/metrics'}
+[2026-05-15 01:50:15,481] [INFO] {'event': 'incoming_request', 'method': 'GET', 'path': '/metrics', 'args': {}, 'body': None}
+[2026-05-15 01:50:15,482] [INFO] {'event': 'metrics_requested', 'status': 'serving_metrics'}
+[2026-05-15 01:50:15,484] [INFO] {'event': 'response_sent', 'status': 200, 'path': '/metrics'}
+[2026-05-15 01:50:16,844] [INFO] {'event': 'incoming_request', 'method': 'GET', 'path': '/favicon.ico', 'args': {}, 'body': None}
+[2026-05-15 01:50:16,848] [ERROR] {'event': 'internal_error', 'error_type': 'NotFound', 'error': '404 Not Found: The requested URL was not found on the server. If you entered the URL manually please check your spelling and try again.', 'path': '/favicon.ico', 'method': 'GET', 'traceback': 'Traceback (most recent call last):\n  File "/home/vbear/miniconda3/lib/python3.13/site-packages/flask/app.py", line 917, in full_dispatch_request\n    rv = self.dispatch_request()\n  File "/home/vbear/miniconda3/lib/python3.13/site-packages/flask/app.py", line 891, in dispatch_request\n    self.raise_routing_exception(req)\n    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^\n  File "/home/vbear/miniconda3/lib/python3.13/site-packages/flask/app.py", line 500, in raise_routing_exception\n    raise request.routing_exception  # type: ignore[misc]\n    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File "/home/vbear/miniconda3/lib/python3.13/site-packages/flask/ctx.py", line 362, in match_request\n    result = self.url_adapter.match(return_rule=True)  # type: ignore\n  File "/home/vbear/miniconda3/lib/python3.13/site-packages/werkzeug/routing/map.py", line 629, in match\n    raise NotFound() from None\nwerkzeug.exceptions.NotFound: 404 Not Found: The requested URL was not found on the server. If you entered the URL manually please check your spelling and try again.\n', 'body': None, 'args': {}}
+[2026-05-15 01:50:16,848] [INFO] {'event': 'response_sent', 'status': 500, 'path': '/favicon.ico'}
+[2026-05-15 01:50:27,255] [INFO] {'event': 'incoming_request', 'method': 'GET', 'path': '/metric', 'args': {}, 'body': None}
+[2026-05-15 01:50:27,257] [ERROR] {'event': 'internal_error', 'error_type': 'NotFound', 'error': '404 Not Found: The requested URL was not found on the server. If you entered the URL manually please check your spelling and try again.', 'path': '/metric', 'method': 'GET', 'traceback': 'Traceback (most recent call last):\n  File "/home/vbear/miniconda3/lib/python3.13/site-packages/flask/app.py", line 917, in full_dispatch_request\n    rv = self.dispatch_request()\n  File "/home/vbear/miniconda3/lib/python3.13/site-packages/flask/app.py", line 891, in dispatch_request\n    self.raise_routing_exception(req)\n    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^\n  File "/home/vbear/miniconda3/lib/python3.13/site-packages/flask/app.py", line 500, in raise_routing_exception\n    raise request.routing_exception  # type: ignore[misc]\n    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File "/home/vbear/miniconda3/lib/python3.13/site-packages/flask/ctx.py", line 362, in match_request\n    result = self.url_adapter.match(return_rule=True)  # type: ignore\n  File "/home/vbear/miniconda3/lib/python3.13/site-packages/werkzeug/routing/map.py", line 629, in match\n    raise NotFound() from None\nwerkzeug.exceptions.NotFound: 404 Not Found: The requested URL was not found on the server. If you entered the URL manually please check your spelling and try again.\n', 'body': None, 'args': {}}
+[2026-05-15 01:50:27,257] [INFO] {'event': 'response_sent', 'status': 500, 'path': '/metric'}
+[2026-05-15 01:50:27,720] [INFO] {'event': 'incoming_request', 'method': 'GET', 'path': '/favicon.ico', 'args': {}, 'body': None}
+[2026-05-15 01:50:27,722] [ERROR] {'event': 'internal_error', 'error_type': 'NotFound', 'error': '404 Not Found: The requested URL was not found on the server. If you entered the URL manually please check your spelling and try again.', 'path': '/favicon.ico', 'method': 'GET', 'traceback': 'Traceback (most recent call last):\n  File "/home/vbear/miniconda3/lib/python3.13/site-packages/flask/app.py", line 917, in full_dispatch_request\n    rv = self.dispatch_request()\n  File "/home/vbear/miniconda3/lib/python3.13/site-packages/flask/app.py", line 891, in dispatch_request\n    self.raise_routing_exception(req)\n    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^\n  File "/home/vbear/miniconda3/lib/python3.13/site-packages/flask/app.py", line 500, in raise_routing_exception\n    raise request.routing_exception  # type: ignore[misc]\n    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File "/home/vbear/miniconda3/lib/python3.13/site-packages/flask/ctx.py", line 362, in match_request\n    result = self.url_adapter.match(return_rule=True)  # type: ignore\n  File "/home/vbear/miniconda3/lib/python3.13/site-packages/werkzeug/routing/map.py", line 629, in match\n    raise NotFound() from None\nwerkzeug.exceptions.NotFound: 404 Not Found: The requested URL was not found on the server. If you entered the URL manually please check your spelling and try again.\n', 'body': None, 'args': {}}
+[2026-05-15 01:50:27,722] [INFO] {'event': 'response_sent', 'status': 500, 'path': '/favicon.ico'}
+[2026-05-15 01:50:29,639] [INFO] {'event': 'incoming_request', 'method': 'GET', 'path': '/metrics', 'args': {}, 'body': None}
+[2026-05-15 01:50:29,640] [INFO] {'event': 'metrics_requested', 'status': 'serving_metrics'}
+[2026-05-15 01:50:29,644] [INFO] {'event': 'response_sent', 'status': 200, 'path': '/metrics'}
+[2026-05-15 01:50:30,086] [INFO] {'event': 'incoming_request', 'method': 'GET', 'path': '/favicon.ico', 'args': {}, 'body': None}
+[2026-05-15 01:50:30,087] [ERROR] {'event': 'internal_error', 'error_type': 'NotFound', 'error': '404 Not Found: The requested URL was not found on the server. If you entered the URL manually please check your spelling and try again.', 'path': '/favicon.ico', 'method': 'GET', 'traceback': 'Traceback (most recent call last):\n  File "/home/vbear/miniconda3/lib/python3.13/site-packages/flask/app.py", line 917, in full_dispatch_request\n    rv = self.dispatch_request()\n  File "/home/vbear/miniconda3/lib/python3.13/site-packages/flask/app.py", line 891, in dispatch_request\n    self.raise_routing_exception(req)\n    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^\n  File "/home/vbear/miniconda3/lib/python3.13/site-packages/flask/app.py", line 500, in raise_routing_exception\n    raise request.routing_exception  # type: ignore[misc]\n    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File "/home/vbear/miniconda3/lib/python3.13/site-packages/flask/ctx.py", line 362, in match_request\n    result = self.url_adapter.match(return_rule=True)  # type: ignore\n  File "/home/vbear/miniconda3/lib/python3.13/site-packages/werkzeug/routing/map.py", line 629, in match\n    raise NotFound() from None\nwerkzeug.exceptions.NotFound: 404 Not Found: The requested URL was not found on the server. If you entered the URL manually please check your spelling and try again.\n', 'body': None, 'args': {}}
+[2026-05-15 01:50:30,088] [INFO] {'event': 'response_sent', 'status': 500, 'path': '/favicon.ico'}
+[2026-05-15 01:52:14,631] [INFO] {'event': 'incoming_request', 'method': 'GET', 'path': '/', 'args': {}, 'body': None}
+[2026-05-15 01:52:14,632] [INFO] {'event': 'response_sent', 'status': 200, 'path': '/'}
+[2026-05-15 01:52:14,644] [INFO] {'event': 'incoming_request', 'method': 'GET', 'path': '/', 'args': {}, 'body': None}
+[2026-05-15 01:52:14,644] [INFO] {'event': 'response_sent', 'status': 200, 'path': '/'}
+[2026-05-15 01:52:14,658] [INFO] {'event': 'incoming_request', 'method': 'POST', 'path': '/api/payments/', 'args': {}, 'body': {'method': 'momo', 'amount': {'value': 50000}}}
+[2026-05-15 01:52:14,659] [INFO] {'event': 'POST_create_dispatch', 'version': '2', 'status': 'processing', 'breaker_state': 'closed'}
+[2026-05-15 01:52:14,659] [INFO] {'event': 'payment_v2_create_request', 'body': {'method': 'momo', 'amount': {'value': 50000}}, 'status': 'received'}
+[2026-05-15 01:52:14,660] [INFO] {'event': 'payment_v2_created', 'payment_id': '6a0619de5382b05129742480', 'status': 'success'}
+[2026-05-15 01:52:14,660] [INFO] {'event': 'POST_create_dispatch', 'version': '2', 'status': 'completed', 'breaker_state': 'closed'}
+[2026-05-15 01:52:14,660] [INFO] {'event': 'response_sent', 'status': 201, 'path': '/api/payments/'}
+[2026-05-15 01:52:14,677] [INFO] {'event': 'incoming_request', 'method': 'GET', 'path': '/metrics', 'args': {}, 'body': None}
+[2026-05-15 01:52:14,677] [INFO] {'event': 'metrics_requested', 'status': 'serving_metrics'}
+[2026-05-15 01:52:14,680] [INFO] {'event': 'response_sent', 'status': 200, 'path': '/metrics'}

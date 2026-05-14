@@ -1,9 +1,10 @@
 from flask import Flask, jsonify, request
-from routes.payments import bp as payments_bp
+from routes.payment import bp as payments_bp
 from db import init_db
 from utils.logger import logger
 from utils.limiter import limiter
 from prometheus_flask_exporter import PrometheusMetrics
+from prometheus_client import generate_latest, REGISTRY, CollectorRegistry
 from utils.waf import waf_check
 from pybreaker import CircuitBreaker, CircuitBreakerError
 import random
@@ -67,12 +68,20 @@ def security_layer():
 # Logging
 @app.before_request
 def log_request():
+    # Capture body for logging
+    body = None
+    if request.method in ['POST', 'PUT', 'PATCH']:
+        try:
+            body = request.get_json(silent=True)
+        except:
+            body = "Could not parse JSON"
+    
     logger.info({
         "event": "incoming_request",
         "method": request.method,
         "path": request.path,
         "args": request.args.to_dict(),
-        "body": request.get_json(silent=True)
+        "body": body
     })
 
 
@@ -91,10 +100,16 @@ def log_response(response):
 
 @app.errorhandler(Exception)
 def handle_exception(e):
+    import traceback
     logger.error({
         "event": "internal_error",
+        "error_type": type(e).__name__,
         "error": str(e),
-        "path": request.path
+        "path": request.path,
+        "method": request.method,
+        "traceback": traceback.format_exc(),
+        "body": request.get_json(silent=True),
+        "args": request.args.to_dict()
     })
 
     return jsonify({
@@ -102,8 +117,33 @@ def handle_exception(e):
     }), 500
 
 
+@app.errorhandler(400)
+def handle_bad_request(e):
+    import traceback
+    logger.warning({
+        "event": "bad_request_error",
+        "error_type": "BadRequest",
+        "error": str(e),
+        "path": request.path,
+        "method": request.method,
+        "description": str(e.description)
+    })
+    return jsonify({
+        "error": "Bad request",
+        "message": str(e.description)
+    }), 400
+
+
 @app.errorhandler(429)
 def ratelimit_handler(e):
+    logger.warning({
+        "event": "rate_limit_exceeded",
+        "error_type": "RateLimitError",
+        "path": request.path,
+        "method": request.method,
+        "message": str(e.description),
+        "status": 429
+    })
     return jsonify({
         "error": "Rate limit exceeded",
         "message": str(e.description)
@@ -161,6 +201,27 @@ def breaker_status():
         "reset_timeout": circuit.reset_timeout
     })
 
+
+# ===============================
+# Prometheus Metrics Endpoint
+# ===============================
+
+@app.route("/metrics")
+def metrics_endpoint():
+    """
+    Prometheus metrics endpoint
+    Visit: http://localhost:5000/metrics
+    View metrics for:
+    - Flask request counts & latency
+    - HTTP status codes
+    - Payment API calls
+    """
+    logger.info({
+        "event": "metrics_requested",
+        "status": "serving_metrics"
+    })
+    # Generate metrics from prometheus client registry
+    return generate_latest(REGISTRY)
 
 
 if __name__ == "__main__":

@@ -5,30 +5,85 @@ from utils.logger import logger
 
 def create_payment():
     data = request.get_json()
-
-    payment = {
-        "method": data["method"],
-        "amount": {
-            "value": data["amount"]["value"],
-            "currency": data["amount"].get("currency", "VND")
-        },
-        "status": "processing"
-    }
+    
     logger.info({
         "event": "payment_v2_create_request",
-        "body": data
+        "body": data,
+        "status": "received"
     })
 
-    result = mongo.db.payments_v2.insert_one(payment)
+    try:
+        # Validate required fields
+        if not data:
+            logger.error({
+                "event": "payment_v2_create_error",
+                "error_type": "ValidationError",
+                "error": "Request body is empty",
+                "status": "failed"
+            })
+            return jsonify({"error": "Request body cannot be empty"}), 400
+        
+        if "method" not in data:
+            logger.error({
+                "event": "payment_v2_create_error",
+                "error_type": "ValidationError",
+                "error": "Missing required field: method",
+                "body": data,
+                "status": "failed"
+            })
+            return jsonify({"error": "Missing required field: method"}), 400
+        
+        if "amount" not in data:
+            logger.error({
+                "event": "payment_v2_create_error",
+                "error_type": "ValidationError",
+                "error": "Missing required field: amount",
+                "body": data,
+                "status": "failed"
+            })
+            return jsonify({"error": "Missing required field: amount"}), 400
+        
+        if "value" not in data["amount"]:
+            logger.error({
+                "event": "payment_v2_create_error",
+                "error_type": "ValidationError",
+                "error": "Missing required field: amount.value",
+                "body": data,
+                "status": "failed"
+            })
+            return jsonify({"error": "Missing required field: amount.value"}), 400
+        
+        payment = {
+            "method": data["method"],
+            "amount": {
+                "value": data["amount"]["value"],
+                "currency": data["amount"].get("currency", "VND")
+            },
+            "status": "processing"
+        }
+        result = mongo.db.payments_v2.insert_one(payment)
 
-    logger.info({
-        "event": "payment_v2_created",
-        "payment_id": str(result.inserted_id)
-    })
-    return jsonify({
-        "message": "Created",
-        "id": str(result.inserted_id)
-    }), 201
+        logger.info({
+            "event": "payment_v2_created",
+            "payment_id": str(result.inserted_id),
+            "status": "success"
+        })
+        
+        return jsonify({
+            "message": "Created",
+            "id": str(result.inserted_id)
+        }), 201
+    except Exception as e:
+        import traceback
+        logger.error({
+            "event": "payment_v2_create_error",
+            "error_type": type(e).__name__,
+            "error": str(e),
+            "traceback": traceback.format_exc(),
+            "body": data,
+            "status": "failed"
+        })
+        raise
 
 
 def get_payments():
