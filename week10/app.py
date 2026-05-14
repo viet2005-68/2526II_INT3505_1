@@ -4,7 +4,7 @@ from db import init_db
 from utils.logger import logger
 from utils.limiter import limiter
 from prometheus_flask_exporter import PrometheusMetrics
-
+from utils.waf import waf_check
 from pybreaker import CircuitBreaker, CircuitBreakerError
 import random
 import time
@@ -56,6 +56,13 @@ app.register_blueprint(
     url_prefix="/api/payments"
 )
 
+@app.before_request
+def security_layer():
+
+    blocked = waf_check()
+
+    if blocked:
+        return blocked
 
 # Logging
 @app.before_request
