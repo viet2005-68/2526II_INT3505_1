@@ -1,55 +1,58 @@
+import hashlib
+import hmac
 import json
 import os
 import time
 
+
 import pika
-from flask import Flask, jsonify, request
+from flask import Flask, jsonify, request, abort
 
 app = Flask(__name__)
 RABBIT_URL = os.environ.get("RABBIT_URL", "amqp://admin:admin@rabbitmq:5672/")
 WEBHOOK_SECRET = os.environ.get("WEBHOOK_SECRET", "webhook_secret")
 QUEUE_NAME = "notifications"
 
+def verify_signature(payload_body, signature):
+    """Verify HMAC SHA256 signature"""
+    computed_sig = hmac.new(
+        WEBHOOK_SECRET.encode("utf-8"),
+        msg=payload_body,
+        digestmod=hashlib.sha256
+    ).hexdigest()
 
-def publish_message(payload: dict) -> None:
-    parameters = pika.URLParameters(RABBIT_URL)
-    last_error = None
-    for _ in range(10):
-        try:
-            connection = pika.BlockingConnection(parameters)
-            channel = connection.channel()
-            channel.queue_declare(queue=QUEUE_NAME, durable=True)
-            channel.basic_publish(
-                exchange="",
-                routing_key=QUEUE_NAME,
-                body=json.dumps(payload),
-                properties=pika.BasicProperties(delivery_mode=2),
-            )
-            connection.close()
-            return
-        except pika.exceptions.AMQPError as error:
-            last_error = error
-            time.sleep(2)
-    raise last_error
+    return hmac.compare_digest(computed_sig, signature)
 
 
-@app.get("/health")
-def health_check():
-    return jsonify({"status": "ok"})
 
-
-@app.post("/webhook")
+@app.route('/webhook', methods=['POST'])
 def handle_webhook():
-    if request.headers.get("X-Webhook-Secret") != WEBHOOK_SECRET:
-        return jsonify({"error": "unauthorized"}), 401
+    payload_body = request.data
+    signature = request.headers['X-Signature']
 
-    payload = request.get_json(silent=True)
-    if payload is None:
-        return jsonify({"error": "invalid json"}), 400
+    if not signature or not verify_signature(payload_body, signature):
+        abort(401, description='Signature verification failed')
 
-    publish_message(payload)
-    return jsonify({"status": "queued"}), 202
+    payload = json.loads(request.data)
 
+    params = pika.URLParameters(RABBIT_URL)
+    connection = pika.BlockingConnection(params)
+    channel = connection.channel()
+
+    channel.queue_declare(queue=QUEUE_NAME, durable=True)
+
+    #push message into queue
+    channel.basic_publish(exchange="", routing_key=QUEUE_NAME, body=json.dumps(payload), properties=pika.BasicProperties(delivery_mode=2))
+
+    connection.close()
+
+    return jsonify({"status": "ok"}), 200
+
+
+
+@app.route("/")
+def health():
+    return "Webhook server OK", 200
 
 if __name__ == "__main__":
     app.run(host="0.0.0.0", port=5000)
