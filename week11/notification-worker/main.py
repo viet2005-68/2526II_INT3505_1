@@ -1,33 +1,46 @@
-import json
-import os
-import time
+import pika, json, time, os
+from pika.exceptions import AMQPConnectionError
 
-import pika
-
-RABBIT_URL = os.environ.get("RABBIT_URL", "amqp://admin:admin@rabbitmq:5672/")
-QUEUE_NAME = "notifications"
+RABBIT_URL = os.environ.get("RABBIT_URL")
 
 
-def handle_message(ch, method, properties, body):
-    payload = json.loads(body.decode())
-    print(f"Processed notification: {payload}", flush=True)
-    ch.basic_ack(delivery_tag=method.delivery_tag)
-
-
-def main() -> None:
-    parameters = pika.URLParameters(RABBIT_URL)
-    while True:
+def connect_rabbitmq(url, retries=10, delay=5):
+    """Hàm thử kết nối lại nhiều lần cho đến khi RabbitMQ sẵn sàng"""
+    for i in range(retries):
         try:
-            connection = pika.BlockingConnection(parameters)
-            channel = connection.channel()
-            channel.queue_declare(queue=QUEUE_NAME, durable=True)
-            channel.basic_qos(prefetch_count=1)
-            channel.basic_consume(queue=QUEUE_NAME, on_message_callback=handle_message)
-            print("Waiting for notifications", flush=True)
-            channel.start_consuming()
-        except pika.exceptions.AMQPError:
-            time.sleep(2)
+            params = pika.URLParameters(url)
+            connection = pika.BlockingConnection(params)
+            print("Connected to RabbitMQ")
+            return connection
+        except AMQPConnectionError as e:
+            print(f"RabbitMQ chưa sẵn sàng... Đang thử lại {i+1}/{retries}")
+            time.sleep(delay)
+    raise Exception("Không thể kết nối RabbitMQ sau nhiều lần thử")
 
+connection = connect_rabbitmq(RABBIT_URL)
+channel = connection.channel()
 
-if __name__ == "__main__":
-    main()
+channel.queue_declare(queue='notifications', durable=True)
+print(" [*] Notification worker started. Waiting for messages.")
+
+def callback(ch, method, properties, body):
+    # Du lieu tu RabbitMQ gui dang bytes, nen can dung json.loads de dich lai
+    event = json.loads(body)
+    print("Process message:", event)
+
+    # Demo time to send message
+    time.sleep(1);
+    print(f" [✓] Gửi Notification thành công cho event_id={event.get('id')}")
+
+    ch.basic_ack(delivery_tag = method.delivery_tag)
+
+    channel.basic_qos(prefetch_count=1)
+
+# Chỉ lấy 1 message một lúc để xử lý tốn tài nguyên
+channel.basic_qos(prefetch_count=1)
+
+# Đăng ký hàm callback ở trên với hàng đợi 'notifications'
+channel.basic_consume(queue='notifications', on_message_callback=callback)
+
+# Bắt đầu vòng lặp vô tận
+channel.start_consuming()
