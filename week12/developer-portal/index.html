@@ -148,6 +148,12 @@
             font-size: 1rem;
         }
 
+        .header-actions {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
         .user-profile {
             display: flex;
             align-items: center;
@@ -183,6 +189,49 @@
         @keyframes fadeIn {
             from { opacity: 0; transform: translateY(10px); }
             to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Onboarding Form */
+        .onboarding-container {
+            max-width: 500px;
+            margin: 4rem auto;
+            background: var(--bg-card);
+            border: 1px solid var(--bg-card-border);
+            padding: 3rem;
+            border-radius: 24px;
+            backdrop-filter: blur(12px);
+        }
+
+        .onboarding-container h2 {
+            font-family: var(--font-heading);
+            font-size: 1.75rem;
+            margin-bottom: 1.5rem;
+            text-align: center;
+        }
+
+        .auth-toggle {
+            display: flex;
+            background: rgba(0,0,0,0.2);
+            border-radius: 10px;
+            margin-bottom: 2rem;
+            padding: 0.25rem;
+        }
+
+        .auth-toggle button {
+            flex: 1;
+            background: transparent;
+            border: none;
+            color: var(--text-muted);
+            padding: 0.75rem;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.2s;
+        }
+
+        .auth-toggle button.active {
+            background: var(--primary);
+            color: var(--text-main);
         }
 
         /* Overview Page Analytics Grid */
@@ -231,9 +280,6 @@
             font-size: 0.875rem;
             margin-top: 0.5rem;
         }
-
-        .trend-up { color: var(--secondary); }
-        .trend-down { color: var(--danger); }
 
         .stat-icon {
             width: 56px;
@@ -284,19 +330,19 @@
             gap: 0.75rem;
         }
 
-        input[type="text"] {
+        input[type="text"], input[type="email"] {
             flex: 1;
             background: rgba(255, 255, 255, 0.05);
             border: 1px solid var(--bg-card-border);
             padding: 1rem 1.25rem;
             border-radius: 12px;
             color: var(--text-main);
-            font-family: var(--font-mono);
+            font-family: var(--font-sans);
             font-size: 0.95rem;
             transition: all 0.3s ease;
         }
 
-        input[type="text"]:focus {
+        input[type="text"]:focus, input[type="email"]:focus {
             outline: none;
             border-color: var(--primary);
             background: rgba(255, 255, 255, 0.08);
@@ -313,6 +359,7 @@
             cursor: pointer;
             display: inline-flex;
             align-items: center;
+            justify-content: center;
             gap: 0.5rem;
             font-family: var(--font-sans);
             transition: all 0.3s ease;
@@ -369,13 +416,16 @@
             font-weight: 500;
         }
 
-        select {
+        select, textarea {
             background: rgba(255, 255, 255, 0.05);
             border: 1px solid var(--bg-card-border);
             padding: 1rem;
             border-radius: 12px;
             color: var(--text-main);
             font-family: var(--font-sans);
+        }
+
+        select {
             appearance: none;
             background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='%239ca3af'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M19 9l-7 7-7-7'/%3E%3C/svg%3E");
             background-repeat: no-repeat;
@@ -384,7 +434,7 @@
             cursor: pointer;
         }
 
-        select:focus {
+        select:focus, textarea:focus {
             outline: none;
             border-color: var(--primary);
         }
@@ -607,34 +657,108 @@
             font-size: 0.95rem;
             font-weight: 500;
         }
+
+        /* Admin Section Styling */
+        .admin-switch-btn {
+            background: rgba(255,255,255,0.05);
+            border: 1px solid var(--bg-card-border);
+            color: var(--text-muted);
+            padding: 0.5rem 1rem;
+            border-radius: 12px;
+            font-size: 0.85rem;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .admin-switch-btn.active {
+            background: var(--warning);
+            color: #000;
+            font-weight: bold;
+        }
     </style>
 </head>
 <body>
 
     <!-- Sidebar Navigation -->
-    <aside>
+    <aside id="sidebar-nav" style="display: none;">
         <div class="logo">
             <i class="fa-solid fa-book-bookmark"></i>
             <span>BookAPI Portal</span>
         </div>
         <ul class="nav-links">
             <li class="active" data-target="overview"><a href="#"><i class="fa-solid fa-chart-line"></i> Dashboard</a></li>
-            <li data-target="playground"><a href="#"><i class="fa-solid fa-terminal"></i> Sandbox API</a></li>
+            <li data-target="playground"><a href="#"><i class="fa-solid fa-terminal"></i> Sandbox & API</a></li>
             <li data-target="docs"><a href="#"><i class="fa-solid fa-book"></i> API Documentation</a></li>
             <li data-target="billing"><a href="#"><i class="fa-solid fa-credit-card"></i> Gói Dịch Vụ</a></li>
+            <li data-target="admin" id="admin-menu" style="display: none;"><a href="#"><i class="fa-solid fa-user-shield"></i> Admin Analytics</a></li>
         </ul>
     </aside>
 
-    <!-- Main Workspace -->
-    <main>
+    <!-- Welcome/Register Screen ( DX Onboarding ) -->
+    <div id="onboarding-screen" style="flex: 1; display: block;">
+        <div class="onboarding-container">
+            <div class="logo" style="justify-content: center; margin-bottom: 1.5rem;">
+                <i class="fa-solid fa-book-bookmark"></i>
+                <span>BookAPI Portal</span>
+            </div>
+            <h2>Bắt đầu tích hợp Book API</h2>
+            
+            <div class="auth-toggle">
+                <button id="toggle-register" class="active" onclick="switchAuthTab('register')">Đăng ký mới</button>
+                <button id="toggle-login" onclick="switchAuthTab('login')">Đăng nhập bằng Email</button>
+            </div>
+
+            <!-- Register Form -->
+            <form id="register-form" onsubmit="handleRegister(event)">
+                <div class="form-group">
+                    <label>Họ và Tên</label>
+                    <input type="text" id="reg-name" required placeholder="Nguyen Van A">
+                </div>
+                <div class="form-group">
+                    <label>Email Developer</label>
+                    <input type="email" id="reg-email" required placeholder="dev@example.com">
+                </div>
+                <div class="form-group">
+                    <label>Gói dịch vụ đăng ký ban đầu</label>
+                    <select id="reg-plan">
+                        <option value="free">Free ($0/tháng - 100 calls/ngày)</option>
+                        <option value="pro">Pro ($29/tháng - 10,000 calls/ngày)</option>
+                        <option value="enterprise">Enterprise ($299/tháng - Không giới hạn)</option>
+                    </select>
+                </div>
+                <button class="btn" type="submit" style="width:100%; margin-top: 1rem;">Đăng ký API Key</button>
+            </form>
+
+            <!-- Login Form -->
+            <form id="login-form" onsubmit="handleLogin(event)" style="display: none;">
+                <div class="form-group">
+                    <label>Email đã đăng ký</label>
+                    <input type="email" id="login-email" required placeholder="dev@example.com">
+                </div>
+                <button class="btn btn-secondary" type="submit" style="width:100%; margin-top: 1rem;">Truy cập Console</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Main Workspace (Hidden before registration/login) -->
+    <main id="portal-workspace" style="display: none;">
         <header>
             <div class="welcome-title">
                 <h1 id="page-title">Tổng quan Dashboard</h1>
                 <p id="page-subtitle">Theo dõi thống kê sử dụng Book API & Analytics</p>
             </div>
-            <div class="user-profile">
-                <div class="avatar">D</div>
-                <span>Dev Account</span>
+            <div class="header-actions">
+                <button id="admin-mode-btn" class="admin-switch-btn" onclick="toggleAdminMode()">
+                    <i class="fa-solid fa-user-gear"></i> Kích hoạt Admin Mode
+                </button>
+                <div class="user-profile">
+                    <div class="avatar" id="user-plan-badge">F</div>
+                    <div>
+                        <strong id="user-name-display" style="display:block; font-size:0.9rem;">Developer</strong>
+                        <span id="user-plan-name" style="font-size:0.8rem; color:var(--text-muted);">Gói Free</span>
+                    </div>
+                </div>
+                <button class="btn btn-outline" style="padding: 0.5rem 1rem;" onclick="handleLogout()">Đăng xuất</button>
             </div>
         </header>
 
@@ -648,13 +772,13 @@
 
         <!-- ================= SECTION: OVERVIEW ================= -->
         <section id="overview" class="portal-section active">
-            <!-- Stats KPIs Grid -->
+            <!-- Stats KPIs Grid (Developer's personal stats) -->
             <div class="stats-grid">
                 <div class="stat-card">
                     <div class="stat-details">
-                        <p>Call Volume (Tháng này)</p>
-                        <h3>18,245</h3>
-                        <span class="trend-up"><i class="fa-solid fa-arrow-trend-up"></i> +12.4% so với tháng trước</span>
+                        <p>Calls hôm nay / Hạn mức</p>
+                        <h3 id="stat-usage-today">0 / 100</h3>
+                        <span class="trend-up" id="stat-usage-percent"><i class="fa-solid fa-circle-info"></i> Đã dùng 0% hạn mức</span>
                     </div>
                     <div class="stat-icon primary">
                         <i class="fa-solid fa-chart-bar"></i>
@@ -663,9 +787,9 @@
 
                 <div class="stat-card">
                     <div class="stat-details">
-                        <p>Tỷ lệ lỗi (Error Rate)</p>
-                        <h3>0.08%</h3>
-                        <span class="trend-up"><i class="fa-solid fa-circle-check"></i> Rất ổn định (mục tiêu &lt; 1%)</span>
+                        <p>Tổng số call thành công</p>
+                        <h3 id="stat-total-calls">0</h3>
+                        <span class="trend-up"><i class="fa-solid fa-circle-check"></i> Tích lũy từ lúc đăng ký</span>
                     </div>
                     <div class="stat-icon secondary">
                         <i class="fa-solid fa-shield-halved"></i>
@@ -674,12 +798,12 @@
 
                 <div class="stat-card">
                     <div class="stat-details">
-                        <p>Độ trễ trung bình (p95)</p>
-                        <h3>142 ms</h3>
-                        <span class="trend-up"><i class="fa-solid fa-bolt"></i> Nhanh hơn 8% (mục tiêu &lt; 200ms)</span>
+                        <p>Tỷ lệ lỗi (Error Rate)</p>
+                        <h3 id="stat-error-rate">0%</h3>
+                        <span class="trend-up"><i class="fa-solid fa-bug"></i> Tổng lỗi: <span id="stat-error-count">0</span></span>
                     </div>
                     <div class="stat-icon warning">
-                        <i class="fa-solid fa-gauge-high"></i>
+                        <i class="fa-solid fa-triangle-exclamation"></i>
                     </div>
                 </div>
             </div>
@@ -687,28 +811,14 @@
             <!-- Developer Credentials -->
             <div class="section-card">
                 <h2><i class="fa-solid fa-key"></i> Thông tin API Credentials</h2>
-                <p style="color: var(--text-muted); margin-bottom: 1.5rem;">Sử dụng API Key để xác thực các yêu cầu gửi đến Book API. Tránh chia sẻ key này nơi công cộng.</p>
+                <p style="color: var(--text-muted); margin-bottom: 1.5rem;">Sử dụng API Key để xác thực các yêu cầu gửi đến Book API thông qua header <code>X-API-Key</code>.</p>
                 <div class="key-generator-box">
                     <div class="form-group">
                         <label>Active API Key</label>
                         <div class="key-input-wrapper">
-                            <input type="text" id="api-key-field" value="bk_live_550e8400e29b41d4a716446655400000" readonly>
-                            <button class="btn" onclick="copyApiKey()"><i class="fa-solid fa-copy"></i> Copy</button>
-                            <button class="btn btn-outline" onclick="regenerateKey()"><i class="fa-solid fa-arrows-rotate"></i> Đổi Key</button>
+                            <input type="text" id="api-key-field" value="" readonly>
+                            <button class="btn" onclick="copyApiKey()"><i class="fa-solid fa-copy"></i> Copy Key</button>
                         </div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Webhook configurations (from Week 11) -->
-            <div class="section-card">
-                <h2><i class="fa-solid fa-bell"></i> Webhook Subscriptions</h2>
-                <p style="color: var(--text-muted); margin-bottom: 1.5rem;">Cấu hình Webhook để nhận thông báo real-time mỗi khi có sách được thêm mới hoặc thay đổi thông tin.</p>
-                <div class="form-group">
-                    <label>Webhook Target URL</label>
-                    <div class="key-input-wrapper">
-                        <input type="text" id="webhook-url" placeholder="https://your-domain.com/webhooks/book-events" value="https://webhook.site/demo-endpoint">
-                        <button class="btn btn-secondary" onclick="saveWebhook()"><i class="fa-solid fa-floppy-disk"></i> Lưu Endpoint</button>
                     </div>
                 </div>
             </div>
@@ -717,62 +827,49 @@
         <!-- ================= SECTION: PLAYGROUND / SANDBOX ================= -->
         <section id="playground" class="portal-section">
             <div class="section-card">
-                <h2><i class="fa-solid fa-terminal"></i> Sandbox API Playground</h2>
-                <p style="color: var(--text-muted); margin-bottom: 1.5rem;">Kiểm thử trực tiếp API trong môi trường sandbox cô lập. Không làm ảnh hưởng đến dữ liệu production.</p>
+                <h2><i class="fa-solid fa-terminal"></i> Sandbox & API Testing</h2>
+                <p style="color: var(--text-muted); margin-bottom: 1.5rem;">
+                    Thử nghiệm nhanh. Bạn có thể chọn gọi endpoint **Sandbox (Không cần Key, Không tốn Quota)** hoặc **API Thực tế (Yêu cầu Key & Áp dụng Quota)**.
+                </p>
                 
                 <div class="sandbox-container">
                     <!-- Configurator Panel -->
                     <div class="sandbox-form">
                         <div class="form-group">
-                            <label>API Endpoint</label>
+                            <label>Chọn Endpoint thử nghiệm</label>
                             <select id="api-endpoint-select" onchange="updateSandboxMethod()">
-                                <option value="get-books">GET /books (Lấy danh sách sách)</option>
-                                <option value="get-book-detail">GET /books/1 (Chi tiết sách)</option>
-                                <option value="create-book">POST /books (Thêm sách mới)</option>
-                                <option value="delete-book">DELETE /books/1 (Xoá sách)</option>
+                                <option value="sandbox-books">GET /sandbox/books (Xem sách mẫu - Sandbox)</option>
+                                <option value="sandbox-echo">POST /sandbox/echo (Echo test payload - Sandbox)</option>
+                                <option value="get-books">GET /api/v1/books (Xem sách thật - Cần Key)</option>
+                                <option value="get-book-detail">GET /api/v1/books/b001 (Chi tiết sách b001 - Cần Key)</option>
+                                <option value="create-book">POST /api/v1/books (Thêm sách - Cần Key)</option>
+                                <option value="search-books">GET /api/v1/search?q=Clean (Tìm kiếm - Chỉ Pro/Enterprise)</option>
+                                <option value="delete-book">DELETE /api/v1/books/b001 (Xóa sách - Cần Key)</option>
                             </select>
                         </div>
 
                         <div class="form-group" id="req-body-group" style="display: none;">
                             <label>Request Body (JSON)</label>
-                            <textarea id="req-body-content" rows="6" style="width: 100%; background: rgba(255,255,255,0.05); border: 1px solid var(--bg-card-border); border-radius: 12px; color: var(--text-main); font-family: var(--font-mono); padding: 1rem; resize: none;">{
-  "title": "The Great Gatsby",
-  "author": "F. Scott Fitzgerald",
-  "year": 1925
+                            <textarea id="req-body-content" rows="6" style="width: 100%; resize: none;">{
+  "title": "Clean Architecture",
+  "author": "Robert C. Martin",
+  "year": 2017,
+  "genre": "tech"
 }</textarea>
                         </div>
 
                         <button class="btn btn-secondary" style="width: 100%;" onclick="runSandboxRequest()">
-                            <i class="fa-solid fa-play"></i> Send API Request
+                            <i class="fa-solid fa-play"></i> Gửi HTTP Request
                         </button>
                     </div>
 
                     <!-- Output Response Console -->
                     <div class="code-box">
                         <div class="code-header">
-                            <span class="code-title">RESPONSE STATUS: <span id="response-status" style="color: var(--secondary)">200 OK</span></span>
-                            <button class="btn-copy" onclick="copyCodeResponse()"><i class="fa-solid fa-copy"></i> Copy Response</button>
+                            <span class="code-title">HTTP STATUS: <span id="response-status" style="color: var(--secondary)">200 OK</span></span>
+                            <button class="btn-copy" onclick="copyCodeResponse()"><i class="fa-solid fa-copy"></i> Copy response</button>
                         </div>
-                        <pre><code id="response-code-block">{
-  "status": "success",
-  "books": [
-    {
-      "id": 1,
-      "title": "To Kill a Mockingbird",
-      "author": "Harper Lee",
-      "year": 1960
-    },
-    {
-      "id": 2,
-      "title": "1984",
-      "author": "George Orwell",
-      "year": 1949
-    }
-  ],
-  "page": 1,
-  "limit": 10,
-  "total": 2
-}</code></pre>
+                        <pre><code id="response-code-block">Nhấp nút gửi Request để chạy thử...</code></pre>
                     </div>
                 </div>
             </div>
@@ -782,7 +879,7 @@
         <section id="docs" class="portal-section">
             <div class="section-card">
                 <h2><i class="fa-solid fa-book"></i> Hướng dẫn tích hợp & API Reference</h2>
-                <p style="color: var(--text-muted); margin-bottom: 1.5rem;">Chi tiết danh sách các endpoint và cấu trúc request/response của Book API.</p>
+                <p style="color: var(--text-muted); margin-bottom: 1.5rem;">Cổng thông tin endpoint chính thức của Book API v1.0. Tất cả các cuộc gọi production bắt buộc gửi kèm header <code>X-API-Key</code>.</p>
                 
                 <table class="api-table">
                     <thead>
@@ -796,33 +893,33 @@
                     <tbody>
                         <tr>
                             <td><span class="badge-method get">GET</span></td>
-                            <td><code>/books</code></td>
-                            <td>Không</td>
-                            <td>Lấy danh sách sách (Hỗ trợ phân trang & lọc)</td>
+                            <td><code>/api/v1/books</code></td>
+                            <td>X-API-Key</td>
+                            <td>Lấy danh sách sách thật lưu trên server</td>
                         </tr>
                         <tr>
                             <td><span class="badge-method get">GET</span></td>
-                            <td><code>/books/{id}</code></td>
-                            <td>Không</td>
-                            <td>Lấy thông tin chi tiết một đầu sách cụ thể</td>
+                            <td><code>/api/v1/books/{id}</code></td>
+                            <td>X-API-Key</td>
+                            <td>Xem thông tin chi tiết một cuốn sách</td>
                         </tr>
                         <tr>
                             <td><span class="badge-method post">POST</span></td>
-                            <td><code>/books</code></td>
-                            <td>Có (Bearer Token)</td>
+                            <td><code>/api/v1/books</code></td>
+                            <td>X-API-Key</td>
                             <td>Thêm sách mới vào catalog dữ liệu</td>
                         </tr>
                         <tr>
-                            <td><span class="badge-method put">PUT</span></td>
-                            <td><code>/books/{id}</code></td>
-                            <td>Có (Bearer Token)</td>
-                            <td>Cập nhật toàn bộ thông tin sách</td>
+                            <td><span class="badge-method delete">DELETE</span></td>
+                            <td><code>/api/v1/books/{id}</code></td>
+                            <td>X-API-Key</td>
+                            <td>Xoá sách khỏi catalog</td>
                         </tr>
                         <tr>
-                            <td><span class="badge-method delete">DELETE</span></td>
-                            <td><code>/books/{id}</code></td>
-                            <td>Có (Bearer Token)</td>
-                            <td>Xoá sách khỏi hệ thống</td>
+                            <td><span class="badge-method get">GET</span></td>
+                            <td><code>/api/v1/search?q=...</code></td>
+                            <td>X-API-Key (Pro+)</td>
+                            <td>Tìm kiếm sách nâng cao (Gated: Lock với gói Free)</td>
                         </tr>
                     </tbody>
                 </table>
@@ -832,103 +929,117 @@
         <!-- ================= SECTION: BILLING / MONETIZATION ================= -->
         <section id="billing" class="portal-section">
             <div class="section-card">
-                <h2><i class="fa-solid fa-credit-card"></i> Các gói dịch vụ (Monetization Tiers)</h2>
-                <p style="color: var(--text-muted); margin-bottom: 1.5rem;">Lựa chọn gói dịch vụ phù hợp với quy mô ứng dụng của nhóm bạn.</p>
+                <h2><i class="fa-solid fa-credit-card"></i> Các gói dịch vụ & Monetization</h2>
+                <p style="color: var(--text-muted); margin-bottom: 1.5rem;">Nâng cấp hoặc hạ cấp gói cước để thay đổi quota giới hạn RPM ngay lập tức.</p>
                 
                 <div class="pricing-grid">
-                    <!-- Freemium Free Tier -->
+                    <!-- Free Tier -->
                     <div class="pricing-card">
-                        <div class="plan-name">Free Tier</div>
+                        <div class="plan-name">Free</div>
                         <div class="plan-price">$0<span>/ tháng</span></div>
                         <ul class="plan-features">
-                            <li><i class="fa-solid fa-circle-check"></i> Tối đa 1,000 calls / tháng</li>
-                            <li><i class="fa-solid fa-circle-check"></i> Hạn chế 1 API Key duy nhất</li>
-                            <li><i class="fa-solid fa-circle-check"></i> Không hỗ trợ Webhook</li>
-                            <li><i class="fa-solid fa-circle-check"></i> Support thông qua cộng đồng</li>
+                            <li><i class="fa-solid fa-circle-check"></i> 100 calls / ngày</li>
+                            <li><i class="fa-solid fa-circle-check"></i> Giới hạn 10 RPM (Rate Limit)</li>
+                            <li><i class="fa-solid fa-circle-check"></i> Hỗ trợ qua cộng đồng (Community)</li>
+                            <li><i class="fa-solid fa-circle-check"></i> Có quyền truy cập Sandbox</li>
                         </ul>
-                        <button class="btn btn-outline">Gói đang sử dụng</button>
-                    </div>
-
-                    <!-- Starter Tier -->
-                    <div class="pricing-card popular">
-                        <div class="badge-popular">Phổ biến</div>
-                        <div class="plan-name">Starter</div>
-                        <div class="plan-price">$9<span>/ tháng</span></div>
-                        <ul class="plan-features">
-                            <li><i class="fa-solid fa-circle-check"></i> Tối đa 50,000 calls / tháng</li>
-                            <li><i class="fa-solid fa-circle-check"></i> Khởi tạo tối đa 3 API Key</li>
-                            <li><i class="fa-solid fa-circle-check"></i> Hỗ trợ gửi Webhook sự kiện</li>
-                            <li><i class="fa-solid fa-circle-check"></i> Support qua email trong 24h</li>
-                        </ul>
-                        <button class="btn">Nâng cấp lên Starter</button>
+                        <button class="btn" id="btn-plan-free" onclick="updatePlan('free')">Gói đang sử dụng</button>
                     </div>
 
                     <!-- Pro Tier -->
-                    <div class="pricing-card">
-                        <div class="plan-name">Pro-Developer</div>
-                        <div class="plan-price">$49<span>/ tháng</span></div>
+                    <div class="pricing-card popular">
+                        <div class="badge-popular">Phổ biến</div>
+                        <div class="plan-name">Pro</div>
+                        <div class="plan-price">$29<span>/ tháng</span></div>
                         <ul class="plan-features">
-                            <li><i class="fa-solid fa-circle-check"></i> Tối đa 500,000 calls / tháng</li>
-                            <li><i class="fa-solid fa-circle-check"></i> Khởi tạo tối đa 10 API Key</li>
-                            <li><i class="fa-solid fa-circle-check"></i> Hỗ trợ Analytics chi tiết</li>
-                            <li><i class="fa-solid fa-circle-check"></i> SLA 99.9% uptime cam kết</li>
+                            <li><i class="fa-solid fa-circle-check"></i> 10,000 calls / ngày</li>
+                            <li><i class="fa-solid fa-circle-check"></i> Giới hạn 200 RPM (Rate Limit)</li>
+                            <li><i class="fa-solid fa-circle-check"></i> Cam kết SLA 99.9% uptime</li>
+                            <li><i class="fa-solid fa-circle-check"></i> Hỗ trợ qua Email (phản hồi &lt; 24h)</li>
+                            <li><i class="fa-solid fa-circle-check"></i> Hỗ trợ Search API & Analytics</li>
                         </ul>
-                        <button class="btn btn-outline">Đăng ký Pro</button>
+                        <button class="btn" id="btn-plan-pro" onclick="updatePlan('pro')">Nâng cấp lên Pro</button>
+                    </div>
+
+                    <!-- Enterprise Tier -->
+                    <div class="pricing-card">
+                        <div class="plan-name">Enterprise</div>
+                        <div class="plan-price">$299<span>/ tháng</span></div>
+                        <ul class="plan-features">
+                            <li><i class="fa-solid fa-circle-check"></i> Không giới hạn calls (Unlimited)</li>
+                            <li><i class="fa-solid fa-circle-check"></i> Giới hạn 2,000 RPM (Rate Limit)</li>
+                            <li><i class="fa-solid fa-circle-check"></i> Cam kết SLA 99.99% uptime</li>
+                            <li><i class="fa-solid fa-circle-check"></i> Hỗ trợ ưu tiên 24/7 Priority</li>
+                            <li><i class="fa-solid fa-circle-check"></i> Quản lý tài khoản riêng biệt (Dedicated)</li>
+                        </ul>
+                        <button class="btn" id="btn-plan-enterprise" onclick="updatePlan('enterprise')">Đăng ký Enterprise</button>
                     </div>
                 </div>
             </div>
         </section>
+
+        <!-- ================= SECTION: ADMIN ANALYTICS ================= -->
+        <section id="admin" class="portal-section">
+            <div class="section-card">
+                <h2><i class="fa-solid fa-user-shield"></i> KPI Dashboard & System Analytics (Admin)</h2>
+                <p style="color: var(--text-muted); margin-bottom: 1.5rem;">Số liệu thống kê thời gian thực của toàn hệ thống API. Truy cập bảo mật bằng <code>X-Admin-Key</code>.</p>
+                
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <div class="stat-details">
+                            <p>Số Dev Đã Đăng Ký</p>
+                            <h3 id="admin-total-devs">0</h3>
+                            <span>Tổng số accounts</span>
+                        </div>
+                        <div class="stat-icon primary"><i class="fa-solid fa-users"></i></div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-details">
+                            <p>Tổng Call Hệ Thống</p>
+                            <h3 id="admin-total-calls">0</h3>
+                            <span>Error Rate: <span id="admin-error-rate">0%</span></span>
+                        </div>
+                        <div class="stat-icon secondary"><i class="fa-solid fa-chart-line"></i></div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-details">
+                            <p>Doanh thu hàng tháng (MRR)</p>
+                            <h3 id="admin-mrr">$0</h3>
+                            <span>Từ các gói Pro & Enterprise</span>
+                        </div>
+                        <div class="stat-icon warning"><i class="fa-solid fa-dollar-sign"></i></div>
+                    </div>
+                </div>
+
+                <h3>Danh sách Developers chi tiết</h3>
+                <table class="api-table" style="margin-top:1rem;">
+                    <thead>
+                        <tr>
+                            <th>Email</th>
+                            <th>Tên</th>
+                            <th>Gói Cước</th>
+                            <th>Calls Hôm Nay</th>
+                            <th>Tổng Calls</th>
+                            <th>Doanh Thu</th>
+                        </tr>
+                    </thead>
+                    <tbody id="admin-devs-table-body">
+                        <tr>
+                            <td colspan="6" style="text-align:center; color:var(--text-muted);">Đang tải dữ liệu admin...</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </section>
     </main>
 
-    <!-- Script for Interactions -->
+    <!-- Script for Interactions with Backend -->
     <script>
-        // Tab switching logic
-        const navItems = document.querySelectorAll('.nav-links li');
-        const sections = document.querySelectorAll('.portal-section');
-        const pageTitle = document.getElementById('page-title');
-        const pageSubtitle = document.getElementById('page-subtitle');
+        const API_BASE = "http://localhost:8000";
+        let currentDeveloper = null;
+        let adminMode = false;
 
-        const sectionMetadata = {
-            overview: {
-                title: "Tổng quan Dashboard",
-                subtitle: "Theo dõi thống kê sử dụng Book API & Analytics"
-            },
-            playground: {
-                title: "API Playground & Sandbox",
-                subtitle: "Thử nghiệm các phương thức gọi API trực quan"
-            },
-            docs: {
-                title: "API Documentation",
-                subtitle: "Tham chiếu kỹ thuật & tài liệu hướng dẫn tích hợp chi tiết"
-            },
-            billing: {
-                title: "Gói Dịch Vụ & Kiếm tiền (Monetization)",
-                subtitle: "Xem thông tin gói cước và giới hạn lượng request của API"
-            }
-        };
-
-        navItems.forEach(item => {
-            item.addEventListener('click', (e) => {
-                e.preventDefault();
-                const target = item.getAttribute('data-target');
-                
-                // Update active state in nav
-                navItems.forEach(nav => nav.classList.remove('active'));
-                item.classList.add('active');
-
-                // Switch visible section
-                sections.forEach(sec => sec.classList.remove('active'));
-                document.getElementById(target).classList.add('active');
-
-                // Update page metadata headers
-                if (sectionMetadata[target]) {
-                    pageTitle.textContent = sectionMetadata[target].title;
-                    pageSubtitle.textContent = sectionMetadata[target].subtitle;
-                }
-            });
-        });
-
-        // Key management utility
+        // UI Helpers
         function showToast(message) {
             const toast = document.getElementById('toast');
             document.getElementById('toast-message').textContent = message;
@@ -941,137 +1052,351 @@
         function copyApiKey() {
             const keyField = document.getElementById('api-key-field');
             navigator.clipboard.writeText(keyField.value);
-            showToast("Đã sao chép API Key thành công!");
-        }
-
-        function regenerateKey() {
-            const chars = 'abcdef0123456789';
-            let newKey = 'bk_live_';
-            for (let i = 0; i < 32; i++) {
-                newKey += chars[Math.floor(Math.random() * chars.length)];
-            }
-            document.getElementById('api-key-field').value = newKey;
-            showToast("Đã làm mới API Key mới!");
-        }
-
-        function saveWebhook() {
-            const urlVal = document.getElementById('webhook-url').value;
-            if (urlVal.trim() === '') {
-                showToast("Vui lòng điền Webhook URL hợp lệ!");
-            } else {
-                showToast("Đã lưu cấu hình Webhook thành công!");
-            }
-        }
-
-        // Sandbox playground mock response logic
-        function updateSandboxMethod() {
-            const endpoint = document.getElementById('api-endpoint-select').value;
-            const bodyGroup = document.getElementById('req-body-group');
-            if (endpoint === 'create-book') {
-                bodyGroup.style.display = 'flex';
-            } else {
-                bodyGroup.style.display = 'none';
-            }
-        }
-
-        const mockResponses = {
-            'get-books': {
-                status: '200 OK',
-                color: 'var(--secondary)',
-                code: `{
-  "status": "success",
-  "books": [
-    {
-      "id": 1,
-      "title": "To Kill a Mockingbird",
-      "author": "Harper Lee",
-      "year": 1960
-    },
-    {
-      "id": 2,
-      "title": "1984",
-      "author": "George Orwell",
-      "year": 1949
-    }
-  ],
-  "page": 1,
-  "limit": 10,
-  "total": 2
-}`
-            },
-            'get-book-detail': {
-                status: '200 OK',
-                color: 'var(--secondary)',
-                code: `{
-  "id": 1,
-  "title": "To Kill a Mockingbird",
-  "author": "Harper Lee",
-  "year": 1960
-}`
-            },
-            'create-book': {
-                status: '201 Created',
-                color: 'var(--secondary)',
-                code: `{
-  "status": "success",
-  "message": "Book created successfully",
-  "data": {
-    "id": 3,
-    "title": "The Great Gatsby",
-    "author": "F. Scott Fitzgerald",
-    "year": 1925
-  }
-}`
-            },
-            'delete-book': {
-                status: '200 OK',
-                color: 'var(--secondary)',
-                code: `{
-  "status": "success",
-  "message": "Book with ID 1 deleted successfully"
-}`
-            }
-        };
-
-        function runSandboxRequest() {
-            const endpoint = document.getElementById('api-endpoint-select').value;
-            const statusLabel = document.getElementById('response-status');
-            const codeBlock = document.getElementById('response-code-block');
-            
-            statusLabel.textContent = "SENDING...";
-            statusLabel.style.color = "var(--text-muted)";
-            
-            setTimeout(() => {
-                const responseData = mockResponses[endpoint];
-                statusLabel.textContent = responseData.status;
-                statusLabel.style.color = responseData.color;
-                codeBlock.textContent = responseData.code;
-                showToast("Request completed successfully!");
-            }, 60000); // 600ms simulate delay
-        }
-
-        // Overwrite standard fast delay to a user friendly 600ms (modified typo from 60000ms to 600ms below)
-        function runSandboxRequest() {
-            const endpoint = document.getElementById('api-endpoint-select').value;
-            const statusLabel = document.getElementById('response-status');
-            const codeBlock = document.getElementById('response-code-block');
-            
-            statusLabel.textContent = "SENDING...";
-            statusLabel.style.color = "var(--text-muted)";
-            
-            setTimeout(() => {
-                const responseData = mockResponses[endpoint];
-                statusLabel.textContent = responseData.status;
-                statusLabel.style.color = responseData.color;
-                codeBlock.textContent = responseData.code;
-                showToast("Yêu cầu gửi đi thành công!");
-            }, 600);
+            showToast("Đã sao chép API Key vào clipboard!");
         }
 
         function copyCodeResponse() {
             const codeText = document.getElementById('response-code-block').textContent;
             navigator.clipboard.writeText(codeText);
-            showToast("Đã sao chép Response vào clipboard!");
+            showToast("Đã sao chép Response!");
+        }
+
+        // Tab Switching Logic
+        const navItems = document.querySelectorAll('.nav-links li');
+        const sections = document.querySelectorAll('.portal-section');
+        const pageTitle = document.getElementById('page-title');
+        const pageSubtitle = document.getElementById('page-subtitle');
+
+        const sectionMetadata = {
+            overview: { title: "Tổng quan Dashboard", subtitle: "Theo dõi thống kê sử dụng Book API & Analytics" },
+            playground: { title: "API Playground & Sandbox", subtitle: "Thử nghiệm các phương thức gọi API trực quan" },
+            docs: { title: "API Documentation", subtitle: "Tham chiếu kỹ thuật & tài liệu hướng dẫn tích hợp chi tiết" },
+            billing: { title: "Gói Dịch Vụ & Kiếm tiền (Monetization)", subtitle: "Nâng cấp hoặc hạ cấp gói cước của bạn" },
+            admin: { title: "KPI Dashboard (Admin)", subtitle: "Xem analytics, MRR, uptime và thống kê developer" }
+        };
+
+        navItems.forEach(item => {
+            item.addEventListener('click', (e) => {
+                e.preventDefault();
+                const target = item.getAttribute('data-target');
+                
+                navItems.forEach(nav => nav.classList.remove('active'));
+                item.classList.add('active');
+
+                sections.forEach(sec => sec.classList.remove('active'));
+                document.getElementById(target).classList.add('active');
+
+                if (sectionMetadata[target]) {
+                    pageTitle.textContent = sectionMetadata[target].title;
+                    pageSubtitle.textContent = sectionMetadata[target].subtitle;
+                }
+
+                if (target === 'admin') {
+                    loadAdminData();
+                } else if (target === 'overview') {
+                    loadDeveloperUsage();
+                }
+            });
+        });
+
+        // Authentication & Onboarding
+        function switchAuthTab(tab) {
+            document.getElementById('toggle-register').className = tab === 'register' ? 'active' : '';
+            document.getElementById('toggle-login').className = tab === 'login' ? 'active' : '';
+            document.getElementById('register-form').style.display = tab === 'register' ? 'block' : 'none';
+            document.getElementById('login-form').style.display = tab === 'login' ? 'block' : 'none';
+        }
+
+        async function handleRegister(event) {
+            event.preventDefault();
+            const email = document.getElementById('reg-email').value;
+            const name = document.getElementById('reg-name').value;
+            const plan = document.getElementById('reg-plan').value;
+
+            try {
+                const res = await fetch(`${API_BASE}/developers/register`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ email, name, plan })
+                });
+                
+                const data = await res.json();
+                if (!res.ok) {
+                    showToast(data.detail?.message || "Lỗi khi đăng ký!");
+                    return;
+                }
+
+                showToast("Đăng ký tài khoản thành công!");
+                await fetchDevAndLogin(email);
+            } catch (err) {
+                showToast("Không kết nối được tới Backend FastAPI!");
+            }
+        }
+
+        async function handleLogin(event) {
+            event.preventDefault();
+            const email = document.getElementById('login-email').value;
+            await fetchDevAndLogin(email);
+        }
+
+        async function fetchDevAndLogin(email) {
+            try {
+                const res = await fetch(`${API_BASE}/developers/${email}/usage`);
+                if (!res.ok) {
+                    showToast("Email không tồn tại trong hệ thống!");
+                    return;
+                }
+                const data = await res.json();
+                currentDeveloper = data;
+                
+                // Save login state in UI
+                document.getElementById('user-name-display').textContent = data.name;
+                document.getElementById('user-plan-name').textContent = `Gói ${data.plan.toUpperCase()}`;
+                document.getElementById('user-plan-badge').textContent = data.plan[0].toUpperCase();
+                document.getElementById('api-key-field').value = data.api_key;
+
+                // Show main workspace
+                document.getElementById('onboarding-screen').style.display = 'none';
+                document.getElementById('sidebar-nav').style.display = 'flex';
+                document.getElementById('portal-workspace').style.display = 'block';
+
+                loadDeveloperUsage();
+                updateBillingButtons(data.plan);
+                showToast(`Chào mừng trở lại, ${data.name}!`);
+            } catch (err) {
+                showToast("Lỗi kết nối server!");
+            }
+        }
+
+        function handleLogout() {
+            currentDeveloper = null;
+            document.getElementById('portal-workspace').style.display = 'none';
+            document.getElementById('sidebar-nav').style.display = 'none';
+            document.getElementById('onboarding-screen').style.display = 'block';
+            showToast("Đã đăng xuất.");
+        }
+
+        // Load metrics for developers
+        async function loadDeveloperUsage() {
+            if (!currentDeveloper) return;
+            try {
+                const res = await fetch(`${API_BASE}/developers/${currentDeveloper.email}/usage`);
+                const data = await res.json();
+                currentDeveloper = data;
+
+                document.getElementById('user-plan-name').textContent = `Gói ${data.plan.toUpperCase()}`;
+                document.getElementById('user-plan-badge').textContent = data.plan[0].toUpperCase();
+                
+                const quota = data.today.quota === "Unlimited" ? "Vô hạn" : data.today.quota;
+                document.getElementById('stat-usage-today').textContent = `${data.today.used} / ${quota}`;
+                document.getElementById('stat-usage-percent').innerHTML = `<i class="fa-solid fa-circle-info"></i> Đã dùng ${data.today.percent_used}% hạn mức trong ngày`;
+                
+                document.getElementById('stat-total-calls').textContent = data.all_time.total_calls.toLocaleString();
+                document.getElementById('stat-error-rate').textContent = data.all_time.error_rate + '%';
+                document.getElementById('stat-error-count').textContent = data.all_time.error_calls;
+
+                updateBillingButtons(data.plan);
+            } catch (err) {
+                console.error("Không thể tải metrics developer:", err);
+            }
+        }
+
+        // Plan upgrades
+        async function updatePlan(newPlan) {
+            if (!currentDeveloper) return;
+            try {
+                const res = await fetch(`${API_BASE}/developers/upgrade`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ email: currentDeveloper.email, new_plan: newPlan })
+                });
+                
+                const data = await res.json();
+                if (!res.ok) {
+                    showToast(data.detail?.message || "Lỗi khi nâng cấp gói!");
+                    return;
+                }
+                
+                showToast(data.message);
+                loadDeveloperUsage();
+            } catch (err) {
+                showToast("Lỗi kết nối khi đổi gói cước!");
+            }
+        }
+
+        function updateBillingButtons(activePlan) {
+            const plans = ['free', 'pro', 'enterprise'];
+            plans.forEach(p => {
+                const btn = document.getElementById(`btn-plan-${p}`);
+                if (!btn) return;
+
+                if (p === activePlan) {
+                    btn.textContent = "Gói đang sử dụng";
+                    btn.className = "btn btn-outline";
+                    btn.disabled = true;
+                    btn.style.cursor = "default";
+                } else {
+                    btn.disabled = false;
+                    btn.style.cursor = "pointer";
+                    const activeIdx = plans.indexOf(activePlan);
+                    const currentIdx = plans.indexOf(p);
+
+                    if (currentIdx > activeIdx) {
+                        btn.textContent = `Nâng cấp lên ${p.toUpperCase()}`;
+                        btn.className = "btn";
+                    } else {
+                        btn.textContent = `Hạ cấp xuống ${p.toUpperCase()}`;
+                        btn.className = "btn btn-outline";
+                    }
+                }
+            });
+        }
+
+        // Sandbox / API Testing Console
+        function updateSandboxMethod() {
+            const endpoint = document.getElementById('api-endpoint-select').value;
+            const bodyGroup = document.getElementById('req-body-group');
+            if (endpoint === 'create-book' || endpoint === 'sandbox-echo') {
+                bodyGroup.style.display = 'flex';
+                if (endpoint === 'sandbox-echo') {
+                    document.getElementById('req-body-content').value = JSON.stringify({ "msg": "Hello World!" }, null, 2);
+                } else {
+                    document.getElementById('req-body-content').value = JSON.stringify({
+                        "title": "Clean Architecture",
+                        "author": "Robert C. Martin",
+                        "year": 2017,
+                        "genre": "tech"
+                    }, null, 2);
+                }
+            } else {
+                bodyGroup.style.display = 'none';
+            }
+        }
+
+        async function runSandboxRequest() {
+            const endpoint = document.getElementById('api-endpoint-select').value;
+            const statusLabel = document.getElementById('response-status');
+            const codeBlock = document.getElementById('response-code-block');
+            const apiKey = document.getElementById('api-key-field').value;
+
+            statusLabel.textContent = "SENDING...";
+            statusLabel.style.color = "var(--text-muted)";
+
+            let url = `${API_BASE}/api/v1/books`;
+            let options = {
+                method: "GET",
+                headers: {
+                    "X-API-Key": apiKey,
+                    "Content-Type": "application/json"
+                }
+            };
+
+            // Parse select selection to endpoint
+            if (endpoint === 'sandbox-books') {
+                url = `${API_BASE}/sandbox/books`;
+                delete options.headers["X-API-Key"];
+            } else if (endpoint === 'sandbox-echo') {
+                url = `${API_BASE}/sandbox/echo`;
+                options.method = "POST";
+                options.body = document.getElementById('req-body-content').value;
+                delete options.headers["X-API-Key"];
+            } else if (endpoint === 'get-book-detail') {
+                url = `${API_BASE}/api/v1/books/b001`;
+            } else if (endpoint === 'create-book') {
+                options.method = "POST";
+                options.body = document.getElementById('req-body-content').value;
+            } else if (endpoint === 'search-books') {
+                url = `${API_BASE}/api/v1/search?q=Clean`;
+            } else if (endpoint === 'delete-book') {
+                url = `${API_BASE}/api/v1/books/b001`;
+                options.method = "DELETE";
+            }
+
+            try {
+                const res = await fetch(url, options);
+                statusLabel.textContent = `${res.status} ${res.statusText}`;
+
+                if (res.status >= 200 && res.status < 300) {
+                    statusLabel.style.color = "var(--secondary)";
+                } else {
+                    statusLabel.style.color = "var(--danger)";
+                }
+
+                const data = await res.json();
+                codeBlock.textContent = JSON.stringify(data, null, 2);
+                showToast("Hoàn tất cuộc gọi API!");
+                
+                // Refresh dev metrics
+                loadDeveloperUsage();
+            } catch (err) {
+                statusLabel.textContent = "CORS / Connection Error";
+                statusLabel.style.color = "var(--danger)";
+                codeBlock.textContent = JSON.stringify({ error: err.message, note: "Hãy chắc chắn uvicorn main:app đang chạy ở cổng 8000" }, null, 2);
+                showToast("Lỗi kết nối API!");
+            }
+        }
+
+        // Admin Dash Management
+        function toggleAdminMode() {
+            adminMode = !adminMode;
+            const adminMenu = document.getElementById('admin-menu');
+            const adminBtn = document.getElementById('admin-mode-btn');
+
+            if (adminMode) {
+                adminMenu.style.display = 'block';
+                adminBtn.textContent = "Tắt Admin Mode";
+                adminBtn.classList.add('active');
+                showToast("Đã bật Admin view. Xem menu bên trái!");
+            } else {
+                adminMenu.style.display = 'none';
+                adminBtn.textContent = "Kích hoạt Admin Mode";
+                adminBtn.classList.remove('active');
+                // If on admin panel, back to overview
+                if (document.getElementById('admin').classList.contains('active')) {
+                    document.querySelector('[data-target="overview"]').click();
+                }
+            }
+        }
+
+        async function loadAdminData() {
+            if (!adminMode) return;
+            try {
+                // Fetch KPIs
+                const kpiRes = await fetch(`${API_BASE}/admin/analytics`, {
+                    headers: { "X-Admin-Key": "admin-secret-key" }
+                });
+                const kpis = await kpiRes.json();
+                
+                document.getElementById('admin-total-devs').textContent = kpis.registered_developers;
+                document.getElementById('admin-total-calls').textContent = kpis.total_api_calls;
+                document.getElementById('admin-error-rate').textContent = kpis.error_rate_percent + '%';
+                document.getElementById('admin-mrr').textContent = `$${kpis.monthly_recurring_revenue_usd}`;
+
+                // Fetch Dev details
+                const devRes = await fetch(`${API_BASE}/admin/developers`, {
+                    headers: { "X-Admin-Key": "admin-secret-key" }
+                });
+                const devData = await devRes.json();
+
+                const tableBody = document.getElementById('admin-devs-table-body');
+                tableBody.innerHTML = '';
+                
+                devData.developers.forEach(dev => {
+                    const tr = document.createElement('tr');
+                    tr.innerHTML = `
+                        <td><code>${dev.email}</code></td>
+                        <td>${dev.name}</td>
+                        <td><span class="badge-method get" style="background-color:rgba(99,102,241,0.1); color:var(--primary); text-transform:uppercase;">${dev.plan}</span></td>
+                        <td>${dev.calls_today}</td>
+                        <td><strong>${dev.total_calls}</strong></td>
+                        <td>$${dev.monthly_rev_usd}</td>
+                    `;
+                    tableBody.appendChild(tr);
+                });
+            } catch (err) {
+                console.error("Lỗi lấy dữ liệu admin:", err);
+                showToast("Lỗi phân quyền hoặc kết nối admin!");
+            }
         }
     </script>
 </body>
